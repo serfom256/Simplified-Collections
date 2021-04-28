@@ -1,6 +1,8 @@
 /**/target
 /**/META-INF/
+out/
 !.mvn/wrapper/maven-wrapper.jar
+
 
 ### STS ###
 .apt_generated
