@@ -17,15 +17,6 @@ public class HeapTest {
         this.heap = new MaxHeap<>();
     }
 
-    @Test
-    public void push() {
-        heap.clear();
-        for (int i = 0; i < 10; i++) {
-            heap.push(i);
-        }
-        assertEquals(10,heap.getLength());
-    }
-
     @Before
     public void prepareToTest() {
         heap = new MaxHeap<>();
@@ -34,6 +25,15 @@ public class HeapTest {
         for (Integer integer : testArr) {
             heap.push(integer);
         }
+    }
+
+    @Test
+    public void push() {
+        heap.clear();
+        for (int i = 0; i < 10; i++) {
+            heap.push(i);
+        }
+        assertEquals(10,heap.getLength());
     }
 
     @Test

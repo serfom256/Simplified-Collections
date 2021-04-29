@@ -33,13 +33,6 @@ public class DoubleLinkedList<E extends Comparable<E>> implements AbstractList<E
         this.type = type;
     }
 
-    public DoubleLinkedList(DoubleLinkedList<E> list, Class<E> type) {
-        this.head = getHead();
-        this.last = list.getEnd();
-        this.length = list.getLength();
-        this.type = type;
-    }
-
     public DoubleLinkedList(Iterable<E> object, Class<E> type) {
         this.head = null;
         this.last = null;
@@ -95,7 +88,6 @@ public class DoubleLinkedList<E extends Comparable<E>> implements AbstractList<E
      * Add data to the end of current list
      *
      * @param data the element to add
-     * @retutn None
      */
     void add(E data) {
         pushLast(data);
@@ -128,7 +120,6 @@ public class DoubleLinkedList<E extends Comparable<E>> implements AbstractList<E
      *
      * @param toFirst if equals true then all data append to head of list
      * @param data    it is all iterable object of elements to add
-     * @retutn None
      */
     public <T extends Iterable<E>> void pushFrom(T data, boolean toFirst) {
         if (toFirst) {
@@ -140,25 +131,12 @@ public class DoubleLinkedList<E extends Comparable<E>> implements AbstractList<E
     }
 
 
-    /**
-     * Append same DoubleLinkedList to end of current list
-     *
-     * @param list DoubleLinkedList with same type appended to end of list
-     */
-    public void concatenate(DoubleLinkedList<E> list) {
-        last.next = list.getHead();
-        list.getHead().prev = last;
-        last = list.getEnd();
-        length += list.getLength();
-    }
-
 
     /**
      * Insert data at the specified position
      *
      * @param data data to add to the position
      * @param pos  this is position to insert the data
-     * @retutn None
      */
     @Override
     public void insert(E data, int pos) {
@@ -580,7 +558,6 @@ public class DoubleLinkedList<E extends Comparable<E>> implements AbstractList<E
     /**
      * Reverse linkedList
      *
-     * @retutn None
      */
     public void reverse() {
         Node<E> temp = null;
@@ -597,16 +574,6 @@ public class DoubleLinkedList<E extends Comparable<E>> implements AbstractList<E
     }
 
     //================================OVERRIDE AND UTILITY METHODS===================================================//
-
-    private Node<E> getHead() {
-        return head;
-    }
-
-
-    private Node<E> getEnd() {
-        return last;
-    }
-
 
     @Override
     public Iterator<E> iterator() {

@@ -304,23 +304,3 @@ public class MaxHeap<T extends Comparable<? super T>> {
         return res.toString() + (heap[size - 1] == null ? "" : heap[size - 1].value) + "]";
     }
 }
-
-
-//    private void sink(int pos){
-//        Data<T> current = heap[pos];
-//        while (pos < size/2){
-//            int left = leftChild(pos), right = rightChild(pos);
-//            int maxChild;
-//            if(right < size && heap[left].value.compareTo(heap[right].value) < 0){
-//                maxChild = right;
-//            }else{
-//                maxChild = left;
-//            }
-//            if(current.value.compareTo(heap[maxChild].value) > 0){
-//                break;
-//            }
-//            heap[pos] = heap[maxChild];
-//            pos = maxChild;
-//        }
-//        heap[pos] = current;
-//    }

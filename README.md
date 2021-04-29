@@ -12,4 +12,4 @@
 - [ ] Trie
 - [ ] Array List
 - [ ] Stack
-- [ ] PriorityQueue(Based at MaxBinaryHeap)
+- [x] PriorityQueue(Based at MaxBinaryHeap)
