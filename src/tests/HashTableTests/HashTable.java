@@ -2,9 +2,12 @@ package tests.HashTableTests;
 
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
-public class HashTable<K, V> {
+public class HashTable<K, V> implements Iterable<K>{
 
     Node<K, V>[] Table;
 
@@ -108,6 +111,21 @@ public class HashTable<K, V> {
     }
 
     @Override
+    public Iterator<K> iterator() {
+        return null;
+    }
+
+    @Override
+    public void forEach(Consumer<? super K> action) {
+
+    }
+
+    @Override
+    public Spliterator<K> spliterator() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         if (size == 0) {
             return "[]";
@@ -125,6 +143,5 @@ public class HashTable<K, V> {
             }
         }
         return res.replace(res.length() - 2, res.length() - 1, "]").toString();
-
     }
 }
