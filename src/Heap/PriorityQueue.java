@@ -117,17 +117,17 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      *
      * @param pos position of element to sink
      */
-    private void sinkDown(int pos){
+    private void sinkDown(int pos) {
         Data<T> current = queue[pos];
-        while (pos < size/2){
+        while (pos < size / 2) {
             int left = leftChild(pos), right = rightChild(pos);
             int maxChild;
-            if(right < size && queue[left].priority < queue[right].priority){
+            if (right < size && queue[left].priority < queue[right].priority) {
                 maxChild = right;
-            }else{
+            } else {
                 maxChild = left;
             }
-            if(current.priority > queue[maxChild].priority){
+            if (current.priority > queue[maxChild].priority) {
                 break;
             }
             queue[pos] = queue[maxChild];
@@ -177,20 +177,14 @@ public class PriorityQueue<T extends Comparable<? super T>> {
         return (2 * pos) + 2;
     }
 
-    private void swap(int pos1, int pos2) {
-        Data<T> tmp = queue[pos1];
-        queue[pos1] = queue[pos2];
-        queue[pos2] = tmp;
-    }
-
     /**
      * Set priority to element in the priorityQueue
      *
-     * @param element the element for which you want to change priority in the queue
+     * @param element  the element for which you want to change priority in the queue
      * @param priority priority of element
      * @throws IllegalArgumentException if (element) is null
      */
-    public void setPriority(T element, int priority){
+    public void setPriority(T element, int priority) {
         if (element == null) {
             throw new IllegalArgumentException("Elements must be not null");
         }
@@ -198,9 +192,9 @@ public class PriorityQueue<T extends Comparable<? super T>> {
             if (queue[i].value.equals(element)) {
                 int lastPriority = queue[i].priority;
                 queue[i].setPriority(priority);
-                if(priority > lastPriority){
+                if (priority > lastPriority) {
                     raiseUp(i);
-                }else{
+                } else {
                     sinkDown(i);
                 }
                 return;
@@ -253,13 +247,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      * @param pos     position to replace
      */
     private void update(T element, int pos) {
-        T oldVal = queue[pos].value;
         queue[pos].update(element);
-        if (oldVal.compareTo(element) < 0) {
-            sinkDown(pos);
-        } else {
-            raiseUp(pos);
-        }
     }
 
     /**
@@ -311,10 +299,10 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      * @param element element in priorityQueue
      * @return count of same elements which equals this (element)
      */
-    public int countOf(T element){
+    public int countOf(T element) {
         int count = 0;
         for (int i = 0; i < size; i++) {
-            if (queue[i].value.equals(element)){
+            if (queue[i].value.equals(element)) {
                 count++;
             }
         }
@@ -342,8 +330,11 @@ public class PriorityQueue<T extends Comparable<? super T>> {
 
         StringBuilder res = new StringBuilder("[");
         for (int i = 0; i < size - 1; i++) {
-            res.append(queue[i].value).append(", ");
+            res.append("{").append(queue[i].value).append(":").append(queue[i].priority).append("}, ");
         }
-        return res.toString() + (queue[size - 1] == null ? "" : queue[size - 1].value) + "]";
+        if (queue[size - 1] == null) {
+            return res.toString() + "]";
+        }
+        return res.toString() + "{" + queue[size - 1].value + ":" + queue[size - 1].priority + "}" + "]";
     }
 }

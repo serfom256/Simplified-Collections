@@ -5,8 +5,8 @@
 - [x] MaxBinaryHeap
 - [x] Single Linked List
 - [x] Doubly Linked List
-- [ ] HashMap
-- [ ] SortedMap
+- [x] HashTable (in developing)
+- [ ] SortedHashTable
 - [ ] Set (Based at BST tree)
 - [ ] Set (Based at RBT tree)
 - [ ] Trie
