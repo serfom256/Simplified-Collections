@@ -7,7 +7,7 @@ import tests.HashTableTests.HashTable;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 public class HashTableTest {
@@ -15,6 +15,9 @@ public class HashTableTest {
 
     public HashTableTest() {
         this.hashTable = new HashTable<>();
+        for (int i = 0; i < 10; i++) {
+            hashTable.add(i + "_key", i + "_value");
+        }
     }
 
     private String getRandomString(int size) {
@@ -29,12 +32,19 @@ public class HashTableTest {
         for (int i = 0; i < 10; i++) {
             hashTable.add(getRandomString(5), i + "_");
         }
-        assertEquals(10, hashTable.getSize());
+        assertEquals(20, hashTable.getSize());
+    }
+
+    @Test
+    public void get() {
+        for (int i = 0; i < 10; i++) {
+            assertEquals(i + "_value", hashTable.get(i + "_key"));
+        }
     }
 
     @Test
     public void clear() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 10; i < 20; i++) {
             hashTable.add(getRandomString(5), i + "_");
         }
         hashTable.clear();
@@ -43,18 +53,90 @@ public class HashTableTest {
 
     @Test
     public void getSize() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 10; i < 20; i++) {
             hashTable.add(getRandomString(5), i + "_");
         }
-        assertEquals(10, hashTable.getSize());
+        assertEquals(20, hashTable.getSize());
     }
 
-    // TODO implement iterable interface and Iterator and SelfIterator classes to iterate over the hashTable keys and values
     @Test
     public void getKeysCount() {
-        for (int i = 0; i < 10; i++) {
-            hashTable.add(getRandomString(4), i + "_");
+        assertEquals(10, hashTable.getKeysCount());
+    }
+
+    @Test
+    public void removeValue() {
+        String s = getRandomString(4);
+        String[] testArr = {"12345", "54321", "00000"};
+        for (String i : testArr) {
+            hashTable.add(s, i);
+        }
+        for (String i : testArr) {
+            assertEquals(i, hashTable.removeValue(s, i));
         }
     }
 
+    @Test
+    public void remove() {
+        int len = hashTable.getSize();
+        for (int i = 0; i < len; i++) {
+            assertEquals(i + "_value", hashTable.remove(i + "_key"));
+        }
+    }
+
+    @Test
+    public void update() {
+        int len = hashTable.getSize();
+        for (int i = 0; i < len; i++) {
+            assertEquals(i + "_value", hashTable.update(i + "_key", i + "000"));
+        }
+    }
+
+    @Test
+    public void containsKey() {
+        int len = hashTable.getSize();
+        for (int i = 0; i < len; i++) {
+            assertTrue(hashTable.containsKey(i + "_key"));
+            assertFalse(hashTable.containsKey("0000"));
+        }
+    }
+
+    @Test
+    public void getValues() {
+        String[] testArr = {"12345", "54321", "00000"};
+        for (int i = 0; i < 3; i++) {
+            hashTable.add(i + "_key", testArr[i]);
+        }
+        for (int i = 0; i < 3; i++) {
+            String[] values = {testArr[i], i + "_value"};
+            assertArrayEquals(values, hashTable.getValues(i + "_key"));
+        }
+    }
+
+    @Test
+    public void containsValue() {
+        String[] values = new String[10];
+        for (int i = 1000; i < 1010; i++) {
+            String value = getRandomString(5);
+            values[i - 1000] = value;
+            hashTable.add(i + "_key", value);
+        }
+        for (String str : values) {
+            assertTrue(hashTable.containsValue(str));
+        }
+    }
+
+    @Test
+    public void getKeyByValue() {
+        String[] keys = new String[10], values = new String[10];
+        for (int i = 10; i < 20; i++) {
+            String value = getRandomString(5), key = "key_" + i;
+            keys[i - keys.length] = key;
+            values[i - values.length] = value;
+            hashTable.add(key, value);
+        }
+        for (int i = 0; i < 10; i++) {
+            assertEquals(keys[i], hashTable.getKeyByValue(values[i]));
+        }
+    }
 }
