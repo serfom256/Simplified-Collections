@@ -1,9 +1,7 @@
 package tests.HashTableTests;
 
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
 
 public class HashTable<K, V> implements Iterable<K> {
 
@@ -16,13 +14,14 @@ public class HashTable<K, V> implements Iterable<K> {
 
     private static class Node<K, V> {
         final K key;
-        int length;
+        final int hash;
         V value;
         Node<K, V> next;
 
-        public Node(K key, V value) {
+        public Node(K key, V value, int hash) {
             this.key = key;
             this.value = value;
+            this.hash = hash;
             next = null;
         }
     }
@@ -52,7 +51,7 @@ public class HashTable<K, V> implements Iterable<K> {
         for (int i = 0; i < CAPACITY; i++) {
             if (Table[i] != null) {
                 for (Node<K, V> current = Table[i]; current != null; current = current.next) {
-                    addToBucket(getPosByHash(current.key, newCapacity), new Node<>(current.key, current.value), newTab);
+                    addToBucket(getPosByKey(current.key, newCapacity), new Node<>(current.key, current.value, current.hash), newTab);
                 }
             }
         }
@@ -74,7 +73,7 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @return position in the HashTable by key
      */
-    private int getPosByHash(K key, int capacity) {
+    private int getPosByKey(K key, int capacity) {
         if (key == null) {
             throw new IllegalArgumentException("Key must be not null");
         }
@@ -93,7 +92,7 @@ public class HashTable<K, V> implements Iterable<K> {
         if ((++size) >= CAPACITY * LOAD_FACTOR) {
             resizeTable();
         }
-        addToBucket(getPosByHash(key, CAPACITY), new Node<>(key, value), Table);
+        addToBucket(getPosByKey(key, CAPACITY), new Node<>(key, value, generateHash(key)), Table);
     }
 
     /**
@@ -104,75 +103,94 @@ public class HashTable<K, V> implements Iterable<K> {
      */
     private void addToBucket(int pos, Node<K, V> node, Node<K, V>[] table) {
         if (table[pos] != null) {
+            for (Node<K, V> current = table[pos]; current != null; current = current.next) {
+                if (node.hash == current.hash && node.key.equals(current.key)) {
+                    if (node.value.equals(current.value)) {
+                        size--;
+                        return;
+                    }
+                    break;
+                }
+            }
             node.next = table[pos];
-            node.length++;
         }
-        node.length++;
         table[pos] = node;
     }
 
     /**
-     * Remove specified value in the bucket
+     * Remove specified value which associated with the key
      *
-     * @param bucket bucket from which to remove the value
-     * @param value  value to remove
-     * @return removed value specified node the bucket
-     */
-    private V removeValue(Node<K, V> bucket, V value) {
-        Node<K, V> prev = null;
-        Node<K, V> replaceNode = bucket;
-        while (bucket.next != null && !bucket.value.equals(value)) {
-            prev = bucket;
-            bucket = bucket.next;
-        }
-        V toRemove = null;
-        if (bucket.value.equals(value)) {
-            toRemove = bucket.value;
-            K key = bucket.key;
-
-            if (prev == null) {
-                replaceNode = replaceNode.next;
-            } else if (bucket.next == null) {
-                prev.next = null;
-            } else {
-                prev.next = bucket.next;
-            }
-
-            if (replaceNode != null) {
-                replaceNode.length--;
-                Table[getPosByHash(bucket.key, CAPACITY)] = replaceNode;
-            } else {
-                remove(key);
-            }
-        }
-        return toRemove;
-    }
-
-    /**
-     * Remove specified value by key in the HashTable
-     *
-     * @param key   for bucket from which to remove the value
-     * @param value value to remove
-     * @return removed value by specified key in the HashTable
+     * @param key   key which value remove
+     * @param value value associated with key
+     * @return removed value if value is present, else null
      */
     public V removeValue(K key, V value) {
-        int pos = getPosByHash(key, CAPACITY);
+        int pos = getPosByKey(key, CAPACITY);
         if (Table[pos] == null) {
             return null;
         }
-        return removeValue(Table[pos], value);
+        int keyHash;
+        if (Table[pos].hash == (keyHash = generateHash(key)) && Table[pos].value.equals(value)) {
+            Table[pos] = Table[pos].next;
+            size--;
+            return value;
+        }
+        for (Node<K, V> current = Table[pos]; current.next != null; current = current.next) {
+            if (current.next.value.equals(value) && current.next.hash == keyHash) {// if node with specified value found
+                if (current.next.next == null) { // if remove item is last in the bucket
+                    current.next = null;
+                } else {
+                    current.next = current.next.next; //if remove item isn't last in the bucket
+                }
+                size--;
+                return value;
+            }
+        }
+        return null;
     }
 
     /**
-     * Remove specified key with all associated values
+     * Remove bucket with specified hash in the HashTable
      *
-     * @param key key from  HashTable to remove
-     * @return value from removed key
+     * @param pos  position of bucket from which remove item by hash
+     * @param hash of removed bucket
+     * @return removed bucket with specified hash
+     */
+    private V removeByHash(int pos, int hash) {
+        V value = Table[pos].value;
+        int start = 0;
+        if (Table[pos].hash == hash) {
+            Table[pos] = Table[pos].next;
+            size--;
+            return value;
+        }
+        for (Node<K, V> current = Table[pos]; current.next != null; current = current.next, start++) {
+            if (current.next.hash == hash) {
+                value = current.next.value;
+                if (current.next.next == null) { // if remove item is last in the bucket
+                    current.next = null;
+                } else {
+                    current.next = current.next.next; //if remove item isn't last in the bucket
+                }
+                size--;
+                return value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Remove key with associated value
+     *
+     * @param key key for associated value from which to remove
+     * @return removed key and associated value by specified key in the HashTable
      */
     public V remove(K key) {
-        V toRemove = Table[getPosByHash(key, CAPACITY)].value;
-        Table[getPosByHash(key, CAPACITY)] = null;
-        return toRemove;
+        int pos = getPosByKey(key, CAPACITY);
+        if (Table[pos] == null) {
+            return null;
+        }
+        return removeByHash(pos, generateHash(key));
     }
 
     /**
@@ -183,7 +201,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * @return removed value if HashTable contains value by specified key
      */
     public V update(K key, V value) {
-        int pos = getPosByHash(key, CAPACITY);
+        int pos = getPosByKey(key, CAPACITY);
         V removedVal = null;
         if (Table[pos] != null) {
             removedVal = Table[pos].value;
@@ -200,8 +218,16 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public V get(K key) {
-        int pos = getPosByHash(key, CAPACITY);
-        return Table[pos] != null ? Table[pos].value : null;
+        int pos = getPosByKey(key, CAPACITY);
+        int keyHash = generateHash(key);
+        if (Table[pos] != null) {
+            for (Node<K, V> current = Table[pos]; current != null; current = current.next) {
+                if (current.hash == keyHash) {
+                    return current.value;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -250,37 +276,13 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public boolean containsKey(K key) {
-        return Table[getPosByHash(key, CAPACITY)] != null;
-    }
-
-    /**
-     * Returns values which associated specified key in the HashTable
-     *
-     * @param key key of the values in the HashTable
-     * @return array of values by the specified key if HashTable contains specified key, otherwise null
-     * @throws IllegalArgumentException if key is null
-     */
-    public V[] getValues(K key) {
-        if (Table[getPosByHash(key, CAPACITY)] == null) {
-            return null;
+        int keyHash = generateHash(key);
+        for (Node<K, V> current = Table[getPosByKey(key, CAPACITY)]; current != null; current = current.next) {
+            if (current.hash == keyHash) {
+                return true;
+            }
         }
-        return getValuesPos(getPosByHash(key, CAPACITY));
-    }
-
-    /**
-     * Returns values by key from specified position in the HashTable
-     *
-     * @param pos position to get values
-     * @return array of values by position
-     */
-    @SuppressWarnings("unchecked")
-    public V[] getValuesPos(int pos) {
-        V[] values = (V[]) new Object[Table[pos].length];
-        int i = 0;
-        for (Node<K, V> current = Table[pos]; current != null; current = current.next) {
-            values[i++] = current.value;
-        }
-        return values;
+        return false;
     }
 
     /**
@@ -302,15 +304,6 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Method which provide get count of keys in the HashTable
-     *
-     * @return count of keys in the hashTable
-     */
-    public int getKeysCount() {
-        return (int) Arrays.stream(Table).filter(Objects::nonNull).count();
-    }
-
-    /**
      * Clear all HashTable
      */
     public void clear() {
@@ -327,6 +320,7 @@ public class HashTable<K, V> implements Iterable<K> {
 
     private class SelfIterator<T> implements Iterator<K> {
         private int pos;
+        private Node<K, V> current = null;
 
         SelfIterator() {
             pos = 0;
@@ -337,6 +331,9 @@ public class HashTable<K, V> implements Iterable<K> {
             for (int i = pos; i < CAPACITY; i++) {
                 if (Table[i] != null) {
                     pos = i;
+                    if (current == null) {
+                        current = Table[pos++];
+                    }
                     return true;
                 }
             }
@@ -345,27 +342,41 @@ public class HashTable<K, V> implements Iterable<K> {
 
         @Override
         public K next() {
-            return Table[pos++].key;
+            K key = current.key;
+            current = current.next;
+            return key;
         }
+    }
+
+    /**
+     * Return string of all bucket keys and values which associate with keys
+     *
+     * @param node node to convert to String
+     * @return string of all node keys and node values
+     */
+    private String toStringBucket(Node<K, V> node) {
+        StringBuilder res = new StringBuilder("[" + node.key + ":" + node.value);
+        Node<K, V> prev = node;
+        for (Node<K, V> current = node.next; current != null; current = current.next) {
+            if (!(prev.hash == current.hash)) {
+                res.append("], [").append(current.key).append(":").append(current.value);
+            }
+            prev = current;
+        }
+        return res + "], ";
     }
 
     @Override
     public String toString() {
         if (size == 0) {
-            return "[]";
+            return "{}";
         }
-        StringBuilder res = new StringBuilder("[");
-        for (int i = 0; i < Table.length - 1; i++) {
+        StringBuilder res = new StringBuilder("{");
+        for (int i = 0; i < CAPACITY; i++) {
             if (Table[i] != null) {
-                res.append("{").append(Table[i].key).append(":");
-                Node<K, V> current = Table[i];
-                while (current.next != null) {
-                    res.append(current.value).append(",");
-                    current = current.next;
-                }
-                res.append(current.value).append("}, ");
+                res.append(toStringBucket(Table[i]));
             }
         }
-        return res.replace(res.length() - 2, res.length() - 1, "]").toString();
+        return res.replace(res.length() - 2, res.length() - 1, "}").toString();
     }
 }

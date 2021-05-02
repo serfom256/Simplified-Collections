@@ -37,7 +37,11 @@ public class HashTableTest {
 
     @Test
     public void get() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 10; i < 20; i++) {
+            hashTable.add(i + "_key", i + "_value");
+        }
+
+        for (int i = 0; i < 20; i++) {
             assertEquals(i + "_value", hashTable.get(i + "_key"));
         }
     }
@@ -60,28 +64,34 @@ public class HashTableTest {
     }
 
     @Test
-    public void getKeysCount() {
-        assertEquals(10, hashTable.getKeysCount());
-    }
-
-    @Test
     public void removeValue() {
         String s = getRandomString(4);
-        String[] testArr = {"12345", "54321", "00000"};
+        String[] testArr = {"12345", "54321", "00000", "99999", "111111"};
         for (String i : testArr) {
             hashTable.add(s, i);
         }
-        for (String i : testArr) {
-            assertEquals(i, hashTable.removeValue(s, i));
+        for (String value : testArr) {
+            assertEquals(value, hashTable.removeValue(s, value));
         }
+        assertNull(testArr[0], hashTable.removeValue(s, testArr[0]));
+
+
+        for (int i = 0; i < 10; i++) {
+            assertEquals(i + "_value", hashTable.removeValue(i + "_key", i + "_value"));
+        }
+        assertEquals(0, hashTable.getSize());
     }
 
     @Test
     public void remove() {
+        for (int i = 0; i < 100; i++) {
+            hashTable.add(i + "_key", i + "_value");
+        }
         int len = hashTable.getSize();
         for (int i = 0; i < len; i++) {
             assertEquals(i + "_value", hashTable.remove(i + "_key"));
         }
+        assertEquals(0, hashTable.getSize());
     }
 
     @Test
@@ -102,18 +112,6 @@ public class HashTableTest {
     }
 
     @Test
-    public void getValues() {
-        String[] testArr = {"12345", "54321", "00000"};
-        for (int i = 0; i < 3; i++) {
-            hashTable.add(i + "_key", testArr[i]);
-        }
-        for (int i = 0; i < 3; i++) {
-            String[] values = {testArr[i], i + "_value"};
-            assertArrayEquals(values, hashTable.getValues(i + "_key"));
-        }
-    }
-
-    @Test
     public void containsValue() {
         String[] values = new String[10];
         for (int i = 1000; i < 1010; i++) {
@@ -128,21 +126,23 @@ public class HashTableTest {
 
     @Test
     public void getKeyByValue() {
-        String[] keys = new String[10], values = new String[10];
-        for (int i = 10; i < 20; i++) {
+        String[] keys = new String[20], values = new String[20];
+        for (int i = 0; i < 20; i++) {
             String value = getRandomString(5), key = "key_" + i;
-            keys[i - keys.length] = key;
-            values[i - values.length] = value;
+            keys[i] = key;
+            values[i] = value;
             hashTable.add(key, value);
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             assertEquals(keys[i], hashTable.getKeyByValue(values[i]));
         }
+        assertEquals(30,hashTable.getSize());
     }
+
     @Test
     public void getCapacity() {
         for (int i = 0; i < 100; i++) {
-            hashTable.add(i+"_k", i+"_v");
+            hashTable.add(i + "_k", i + "_v");
         }
         assertEquals(162, hashTable.getCapacity());
     }
