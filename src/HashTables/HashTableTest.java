@@ -139,4 +139,11 @@ public class HashTableTest {
             assertEquals(keys[i], hashTable.getKeyByValue(values[i]));
         }
     }
+    @Test
+    public void getCapacity() {
+        for (int i = 0; i < 100; i++) {
+            hashTable.add(i+"_k", i+"_v");
+        }
+        assertEquals(162, hashTable.getCapacity());
+    }
 }

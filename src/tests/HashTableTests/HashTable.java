@@ -10,7 +10,7 @@ public class HashTable<K, V> implements Iterable<K> {
     Node<K, V>[] Table;
 
     private final static int DEFAULT_CAPACITY = 32;
-    private final double LOAD_FACTOR = 0.75;
+    private final double LOAD_FACTOR = 0.8;
     private int CAPACITY;
     private int size;
 
@@ -35,7 +35,6 @@ public class HashTable<K, V> implements Iterable<K> {
         this.CAPACITY = capacity;
         this.size = 0;
         initTable(this.CAPACITY);
-
     }
 
     @SuppressWarnings("unchecked")
@@ -43,13 +42,22 @@ public class HashTable<K, V> implements Iterable<K> {
         Table = (Node<K, V>[]) new Node[capacity];
     }
 
+    /**
+     * Resize Table if current Table full more then LOAD_FACTOR %
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void resizeTable() {
-        int newCapacity = (CAPACITY + CAPACITY >> 1);
+        int newCapacity = CAPACITY + (CAPACITY >> 1);
         Node[] newTab = new Node[newCapacity];
-        System.arraycopy(Table, 0, newTab, 0, CAPACITY);
-        CAPACITY = newCapacity;
+        for (int i = 0; i < CAPACITY; i++) {
+            if (Table[i] != null) {
+                for (Node<K, V> current = Table[i]; current != null; current = current.next) {
+                    addToBucket(getPosByHash(current.key, newCapacity), new Node<>(current.key, current.value), newTab);
+                }
+            }
+        }
         Table = (Node<K, V>[]) newTab;
+        CAPACITY = newCapacity;
     }
 
     /**
@@ -58,7 +66,6 @@ public class HashTable<K, V> implements Iterable<K> {
      * @return computed hashCode for specified key
      */
     private int generateHash(K key) {
-        if (key == null) return 0;
         return key.hashCode() ^ key.hashCode() >>> 16;
     }
 
@@ -67,9 +74,12 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @return position in the HashTable by key
      */
-    private int getPosByHash(K key) {
-        int hash = generateHash(key);
-        return (CAPACITY - 1) & hash;
+    private int getPosByHash(K key, int capacity) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key must be not null");
+        }
+        int pos = generateHash(key) % capacity;
+        return pos < 0 ? -pos : pos;
     }
 
     /**
@@ -80,13 +90,10 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public void add(K key, V value) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be not null");
-        }
-        if ((CAPACITY / (++size)) >= (int) LOAD_FACTOR) {
+        if ((++size) >= CAPACITY * LOAD_FACTOR) {
             resizeTable();
         }
-        addToBucket(getPosByHash(key), new Node<>(key, value));
+        addToBucket(getPosByHash(key, CAPACITY), new Node<>(key, value), Table);
     }
 
     /**
@@ -95,13 +102,13 @@ public class HashTable<K, V> implements Iterable<K> {
      * @param pos  position in the HashTable to insert the bucket(node)
      * @param node bucket for insertion
      */
-    private void addToBucket(int pos, Node<K, V> node) {
-        if (Table[pos] != null) {
-            node.next = Table[pos];
+    private void addToBucket(int pos, Node<K, V> node, Node<K, V>[] table) {
+        if (table[pos] != null) {
+            node.next = table[pos];
             node.length++;
         }
         node.length++;
-        Table[pos] = node;
+        table[pos] = node;
     }
 
     /**
@@ -133,7 +140,7 @@ public class HashTable<K, V> implements Iterable<K> {
 
             if (replaceNode != null) {
                 replaceNode.length--;
-                Table[getPosByHash(bucket.key)] = replaceNode;
+                Table[getPosByHash(bucket.key, CAPACITY)] = replaceNode;
             } else {
                 remove(key);
             }
@@ -149,16 +156,12 @@ public class HashTable<K, V> implements Iterable<K> {
      * @return removed value by specified key in the HashTable
      */
     public V removeValue(K key, V value) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be not null");
-        }
-        int pos = getPosByHash(key);
+        int pos = getPosByHash(key, CAPACITY);
         if (Table[pos] == null) {
             return null;
         }
         return removeValue(Table[pos], value);
     }
-
 
     /**
      * Remove specified key with all associated values
@@ -167,11 +170,8 @@ public class HashTable<K, V> implements Iterable<K> {
      * @return value from removed key
      */
     public V remove(K key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be not null");
-        }
-        V toRemove = Table[getPosByHash(key)].value;
-        Table[getPosByHash(key)] = null;
+        V toRemove = Table[getPosByHash(key, CAPACITY)].value;
+        Table[getPosByHash(key, CAPACITY)] = null;
         return toRemove;
     }
 
@@ -183,10 +183,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * @return removed value if HashTable contains value by specified key
      */
     public V update(K key, V value) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be not null");
-        }
-        int pos = getPosByHash(key);
+        int pos = getPosByHash(key, CAPACITY);
         V removedVal = null;
         if (Table[pos] != null) {
             removedVal = Table[pos].value;
@@ -194,7 +191,6 @@ public class HashTable<K, V> implements Iterable<K> {
         }
         return removedVal;
     }
-
 
     /**
      * Returns value by key in the hashTable
@@ -204,10 +200,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public V get(K key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be not null");
-        }
-        int pos = getPosByHash(key);
+        int pos = getPosByHash(key, CAPACITY);
         return Table[pos] != null ? Table[pos].value : null;
     }
 
@@ -249,7 +242,6 @@ public class HashTable<K, V> implements Iterable<K> {
         return null;
     }
 
-
     /**
      * Returns true if HashTable contains key
      *
@@ -258,10 +250,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public boolean containsKey(K key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be not null");
-        }
-        return Table[getPosByHash(key)] != null;
+        return Table[getPosByHash(key, CAPACITY)] != null;
     }
 
     /**
@@ -272,13 +261,10 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public V[] getValues(K key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be not null");
-        }
-        if (Table[getPosByHash(key)] == null) {
+        if (Table[getPosByHash(key, CAPACITY)] == null) {
             return null;
         }
-        return getValuesPos(getPosByHash(key));
+        return getValuesPos(getPosByHash(key, CAPACITY));
     }
 
     /**
@@ -298,7 +284,7 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Method which provide get size of the hashTable
+     * Method which provide get size of the HashTable
      *
      * @return size of the hashTable
      */
@@ -307,7 +293,16 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Method which provide get count of keys in the hashTable
+     * Method which provide get capacity of the HashTable
+     *
+     * @return capacity of the hashTable
+     */
+    public int getCapacity() {
+        return CAPACITY;
+    }
+
+    /**
+     * Method which provide get count of keys in the HashTable
      *
      * @return count of keys in the hashTable
      */
@@ -353,7 +348,6 @@ public class HashTable<K, V> implements Iterable<K> {
             return Table[pos++].key;
         }
     }
-
 
     @Override
     public String toString() {
