@@ -1,4 +1,4 @@
-package tests.HashTableTests;
+package HashTables;
 
 
 import java.util.Iterator;
@@ -184,6 +184,7 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @param key key for associated value from which to remove
      * @return removed key and associated value by specified key in the HashTable
+     * @throws IllegalArgumentException if key is null
      */
     public V remove(K key) {
         int pos = getPosByKey(key, CAPACITY);
@@ -198,16 +199,40 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @param key   key which associated value updates
      * @param value value to update
-     * @return removed value if HashTable contains value by specified key
+     * @return updated value if HashTable contains value by specified key
+     * @throws IllegalArgumentException if key is null
      */
-    public V update(K key, V value) {
-        int pos = getPosByKey(key, CAPACITY);
-        V removedVal = null;
-        if (Table[pos] != null) {
-            removedVal = Table[pos].value;
-            Table[pos].value = value;
+    public V updateValue(K key, V value) {
+        int keyHash = generateHash(key);
+        V oldVal = null;
+        for (Node<K, V> current = Table[getPosByKey(key, CAPACITY)]; current != null; current = current.next) {
+            if (current.hash == keyHash) {
+                oldVal = current.value;
+                current.value = value;
+                break;
+            }
         }
-        return removedVal;
+        return oldVal;
+    }
+
+    /**
+     * Replace old item with specified key to new item with specified
+     *
+     * @param oldKey old key of item to replace
+     * @param newKey new key to replace oldKey
+     * @return replaced key if updated is successful otherwise null
+     * @throws IllegalArgumentException if (oldKey or newKey) is null
+     */
+    public K replace(K oldKey, K newKey) {
+        int pos;
+        if (Table[pos = getPosByKey(oldKey, CAPACITY)] == null || !containsKey(oldKey)) {
+            return null;
+        }
+        addToBucket(
+                getPosByKey(newKey, CAPACITY),
+                new Node<>(newKey, removeByHash(pos, generateHash(oldKey)), generateHash(newKey)),
+                Table);
+        return oldKey;
     }
 
     /**
@@ -304,7 +329,7 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Clear all HashTable
+     * Clear current HashTable
      */
     public void clear() {
         for (int i = 0; i < CAPACITY; i++) {

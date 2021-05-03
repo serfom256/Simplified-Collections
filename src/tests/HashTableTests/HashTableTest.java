@@ -1,8 +1,8 @@
-package HashTables;
+package tests.HashTableTests;
 
 
+import HashTables.HashTable;
 import org.junit.Test;
-import tests.HashTableTests.HashTable;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -98,7 +98,7 @@ public class HashTableTest {
     public void update() {
         int len = hashTable.getSize();
         for (int i = 0; i < len; i++) {
-            assertEquals(i + "_value", hashTable.update(i + "_key", i + "000"));
+            assertEquals(i + "_value", hashTable.updateValue(i + "_key", i + "000"));
         }
     }
 
@@ -136,8 +136,26 @@ public class HashTableTest {
         for (int i = 0; i < 20; i++) {
             assertEquals(keys[i], hashTable.getKeyByValue(values[i]));
         }
-        assertEquals(30,hashTable.getSize());
+        assertEquals(30, hashTable.getSize());
     }
+
+    @Test
+    public void replace() {
+        String[] newKeys = new String[20];
+        for (int i = 0; i < 20; i++) {
+            String newKey = getRandomString(4), oldKey = i + "_key";
+            newKeys[i] = newKey;
+            hashTable.add(oldKey, i + "_value");
+        }
+        for (int i = 0; i < 20; i++) {
+            assertEquals(i + "_key", hashTable.replace(i + "_key", newKeys[i]));
+        }
+
+        hashTable.replace("0_key", newKeys[0]);
+        assertNull(hashTable.replace("0_key", newKeys[0]));
+        assertEquals(0, hashTable.getSize());
+    }
+
 
     @Test
     public void getCapacity() {
