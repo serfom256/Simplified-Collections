@@ -232,6 +232,7 @@ public class HashTable<K, V> implements Iterable<K> {
                 getPosByKey(newKey, CAPACITY),
                 new Node<>(newKey, removeByHash(pos, generateHash(oldKey)), generateHash(newKey)),
                 Table);
+        size++;
         return oldKey;
     }
 

@@ -2,6 +2,7 @@ package tests.HashTableTests;
 
 
 import HashTables.HashTable;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.security.SecureRandom;
@@ -15,6 +16,10 @@ public class HashTableTest {
 
     public HashTableTest() {
         this.hashTable = new HashTable<>();
+    }
+
+    @Before
+    public void setUp() {
         for (int i = 0; i < 10; i++) {
             hashTable.add(i + "_key", i + "_value");
         }
