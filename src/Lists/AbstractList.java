@@ -1,6 +1,6 @@
 package Lists;
 
-public interface AbstractList<E extends Comparable<E>> {
+public interface AbstractList<E> {
     void pushLast(E data);
 
     void pushFirst(E data);

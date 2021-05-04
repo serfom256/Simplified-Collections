@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class DoubleLinkedList<E extends Comparable<E>> implements AbstractList<E>, Iterable<E> {
+public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
 
     private static class Node<T> {
         T val;
