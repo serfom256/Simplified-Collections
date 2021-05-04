@@ -152,15 +152,35 @@ public class HashTableTest {
             newKeys[i] = newKey;
             hashTable.add(oldKey, i + "_value");
         }
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < newKeys.length; i++) {
             assertEquals(i + "_key", hashTable.replace(i + "_key", newKeys[i]));
         }
 
-        hashTable.replace("0_key", newKeys[0]);
         assertNull(hashTable.replace("0_key", newKeys[0]));
-        assertEquals(0, hashTable.getSize());
+        assertEquals(newKeys.length, hashTable.getSize());
     }
 
+    @Test
+    public void forEach() {
+        String[] keySet = new String[30];
+        String[] values = new String[30];
+        for (int i = 0; i < keySet.length; i++) {
+            keySet[i] = i + "_key";
+            values[i] = i + "_value";
+            hashTable.add(keySet[i], values[i]);
+        }
+        int count = 0;
+        for (String s : hashTable) {
+            for (int i = 0; i < keySet.length; i++) {
+                if (keySet[i].equals(s)) {
+                    count++;
+                    assertEquals(values[i], hashTable.get(s));
+                    break;
+                }
+            }
+        }
+        assertEquals(keySet.length, count);
+    }
 
     @Test
     public void getCapacity() {

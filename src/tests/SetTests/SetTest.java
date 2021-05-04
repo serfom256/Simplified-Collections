@@ -83,4 +83,21 @@ public class SetTest {
         set.addAll("data1", "data2", "data3", "data4");
         assertEquals(24, set.getSize());
     }
+
+    @Test
+    public void forEach() {
+        String[] elements = new String[20];
+        for (int i = 0; i < elements.length; i++) {
+            elements[i] = i + "_element";
+        }
+        int count = 0;
+        for (String s : set) {
+            for (String element : elements) {
+                if (s.equals(element)) {
+                    count++;
+                }
+            }
+        }
+        assertEquals(elements.length, count);
+    }
 }

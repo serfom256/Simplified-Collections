@@ -358,7 +358,7 @@ public class HashTable<K, V> implements Iterable<K> {
                 if (Table[i] != null) {
                     pos = i;
                     if (current == null) {
-                        current = Table[pos++];
+                        current = Table[pos];
                     }
                     return true;
                 }
@@ -369,7 +369,9 @@ public class HashTable<K, V> implements Iterable<K> {
         @Override
         public K next() {
             K key = current.key;
-            current = current.next;
+            if ((current = current.next) == null) {
+                pos++;
+            }
             return key;
         }
     }

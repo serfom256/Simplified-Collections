@@ -2,7 +2,10 @@ package HashSet;
 
 import HashTables.HashTable;
 
-public class Set<E> {
+import java.util.Iterator;
+
+public class Set<E> implements Iterable<E> {
+
     private final HashTable<E, Object> hashTable;
     private final Object VALUE = new Object();
 
@@ -77,6 +80,11 @@ public class Set<E> {
      */
     public void clear() {
         hashTable.clear();
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return hashTable.iterator();
     }
 
     @Override

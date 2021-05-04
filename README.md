@@ -6,19 +6,19 @@
 - [x] PriorityQueue (Based at MaxBinaryHeap)
 - [x] Single Linked List
 - [x] HashTable
+- [x] Set (Based at HashTable)
 
+### In developing
+
+- [x] Doubly Linked List
+- [x] Set (Based at BST tree)
 
 ### Will be released later
-
+- [ ] Set (Based at RBT tree)
 - [ ] SortedHashTable
-- [ ] Set (Based at BST tree) or Set (Based at RBT tree)
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
 - [ ] Array List
 - [ ] Stack
 
 
-### In developing
-
-- [x] Set (Based at HashTable)
-- [x] Doubly Linked List
