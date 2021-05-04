@@ -4,7 +4,7 @@ import HashTables.HashTable;
 
 import java.util.Iterator;
 
-public class Set<E> implements Iterable<E> {
+public class Set<E> implements Iterable<E>, AbstractSet<E>{
 
     private final HashTable<E, Object> hashTable;
     private final Object VALUE = new Object();
@@ -29,6 +29,7 @@ public class Set<E> implements Iterable<E> {
      *
      * @param element element to append
      */
+    @Override
     public void add(E element) {
         hashTable.add(element, VALUE);
     }
@@ -39,6 +40,7 @@ public class Set<E> implements Iterable<E> {
      * @param element element to remove
      * @return removed element if element present in the set otherwise null
      */
+    @Override
     public E remove(E element) {
         if (hashTable.remove(element) != null) {
             return element;
@@ -52,6 +54,7 @@ public class Set<E> implements Iterable<E> {
      * @param element test element present in the Set
      * @return true if element present in the set otherwise false
      */
+    @Override
     public boolean contains(E element) {
         return hashTable.containsKey(element);
     }
@@ -62,6 +65,7 @@ public class Set<E> implements Iterable<E> {
      * @param OldElement element to replace
      * @param newElement new element to replace old element
      */
+    @Override
     public void update(E OldElement, E newElement) {
         hashTable.replace(OldElement, newElement);
     }
@@ -71,6 +75,7 @@ public class Set<E> implements Iterable<E> {
      *
      * @return size of the Set
      */
+    @Override
     public int getSize() {
         return hashTable.getSize();
     }
@@ -78,6 +83,7 @@ public class Set<E> implements Iterable<E> {
     /**
      * Clear current Set
      */
+    @Override
     public void clear() {
         hashTable.clear();
     }

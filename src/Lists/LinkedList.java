@@ -2,7 +2,7 @@ package Lists;
 
 import java.util.Arrays;
 
-public class LinkedList<E extends Comparable<E>> implements Lists.AbstractList<E> {
+public class LinkedList<E extends Comparable<E>> implements AbstractList<E> {
     private static class Node<T> {
         T val;
         Node<T> next;
