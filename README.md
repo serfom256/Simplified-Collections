@@ -19,6 +19,7 @@
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
+- [ ] Stack(Based at LinkedList)
 - [ ] Array List
 
 
