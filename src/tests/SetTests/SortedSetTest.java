@@ -61,6 +61,14 @@ public class SortedSetTest {
 
     @Test
     public void remove() {
+        for (int i = 0; i < 1000; i++) {
+            set.add(i + "_element");
+        }
+        for (int i = 0; i < 1000; i++) {
+            set.remove(i + "_element");
+        }
+        assertNull(set.remove("some_element"));
+        assertEquals(0,set.getSize());
     }
 
     @Test

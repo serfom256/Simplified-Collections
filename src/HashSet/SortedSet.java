@@ -86,9 +86,13 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      *
      * @param OldElement element to replace
      * @param newElement new element to replace old element
+     * @throws IllegalArgumentException if (OldElement or newElement) is null
      */
     @Override
     public void update(E OldElement, E newElement) {
+        if (OldElement == null || newElement == null) {
+            throw new IllegalArgumentException("(OldElement or newElement) must be not null");
+        }
         update(OldElement, newElement, root);
     }
 
@@ -144,9 +148,13 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * Add element to the Set
      *
      * @param element element to append
+     * @throws IllegalArgumentException if element is null
      */
     @Override
     public void add(E element) {
+        if (element == null) {
+            throw new IllegalArgumentException("element must be not null");
+        }
         root = insert(root, element);
         if (++balanceCount > maxBalanceThreshold) {
             balanceCount = 0;
@@ -221,11 +229,68 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      *
      * @param element element to remove
      * @return removed element if element present in the set otherwise null
+     * @throws IllegalArgumentException if element is null
      */
-    //TODO implement remove method
     @Override
     public E remove(E element) {
+        if (element == null) {
+            throw new IllegalArgumentException("element must be not null");
+        }
+        if (contains(element)) {
+            root = deleteNode(root, element);
+            size--;
+            if (++balanceCount > maxBalanceThreshold) {
+                balanceCount = 0;
+                reBalance();
+            }
+            return element;
+        }
         return null;
+    }
+
+    /**
+     * Removes element from Binary Tree
+     *
+     * @param root    root of Binary Tree
+     * @param element element to remove
+     * @return root of Binary Tree with removed element
+     */
+    private TNode<E> deleteNode(TNode<E> root, E element) {
+        if (root == null) return null;
+
+        if (element.compareTo(root.element) > 0) { // if element to remove greater then current element => right
+            root.right = deleteNode(root.right, element);
+        } else if (element.compareTo(root.element) < 0) { // if element to remove lesser then current element => left
+            root.left = deleteNode(root.left, element);
+        } else { // if element to remove found => remove element from Binary Tree
+            if (root.left == null || root.right == null) { // if current root is leaf => replace node
+                return root.right == null ? root.left : root.right;
+            }
+            root.element = getSuccessor(root); // if element isn't leaf => find successor and replace this node
+            root.right = deleteNode(root.right, root.element); // remove successor node
+        }
+        return root;
+    }
+
+    /**
+     * Returns successor of current node
+     *
+     * @param node node to get successor
+     * @return successor of specified node
+     */
+    private E getSuccessor(TNode<E> node) {
+        if (node.right != null) {
+            node = node.right;
+            while (node.left != null) {
+                node = node.left;
+            }
+        } else {
+            node = node.left;
+            while (node.right != null) {
+                node = node.right;
+            }
+        }
+        return node.element;
     }
 
     /**
@@ -236,7 +301,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      */
     @Override
     public boolean contains(E element) {
-        if (root == null) {
+        if (root == null || element == null) {
             return false;
         }
         TNode<E> curr = root;
@@ -275,10 +340,10 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
 
     @Override
     public Iterator<E> iterator() {
-        return new SelfIterator<E>();
+        return new SelfIterator();
     }
 
-    private class SelfIterator<T> implements Iterator<E> {
+    private class SelfIterator implements Iterator<E> {
         int position;
 
         public SelfIterator() {
@@ -303,11 +368,11 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @param result result is String to append elements
      * @return String with all elements of Set in the ascending order
      */
-    private StringBuilder inorderRec(TNode<E> root, StringBuilder result) {
+    private StringBuilder traversePrint(TNode<E> root, StringBuilder result) {
         if (root != null) {
-            result = inorderRec(root.left, result);
+            result = traversePrint(root.left, result);
             result.append(root.element).append(", ");
-            result = inorderRec(root.right, result);
+            result = traversePrint(root.right, result);
         }
         return result;
     }
@@ -315,7 +380,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     @Override
     public String toString() {
         if (size == 0) return "{}";
-        StringBuilder res = inorderRec(root, new StringBuilder());
+        StringBuilder res = traversePrint(root, new StringBuilder());
         return "{" + res.substring(0, res.length() - 2) + "}";
     }
 }

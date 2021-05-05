@@ -28,6 +28,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E>{
      * Add element to the Set
      *
      * @param element element to append
+     * @throws IllegalArgumentException if element is null
      */
     @Override
     public void add(E element) {
@@ -53,6 +54,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E>{
      *
      * @param element test element present in the Set
      * @return true if element present in the set otherwise false
+     * @throws IllegalArgumentException if element is null
      */
     @Override
     public boolean contains(E element) {
@@ -64,6 +66,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E>{
      *
      * @param OldElement element to replace
      * @param newElement new element to replace old element
+     * @throws IllegalArgumentException if (OldElement or newElement) is null
      */
     @Override
     public void update(E OldElement, E newElement) {

@@ -7,11 +7,12 @@
 - [x] Single Linked List
 - [x] HashTable
 - [x] Set (Based at HashTable)
+- [x] Set (Based at BST tree)
 
 ### In developing
 
-- [x] Doubly Linked List
-- [x] Set (Based at BST tree)
+- Doubly Linked List
+- Stack(Based at Array)
 
 ### Will be released later
 - [ ] Set (Based at RBT tree)
@@ -19,6 +20,6 @@
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
 - [ ] Array List
-- [ ] Stack
+
 
 

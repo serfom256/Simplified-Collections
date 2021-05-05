@@ -3,14 +3,11 @@ package tests.SetTests;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import tests.HeapTests.HeapTest;
-import tests.HeapTests.PriorityQueueTest;
 
 public class SetTestsRunner {
     public static void main(String[] args) {
         runSetTest();
         runSortedSetTest();
-
     }
     private static void runSetTest() {
         Result result = JUnitCore.runClasses(SetTest.class);
