@@ -8,18 +8,18 @@
 - [x] HashTable
 - [x] Set (Based at HashTable)
 - [x] Set (Based at BST tree)
+- [x] Stack(Based at Array)
 
 ### In developing
 
 - Doubly Linked List
-- Stack(Based at Array)
+- Stack(Based at LinkedList)
 
 ### Will be released later
 - [ ] Set (Based at RBT tree)
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
-- [ ] Stack(Based at LinkedList)
 - [ ] Array List
 
 

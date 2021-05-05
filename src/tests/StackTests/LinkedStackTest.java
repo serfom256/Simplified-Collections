@@ -1,16 +1,18 @@
 package tests.StackTests;
 
-import Stack.Stack;
+import Stack.LinkedStack;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class StackTest {
-    Stack<Integer> stack;
+public class LinkedStackTest {
 
-    public StackTest() {
-        stack = new Stack<Integer>();
+    LinkedStack<Integer> stack;
+
+    public LinkedStackTest() {
+        stack = new LinkedStack<Integer>();
     }
 
     @Before
@@ -93,4 +95,5 @@ public class StackTest {
         assertEquals(0, stack.getSize());
     }
 }
+
 

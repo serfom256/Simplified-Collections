@@ -1,6 +1,6 @@
 package Stack;
 
-public class Stack<E> {
+public class Stack<E> implements AbstractStack<E> {
     private static final int DEFAULT_CAPACITY = 20;
     private int capacity;
     private int size;
@@ -35,6 +35,7 @@ public class Stack<E> {
      * @return firs element of stack
      * @throws UnsupportedOperationException if stack is empty
      */
+    @Override
     public E peek() {
         if (size == 0) {
             throw new UnsupportedOperationException("stack is empty");
@@ -48,6 +49,7 @@ public class Stack<E> {
      * @return firs element of stack
      * @throws UnsupportedOperationException if stack is empty
      */
+    @Override
     public E poll() {
         if (size == 0) {
             throw new UnsupportedOperationException("Stack is empty");
@@ -68,6 +70,7 @@ public class Stack<E> {
      *
      * @param element element to append
      */
+    @Override
     public void push(E element) {
         data[size] = element;
         if (++size >= capacity) {
@@ -81,6 +84,7 @@ public class Stack<E> {
      *
      * @return true if stack empty otherwise false
      */
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
@@ -92,10 +96,11 @@ public class Stack<E> {
      * @return position of the specified element in the stack
      * if element in the stack otherwise -1
      */
+    @Override
     public int indexOf(E element) {
         for (int i = size - 1; i >= 0; i--) {
             if (data[i].equals(element)) {
-                return size - i;
+                return size - 1 - i;
             }
         }
         return -1;
@@ -104,6 +109,7 @@ public class Stack<E> {
     /**
      * Clear current stack
      */
+    @Override
     public void clear() {
         size = 0;
         init(capacity);
@@ -112,6 +118,7 @@ public class Stack<E> {
     /**
      * @return size of the stack
      */
+    @Override
     public int getSize() {
         return size;
     }
