@@ -13,7 +13,6 @@
 ### In developing
 
 - Doubly Linked List
-- Stack(Based at LinkedList)
 
 ### Will be released later
 - [ ] Set (Based at RBT tree)
@@ -21,6 +20,7 @@
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
 - [ ] Array List
+- [ ] Skip List
 
 
 
