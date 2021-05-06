@@ -1,37 +1,27 @@
 package Lists;
 
 public interface AbstractList<E> {
-    void pushLast(E data);
 
-    void pushFirst(E data);
+    void addAll(E... element);
 
-    void pushAll(E... data);
+    void add(E element);
 
-    void insert(E data, int position);
+    void insert(E element, int position);
 
     void sort();
 
     void clear();
 
-    E peekLast();
-
-    E peekFirst();
-
-    E popFirst();
-
-    E popLast();
-
     E pop(int position);
 
-    E remove(E data);
+    E remove(E element);
 
     E get(int position);
 
-    int indexOf(E data);
+    int indexOf(E element);
 
-    int lastIndexOf(E data);
+    int lastIndexOf(E element);
 
     int getLength();
-
 
 }

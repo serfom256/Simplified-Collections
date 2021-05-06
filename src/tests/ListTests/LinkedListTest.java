@@ -21,7 +21,7 @@ public class LinkedListTest {
     public void setUp() {
         list = new LinkedList<>();
         Integer[] testArr = new Integer[]{9, 2, 5, 7, 1, 8, 0, 4, 3};
-        list.pushAll(testArr);
+        list.addAll(testArr);
     }
 
     @Test
@@ -44,6 +44,18 @@ public class LinkedListTest {
         for (int i = testArr.length - 1; i >= 0; i--) {
             assertEquals(testArr[i], list.popFirst());
         }
+    }
+
+    @Test
+    public void peekLast() {
+        list.pushFirst(999);
+        assertEquals((Integer) 999,list.peekFirst());
+    }
+
+    @Test
+    public void peekFirst() {
+        list.pushLast(999);
+        assertEquals((Integer) 999,list.peekLast());
     }
 
     @Test

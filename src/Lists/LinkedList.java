@@ -2,7 +2,7 @@ package Lists;
 
 import java.util.Arrays;
 
-public class LinkedList<E> implements AbstractList<E> {
+public class LinkedList<E> implements AbstractLinkedList<E> {
     private static class Node<T> {
         T val;
         Node<T> next;
@@ -24,14 +24,23 @@ public class LinkedList<E> implements AbstractList<E> {
 
     @Override
     @SafeVarargs
-    public final void pushAll(E... data) {
+    public final void addAll(E... data) {
         for (E obj : data) {
             pushLast(obj);
         }
     }
 
     /**
-     * Add element to last of the list
+     * Add specified element to end of the list
+     * @param element the element to add
+     */
+    @Override
+    public void add(E element) {
+        pushLast(element);
+    }
+
+    /**
+     * Add element to end of the list
      *
      * @param element the element to add
      */
@@ -52,7 +61,6 @@ public class LinkedList<E> implements AbstractList<E> {
      * Add data to the beginning of current list
      *
      * @param element the element to add
-     * @retutn None
      */
     @Override
     public void pushFirst(E element) {
@@ -208,10 +216,10 @@ public class LinkedList<E> implements AbstractList<E> {
 
 
     /**
-     * Method which provides to get first index of some element in the current list
+     * Method which provides to get first index of specified element in the current list
      *
      * @param element some element in the list
-     * @return index of element in list, if list isn't contains the element return value will be -1
+     * @return index of element in list, if list doesn't contains the element return value will be -1
      */
     @Override
     public int indexOf(E element) {
@@ -225,10 +233,10 @@ public class LinkedList<E> implements AbstractList<E> {
     }
 
     /**
-     * Method which provides to get last index of some element in the current list
+     * Method which provides to get last index of specified element in the current list
      *
      * @param element some element in the list
-     * @return index of element in list, if list isn't contains the element return value will be -1
+     * @return index of element in list, if list doesn't contains the element return value will be -1
      */
     @Override
     public int lastIndexOf(E element) {
@@ -262,7 +270,7 @@ public class LinkedList<E> implements AbstractList<E> {
     }
 
     /**
-     * Sort list in in ascending order
+     * Sort list in ascending order
      */
     @SuppressWarnings("unchecked")
     public void sort() {

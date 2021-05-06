@@ -341,10 +341,10 @@ public class HashTable<K, V> implements Iterable<K> {
 
     @Override
     public Iterator<K> iterator() {
-        return new SelfIterator<K>();
+        return new SelfIterator();
     }
 
-    private class SelfIterator<T> implements Iterator<K> {
+    private class SelfIterator implements Iterator<K> {
         private int pos;
         private Node<K, V> current = null;
 

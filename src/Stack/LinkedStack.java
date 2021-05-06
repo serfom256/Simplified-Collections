@@ -1,10 +1,10 @@
 package Stack;
 
-import Lists.AbstractList;
+import Lists.AbstractLinkedList;
 import Lists.LinkedList;
 
 public class LinkedStack<E> implements AbstractStack<E> {
-    private final AbstractList<E> linkedList;
+    private final AbstractLinkedList<E> linkedList;
 
     public LinkedStack() {
         linkedList = new LinkedList<>();
@@ -91,9 +91,9 @@ public class LinkedStack<E> implements AbstractStack<E> {
         int stackLen = linkedList.getLength();
         if (stackLen == 0) return "[]";
         StringBuilder res = new StringBuilder("[");
-        for (int i = 0; i < linkedList.getLength()-1; i++) {
+        for (int i = 0; i < linkedList.getLength() - 1; i++) {
             res.append(linkedList.get(i)).append(", ");
         }
-        return res.toString() + linkedList.get(stackLen-1) + "]";
+        return res.toString() + linkedList.get(stackLen - 1) + "]";
     }
 }

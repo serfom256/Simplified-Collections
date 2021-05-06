@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
+public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
 
     private static class Node<T> {
         T val;
@@ -49,11 +49,11 @@ public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
     /**
      * Add data to the end of current list
      *
-     * @param data the element to add
+     * @param element the element to add
      */
     @Override
-    public void pushLast(E data) {
-        Node<E> newNode = new Node<>(data);
+    public void pushLast(E element) {
+        Node<E> newNode = new Node<>(element);
         if (last == null) {
             head = newNode;
             last = head;
@@ -85,18 +85,18 @@ public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
-     * Add data to the end of current list
+     * Add element to the end of current list
      *
-     * @param data the element to add
+     * @param element the element to add
      */
-    void add(E data) {
-        pushLast(data);
+    public void add(E element) {
+        pushLast(element);
     }
 
 
     @Override
     @SafeVarargs
-    public final void pushAll(E... data) {
+    public final void addAll(E... data) {
         for (E obj : data) {
             pushLast(obj);
         }
@@ -129,7 +129,6 @@ public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
         } else
             pushFrom(data);
     }
-
 
 
     /**
@@ -196,12 +195,12 @@ public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     //ATTENTION THIS METHOD VERY SLOW
-    public void removeAllLike(E data) {
-        removeAllLike(data, 0);
+    public void removeAllLike(E element) {
+        removeAllLike(element, 0);
     }
 
     //ATTENTION THIS METHOD VERY SLOW
-    public void removeAllLike(E data, int startPos) {
+    public void removeAllLike(E element, int startPos) {
         if (startPos < 0) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -216,7 +215,7 @@ public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
             return;
         }
         if (isStartFrom0) {
-            while (node.next != null && data.equals(node.val) && node.prev == null) {
+            while (node.next != null && element.equals(node.val) && node.prev == null) {
                 head = node.next;
                 head.prev = null;
                 node = head;
@@ -229,14 +228,14 @@ public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
             }
         }
         while (node.next != null) {
-            if (data.equals(node.val)) {
+            if (element.equals(node.val)) {
                 node.prev.next = node.next;
                 node.next.prev = node.prev;
                 length--;
             }
             node = node.next;
         }
-        if (data.equals(node.val)) {
+        if (element.equals(node.val)) {
             node.prev.next = null;
             last = node.prev;
             length--;
@@ -557,7 +556,6 @@ public class DoubleLinkedList<E> implements AbstractList<E>, Iterable<E> {
 
     /**
      * Reverse linkedList
-     *
      */
     public void reverse() {
         Node<E> temp = null;

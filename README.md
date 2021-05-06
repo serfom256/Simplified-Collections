@@ -13,13 +13,13 @@
 ### In developing
 
 - Doubly Linked List
+- Array List
 
 ### Will be released later
 - [ ] Set (Based at RBT tree)
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
-- [ ] Array List
 - [ ] Skip List
 
 

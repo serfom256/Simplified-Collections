@@ -1,6 +1,6 @@
 package HashSet;
 
-import Lists.AbstractList;
+import Lists.AbstractLinkedList;
 import Lists.LinkedList;
 
 import java.util.Iterator;
@@ -186,7 +186,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * Rebalanced tree after insertion element to the Binary Tree
      */
     private void reBalance() {
-        AbstractList<TNode<E>> list = new LinkedList<>();
+        AbstractLinkedList<TNode<E>> list = new LinkedList<>();
         getAllNodes(list, root);
         root = balance(list, 0, list.getLength() - 1);
     }
@@ -199,7 +199,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @param end   end position of current node in the nodes list
      * @return Rebalanced Binary Tree root
      */
-    private TNode<E> balance(AbstractList<TNode<E>> nodes, int start, int end) {
+    private TNode<E> balance(AbstractLinkedList<TNode<E>> nodes, int start, int end) {
         if (start > end) {
             return null;
         }
@@ -216,7 +216,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @param lst  list to append Binary Tree nodes
      * @param root root of Binary Tree
      */
-    private void getAllNodes(AbstractList<TNode<E>> lst, TNode<E> root) {
+    private void getAllNodes(AbstractLinkedList<TNode<E>> lst, TNode<E> root) {
         if (root != null) {
             getAllNodes(lst, root.left);
             lst.pushLast(root);
@@ -225,7 +225,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     }
 
     /**
-     * Remove specified element from set if set contains element
+     * Removes specified element from set if set contains element
      *
      * @param element element to remove
      * @return removed element if element present in the set otherwise null
