@@ -127,16 +127,34 @@ public class ArrayListTest {
     }
 
     @Test
-    //FIXME not working, to fix
     public void removeRange() {
-        list.removeRange(5, 28);
-        System.out.println(list.getLength());
+        list.removeRange(5, 10);
         for (int i = 6; i <= 10; i++) {
             assertEquals(-1, list.indexOf(i));
         }
-        list.print();
         assertEquals(25, list.getLength());
+        list.removeRange(5, 10);
+        for (int i = 6; i <= 15; i++) {
+            assertEquals(-1, list.indexOf(i));
+        }
+        assertEquals(20, list.getLength());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeRange_should_throw_exception_Invalid_start_index() {
+        list.removeRange(-10, 8);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeRange_should_throw_exception_Invalid_end_index() {
+        list.removeRange(5, 40);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeRange_should_throw_exception_Invalid_start_and_end_indexes() {
+        list.removeRange(9, 1);
+    }
+
 
     @Test
     public void subList() {

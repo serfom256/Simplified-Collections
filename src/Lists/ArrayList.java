@@ -55,10 +55,6 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
         }
     }
 
-    public void print() {
-        System.out.println(Arrays.toString(data));
-    }
-
     /**
      * Insert element at the specified position
      *
@@ -117,9 +113,8 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
         System.arraycopy(data, pos + 1, data, pos, size - pos - 1);
         data[--size] = null;
         if (size <= (capacity >> 1)) {
-            int j = (capacity >> 1) + (capacity >> 2);
-            capacity = j;
-            resize(j);
+            capacity = (capacity >> 1) + (capacity >> 2);
+            resize(capacity);
         }
         return toRemove;
     }
@@ -162,18 +157,18 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      * @throws IllegalArgumentException if start < 0 or end >= list size
      *                                  or if start index larger then end index
      */
-    //FIXME not working, to fix
     public void removeRange(int start, int end) {
-        if (start < 0 && end >= size && start < end) {
+        if (start < 0 || end >= size || start >= end) {
             throw new IllegalArgumentException("Invalid method parameters");
         }
         int gap = end - start;
-        System.arraycopy(data, end, data, start, gap);
-        size -= gap;
-        if (size <= (capacity >> 1)) {
-            int j = (capacity >> 1) + (capacity >> 2);
-            capacity = j;
-            resize(j);
+        for (int i = start; (i + gap) < size; i++) {
+            data[i] = data[i + gap];
+            data[i + gap] = null;
+        }
+        if ((size -= gap) <= (capacity >> 1)) {
+            capacity = (capacity >> 1);
+            resize(capacity);
         }
     }
 
@@ -186,7 +181,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      *                                  or if start index larger then end index
      */
     public AbstractList<E> subList(int start, int end) {
-        if (start < 0 && end >= size && start < end) {
+        if (start < 0 || end >= size || start >= end) {
             throw new IllegalArgumentException("Invalid method parameters");
         }
         AbstractList<E> sublist = new ArrayList<>();
