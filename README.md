@@ -5,6 +5,7 @@
 - [x] MaxBinaryHeap (Based at Array)
 - [x] PriorityQueue (Based at MaxBinaryHeap)
 - [x] Single Linked List
+- [x] Array List
 - [x] HashTable
 - [x] Set (Based at HashTable)
 - [x] Set (Based at BST tree)
@@ -13,7 +14,7 @@
 ### In developing
 
 - Doubly Linked List
-- Array List
+
 - Skip List
 
 ### Will be released later
