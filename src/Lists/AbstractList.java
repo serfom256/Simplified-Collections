@@ -1,6 +1,6 @@
 package Lists;
 
-public interface AbstractList<E> {
+public interface AbstractList<E> extends Iterable<E>{
 
     void addAll(E... element);
 

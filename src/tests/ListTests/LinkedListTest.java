@@ -30,9 +30,35 @@ public class LinkedListTest {
         for (Integer integer : testArr) {
             list.pushLast(integer);
         }
+        assertEquals(12, list.getLength());
         for (int i = testArr.length - 1; i >= 0; i--) {
             assertEquals(testArr[i], list.popLast());
         }
+        assertEquals(9, list.getLength());
+    }
+
+    @Test
+    public void addAll() {
+        Integer[] testArr = new Integer[]{99, 999, 9999};
+        list.addAll(99, 999, 9999);
+        assertEquals(12, list.getLength());
+        for (int i = testArr.length - 1; i >= 0; i--) {
+            assertEquals(testArr[i], list.popLast());
+        }
+        assertEquals(9, list.getLength());
+    }
+
+    @Test
+    public void add() {
+        Integer[] testArr = new Integer[]{999, 99, 9};
+        for (Integer integer : testArr) {
+            list.add(integer);
+        }
+        assertEquals(12, list.getLength());
+        for (int i = testArr.length - 1; i >= 0; i--) {
+            assertEquals(testArr[i], list.popLast());
+        }
+        assertEquals(9, list.getLength());
     }
 
     @Test
@@ -49,29 +75,31 @@ public class LinkedListTest {
     @Test
     public void peekLast() {
         list.pushFirst(999);
-        assertEquals((Integer) 999,list.peekFirst());
+        assertEquals((Integer) 999, list.peekFirst());
     }
 
     @Test
     public void peekFirst() {
         list.pushLast(999);
-        assertEquals((Integer) 999,list.peekLast());
+        assertEquals((Integer) 999, list.peekLast());
     }
 
     @Test
     public void popFirst() {
         assertEquals((Integer) 9, list.popFirst());
+        assertEquals(8, list.getLength());
     }
 
     @Test
     public void popLast() {
         assertEquals((Integer) 3, list.popLast());
+        assertEquals(8, list.getLength());
     }
 
     @Test
     public void pop() {
-        assertSame(9,list.pop(0));
-        assertSame(3,list.pop(7));
+        assertSame(9, list.pop(0));
+        assertSame(3, list.pop(7));
         list.pop(3);
         assertSame(-1, list.indexOf(1));
     }
@@ -80,6 +108,7 @@ public class LinkedListTest {
     public void remove() {
         list.remove(7);
         assertSame(-1, list.indexOf(7));
+        assertEquals(8, list.getLength());
     }
 
     @Test
@@ -125,5 +154,16 @@ public class LinkedListTest {
         assertEquals((Integer) 999, list.get(9));
         assertEquals((Integer) 9, list.get(0));
         assertEquals((Integer) 8, list.get(5));
+    }
+
+    @Test
+    public void forEach() {
+        list.clear();
+        list.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        assertEquals(9, list.getLength());
+        int start = 1;
+        for (Integer i : list) {
+            assertEquals((Integer) start++, i);
+        }
     }
 }

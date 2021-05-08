@@ -3,6 +3,7 @@ package Lists.impl;
 import Lists.AbstractLinkedList;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class LinkedList<E> implements AbstractLinkedList<E> {
     private static class Node<T> {
@@ -303,6 +304,31 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         this.head = null;
         this.last = null;
         this.length = 0;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new SelfIterator<E>();
+    }
+
+    class SelfIterator<T> implements Iterator<E> {
+        Node<E> current;
+
+        public SelfIterator() {
+            current = head;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public E next() {
+            E data = current.val;
+            current = current.next;
+            return data;
+        }
     }
 
     @Override

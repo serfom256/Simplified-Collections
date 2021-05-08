@@ -40,7 +40,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
         this.last = null;
         this.length = 0;
         this.type = type;
-        pushFrom(object);
+        addFrom(object);
 
     }
 
@@ -104,34 +104,16 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
         }
     }
 
-
     /**
      * Add all data from Iterable objects in the end of list
      *
      * @param data it is all iterable object of elements to add
      */
-    public <T extends Iterable<E>> void pushFrom(T data) {
+    public <T extends Iterable<E>> void addFrom(T data) {
         for (E obj : data) {
             pushLast(obj);
         }
     }
-
-
-    /**
-     * Add all data from Iterable objects in the head of list
-     *
-     * @param toFirst if equals true then all data append to head of list
-     * @param data    it is all iterable object of elements to add
-     */
-    public <T extends Iterable<E>> void pushFrom(T data, boolean toFirst) {
-        if (toFirst) {
-            for (E obj : data) {
-                pushFirst(obj);
-            }
-        } else
-            pushFrom(data);
-    }
-
 
     /**
      * Insert data at the specified position
@@ -187,6 +169,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
                 if (first.next == null) {
                     return popLast();
                 }
+                length--;
                 first.prev.next = first.next;
                 first.next.prev = first.prev;
                 return first.val;
