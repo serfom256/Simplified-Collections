@@ -15,13 +15,13 @@
 
 - Doubly Linked List
 
-- Skip List
-
 ### Will be released later
-- [ ] Set (Based at RBT tree)
+
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
+- [ ] Skip List
+- [ ] Set (Based at RBT tree)
 
 
 

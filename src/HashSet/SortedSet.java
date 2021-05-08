@@ -1,7 +1,7 @@
 package HashSet;
 
-import Lists.AbstractLinkedList;
-import Lists.LinkedList;
+import Lists.AbstractList;
+import Lists.impl.ArrayList;
 
 import java.util.Iterator;
 
@@ -155,7 +155,30 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         if (element == null) {
             throw new IllegalArgumentException("element must be not null");
         }
-        root = insert(root, element);
+        size++;
+        if (root == null) {
+            root = new TNode<>(element);
+            return;
+        }
+        TNode<E> curr = root;
+        while (curr.left != null || curr.right != null) {
+
+            if (curr.element.compareTo(element) > 0 && curr.left != null) curr = curr.left;
+            else if (curr.element.compareTo(element) < 0 && curr.right != null) curr = curr.right;
+            else break;
+        }
+        if (curr.element.equals(element)) {
+            size--;
+            return;
+        }
+        TNode<E> newNode = new TNode<>(element);
+        if (curr.element.compareTo(element) < 0) {
+            newNode.right = curr.right;
+            curr.right = newNode;
+        } else {
+            newNode.left = curr.left;
+            curr.left = newNode;
+        }
         if (++balanceCount > maxBalanceThreshold) {
             balanceCount = 0;
             reBalance();
@@ -186,7 +209,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * Rebalanced tree after insertion element to the Binary Tree
      */
     private void reBalance() {
-        AbstractLinkedList<TNode<E>> list = new LinkedList<>();
+        AbstractList<TNode<E>> list = new ArrayList<>();
         getAllNodes(list, root);
         root = balance(list, 0, list.getLength() - 1);
     }
@@ -199,7 +222,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @param end   end position of current node in the nodes list
      * @return Rebalanced Binary Tree root
      */
-    private TNode<E> balance(AbstractLinkedList<TNode<E>> nodes, int start, int end) {
+    private TNode<E> balance(AbstractList<TNode<E>> nodes, int start, int end) {
         if (start > end) {
             return null;
         }
@@ -216,10 +239,10 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @param lst  list to append Binary Tree nodes
      * @param root root of Binary Tree
      */
-    private void getAllNodes(AbstractLinkedList<TNode<E>> lst, TNode<E> root) {
+    private void getAllNodes(AbstractList<TNode<E>> lst, TNode<E> root) {
         if (root != null) {
             getAllNodes(lst, root.left);
-            lst.pushLast(root);
+            lst.add(root);
             getAllNodes(lst, root.right);
         }
     }
@@ -343,23 +366,24 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         return new SelfIterator();
     }
 
-    private class SelfIterator implements Iterator<E> {
-        int position;
+private class SelfIterator implements Iterator<E> {
+    int position;
 
-        public SelfIterator() {
-            position = 0;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return position < size;
-        }
-
-        @Override
-        public E next() {
-            return get(position++);
-        }
+    public SelfIterator() {
+        position = 0;
     }
+
+    @Override
+    public boolean hasNext() {
+        return position < size;
+    }
+
+    @Override
+    public E next() {
+        return get(position++);
+    }
+
+}
 
     /**
      * Utility method for print Set

@@ -1,7 +1,7 @@
 package Stack;
 
 import Lists.AbstractLinkedList;
-import Lists.LinkedList;
+import Lists.impl.LinkedList;
 
 public class LinkedStack<E> implements AbstractStack<E> {
     private final AbstractLinkedList<E> linkedList;

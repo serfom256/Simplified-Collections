@@ -49,14 +49,14 @@ public class SortedSetTest {
 
     @Test
     public void add() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 20000; i++) {
             set.add(i + "_element");
         }
-        assertEquals(1000, set.getSize());
-        for (int i = 0; i < 1000; i++) {
+        assertEquals(20000, set.getSize());
+        for (int i = 0; i < 20000; i++) {
             assertTrue(set.contains(i + "_element"));
         }
-        assertEquals(1000, set.getSize());
+        assertEquals(20000, set.getSize());
     }
 
     @Test

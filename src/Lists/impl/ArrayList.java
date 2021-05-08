@@ -1,4 +1,6 @@
-package Lists;
+package Lists.impl;
+
+import Lists.AbstractList;
 
 import java.util.Arrays;
 import java.util.Iterator;

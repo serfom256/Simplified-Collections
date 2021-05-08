@@ -1,4 +1,6 @@
-package Lists;
+package Lists.impl;
+
+import Lists.AbstractLinkedList;
 
 import java.util.Arrays;
 

@@ -1,6 +1,6 @@
 package tests.ListTests;
 
-import Lists.LinkedList;
+import Lists.impl.LinkedList;
 import org.junit.Before;
 import org.junit.Test;
 

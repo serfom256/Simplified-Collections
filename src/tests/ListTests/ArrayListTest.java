@@ -1,7 +1,7 @@
 package tests.ListTests;
 
 import Lists.AbstractList;
-import Lists.ArrayList;
+import Lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
