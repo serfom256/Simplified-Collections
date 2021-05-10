@@ -1,6 +1,6 @@
 package Lists;
 
-public interface AbstractList<E> extends Iterable<E>{
+public interface AbstractList<E> extends Iterable<E> {
 
     void addAll(E... element);
 
@@ -23,5 +23,7 @@ public interface AbstractList<E> extends Iterable<E>{
     int lastIndexOf(E element);
 
     int getLength();
+
+    AbstractList<E> slice(int start, int end);
 
 }

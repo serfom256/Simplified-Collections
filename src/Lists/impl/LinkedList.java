@@ -1,6 +1,7 @@
 package Lists.impl;
 
 import Lists.AbstractLinkedList;
+import Lists.AbstractList;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
 
     /**
      * Add specified element to end of the list
+     *
      * @param element the element to add
      */
     @Override
@@ -101,23 +103,24 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * Remove first element
      *
      * @return first element of list if list isn't empty else return null
+     * @throws ArrayIndexOutOfBoundsException if list is empty
      */
     @Override
     public E popFirst() {
-        if (head != null) {
-            E value = head.val;
-            head = head.next;
-            length--;
-            return value;
-        } else {
+        if (head == null) {
             throw new ArrayIndexOutOfBoundsException("List is empty");
         }
+        E value = head.val;
+        head = head.next;
+        length--;
+        return value;
     }
 
     /**
      * Remove last element
      *
      * @return last element of list if list isn't empty else return null
+     * @throws ArrayIndexOutOfBoundsException if list is empty
      */
     @Override
     public E popLast() {
@@ -140,6 +143,23 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         }
         length--;
         return toRemove;
+    }
+
+    /**
+     * Returns count of element in this list
+     *
+     * @param element some element
+     * @return count of current elements int this list
+     */
+    @Override
+    public int count(E element) {
+        int count = 0;
+        for (Node<E> curr = head; curr != null; curr = curr.next) {
+            if (curr.val.equals(element)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -299,6 +319,26 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         return this.length;
     }
 
+    /**
+     * Returns slice from the list all of the elements in specified range between start and end
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public LinkedList<E> slice(int start, int end) {
+        if (start < 0 || end > length || start >= end) {
+            throw new IllegalArgumentException("Invalid method parameters");
+        }
+        LinkedList<E> sublist = new LinkedList<>();
+        for (int i = start; i < end; i++) {
+            sublist.add(get(i));
+        }
+        return sublist;
+    }
+
     @Override
     public void clear() {
         this.head = null;
@@ -308,10 +348,10 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new SelfIterator<E>();
+        return new SelfIterator();
     }
 
-    class SelfIterator<T> implements Iterator<E> {
+    class SelfIterator implements Iterator<E> {
         Node<E> current;
 
         public SelfIterator() {

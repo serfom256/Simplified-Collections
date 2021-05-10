@@ -2,9 +2,9 @@ package Lists;
 
 public interface AbstractLinkedList<E> extends AbstractList<E> {
 
-    void pushLast(E data);
+    void pushLast(E element);
 
-    void pushFirst(E data);
+    void pushFirst(E element);
 
     E peekLast();
 
@@ -13,4 +13,6 @@ public interface AbstractLinkedList<E> extends AbstractList<E> {
     E popFirst();
 
     E popLast();
+
+    int count(E element);
 }

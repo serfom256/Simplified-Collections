@@ -1,5 +1,6 @@
 package tests.ListTests;
 
+import Lists.AbstractList;
 import Lists.impl.LinkedList;
 import org.junit.Before;
 import org.junit.Test;
@@ -122,11 +123,12 @@ public class LinkedListTest {
     @Test
     public void sort() {
         list.sort();
-        Integer[] testArr = new Integer[]{9, 2, 5, 7, 1, 8, 0, 4, 3};
+        Integer[] testArr = new Integer[]{0, 1, 2, 3, 4, 5, 7, 8, 9};
         Arrays.sort(testArr);
         for (Integer integer : testArr) {
             assertEquals(integer, list.popFirst());
         }
+        assertEquals(0, list.getLength());
     }
 
     @Test
@@ -154,6 +156,29 @@ public class LinkedListTest {
         assertEquals((Integer) 999, list.get(9));
         assertEquals((Integer) 9, list.get(0));
         assertEquals((Integer) 8, list.get(5));
+    }
+
+    @Test
+    public void slice() {
+        list.clear();
+        list.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        Integer[] testArr = {6, 7, 8, 9, 10};
+        AbstractList<Integer> sublist = list.slice(5, 10);
+        for (int i = 0; i < testArr.length; i++) {
+            assertEquals(testArr[i], sublist.get(i));
+        }
+        assertEquals(testArr.length, sublist.getLength());
+    }
+
+    @Test
+    public void count() {
+        list.insert(99, 6);
+        list.insert(99, 0);
+        list.insert(99, list.getLength() - 1);
+        assertEquals(12, list.getLength());
+        assertEquals(3, list.count(99));
+        assertEquals(1, list.count(5));
+        assertEquals(0, list.count(54));
     }
 
     @Test

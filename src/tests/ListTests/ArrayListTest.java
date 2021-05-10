@@ -157,9 +157,9 @@ public class ArrayListTest {
 
 
     @Test
-    public void subList() {
+    public void slice() {
         Integer[] testArr = {6, 7, 8, 9, 10};
-        AbstractList<Integer> sublist = list.subList(5, 10);
+        AbstractList<Integer> sublist = list.slice(5, 10);
         for (int i = 0; i < testArr.length; i++) {
             assertEquals(testArr[i], sublist.get(i));
         }

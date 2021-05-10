@@ -5,6 +5,7 @@
 - [x] MaxBinaryHeap (Based at Array)
 - [x] PriorityQueue (Based at MaxBinaryHeap)
 - [x] Single Linked List
+- [x] Doubly Linked List
 - [x] Array List
 - [x] HashTable
 - [x] Set (Based at HashTable)
@@ -13,7 +14,7 @@
 
 ### In developing
 
-- Doubly Linked List
+- Set (Based at RBT tree)
 
 ### Will be released later
 
@@ -21,7 +22,7 @@
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Trie
 - [ ] Skip List
-- [ ] Set (Based at RBT tree)
+
 
 
 

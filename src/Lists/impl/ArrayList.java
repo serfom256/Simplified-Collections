@@ -179,11 +179,12 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end >= list size
+     * @throws IllegalArgumentException if start < 0 or end > list size
      *                                  or if start index larger then end index
      */
-    public AbstractList<E> subList(int start, int end) {
-        if (start < 0 || end >= size || start >= end) {
+    @Override
+    public AbstractList<E> slice(int start, int end) {
+        if (start < 0 || end > size || start >= end) {
             throw new IllegalArgumentException("Invalid method parameters");
         }
         AbstractList<E> sublist = new ArrayList<>();
