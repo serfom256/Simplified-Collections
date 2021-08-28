@@ -401,14 +401,10 @@ public class DoubleLinkedListTest {
     }
 
     @Test
-    public void reverse() {
+    public void toObjectArray() {
         list.clear();
-        list.addAll(9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
-        assertEquals(10, list.getLength());
-        list.reverse();
-        for (int i = 0; i < 10; i++) {
-            assertEquals((Integer) i, list.get(i));
-        }
-        assertEquals(10, list.getLength());
+        list.addAll(1, 2, 3, 4);
+        Integer[] testArr = {1, 2, 3, 4};
+        assertArrayEquals(testArr, list.toObjectArray());
     }
 }

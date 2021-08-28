@@ -20,6 +20,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     public ArrayList(int capacity) {
         this.capacity = capacity;
         this.size = 0;
+        //TODO remove init from constructor and add toGenericArray method to AbstractList
         init(capacity);
     }
 
@@ -239,6 +240,17 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
             }
         }
         return -1;
+    }
+
+    /**
+     *
+     * Returns all data from current list as array of objects
+     */
+    @Override
+    public Object[] toObjectArray() {
+        Object[] array = new Object[size];
+        if (size >= 0) System.arraycopy(data, 0, array, 0, size);
+        return array;
     }
 
     /**

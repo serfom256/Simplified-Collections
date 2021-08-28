@@ -7,8 +7,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 
 public class LinkedListTest {
@@ -190,5 +189,13 @@ public class LinkedListTest {
         for (Integer i : list) {
             assertEquals((Integer) start++, i);
         }
+    }
+
+    @Test
+    public void toObjectArray() {
+        list.clear();
+        list.addAll(1, 2, 3, 4);
+        Integer[] testArr = {1, 2, 3, 4};
+        assertArrayEquals(testArr, list.toObjectArray());
     }
 }

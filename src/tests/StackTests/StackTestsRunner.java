@@ -15,7 +15,7 @@ public class StackTestsRunner {
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("Set tests"+(result.wasSuccessful() ? " was successful" : "was failed"));
+        System.out.println("Stack tests"+(result.wasSuccessful() ? " was successful" : "was failed"));
     }
 
     private static void runLinkedStackTest() {
@@ -24,6 +24,6 @@ public class StackTestsRunner {
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("SortedSet tests" + (result.wasSuccessful() ? " was successful" : "  was failed"));
+        System.out.println("LinkedStack tests" + (result.wasSuccessful() ? " was successful" : "  was failed"));
     }
 }

@@ -13,14 +13,14 @@
 - [x] Stack(Based at Array)
 
 ### In developing
-
+- Trie
 - Set (Based at RBT tree)
+- MutableString
 
 ### Will be released later
 
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
-- [ ] Trie
 - [ ] Skip List
 
 

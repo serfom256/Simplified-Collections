@@ -18,6 +18,8 @@ public interface AbstractList<E> extends Iterable<E> {
 
     E get(int position);
 
+    Object[] toObjectArray();
+
     int indexOf(E element);
 
     int lastIndexOf(E element);

@@ -1,7 +1,6 @@
 package Lists.impl;
 
 import Lists.AbstractLinkedList;
-import Lists.AbstractList;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -305,6 +304,11 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         }
     }
 
+    /**
+     *
+     * Returns all data from current list as array of objects
+     */
+    @Override
     public Object[] toObjectArray() {
         Object[] array = new Object[length];
         int pos = 0;
@@ -373,9 +377,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
 
     @Override
     public String toString() {
-        if (head == null) {
-            return "[]";
-        }
+        if (head == null) return "[]";
         Node<E> first = head;
         StringBuilder lst = new StringBuilder("[");
         while (first.next != null) {

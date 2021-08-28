@@ -311,6 +311,20 @@ public class HashTable<K, V> implements Iterable<K> {
         return false;
     }
 
+    //TODO implement method keySet and add Entry class which represent bucket and do more tests
+//    public K[] keySet() {
+//        AbstractList<K> result = new ArrayList<>(size>>1);
+//        for (Node<K, V> bucket : Table){
+//            if(bucket != null){
+//                Node<K,V> start = bucket;
+//                while (bucket != null){
+//                    result.add(bucket.key);
+//                    bucket = bucket.next;
+//                }
+//            }
+//        }
+//    }
+
     /**
      * Method which provide get size of the HashTable
      *

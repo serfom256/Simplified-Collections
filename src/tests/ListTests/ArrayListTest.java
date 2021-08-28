@@ -206,4 +206,13 @@ public class ArrayListTest {
         }
     }
 
+
+    @Test
+    public void toObjectArray() {
+        list.clear();
+        list.addAll(1, 2, 3, 4);
+        Integer[] testArr = {1, 2, 3, 4};
+        assertArrayEquals(testArr, list.toObjectArray());
+    }
+
 }

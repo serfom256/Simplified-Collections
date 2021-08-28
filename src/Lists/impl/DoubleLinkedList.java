@@ -175,7 +175,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     /**
      * Remove all elements which equals specified element in the list
      *
-     * @param element  elements which equals will be removed
+     * @param element elements which equals will be removed
      */
     //ATTENTION THIS METHOD VERY SLOW
     public void removeAllLike(E element) {
@@ -330,11 +330,26 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
         if (position < 0 || position >= length) {
             throw new ArrayIndexOutOfBoundsException("Position out of list bounds");
         }
-        Node<E> first = head;
-        for (; position > 0; position--) {
-            first = first.next;
+        int mid = length / 2;
+        boolean h = position >= mid;
+        position = position >= mid ? length - position - 1 : position;
+        Node<E> curr;
+        if (h) {
+            curr = last;
+            for (; position > 0; position--){
+                curr = curr.prev;
+            }
+        } else {
+            curr = head;
+            for (; position > 0; position--) curr = curr.next;
         }
-        return first.val;
+        return curr.val;
+
+//        Node<E> first = head;
+//        for (; position > 0; position--) {
+//            first = first.next;
+//        }
+//        return first.val;
     }
 
     /**
@@ -435,6 +450,19 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     }
 
     /**
+     * Returns all data from current list as array of objects
+     */
+    @Override
+    public Object[] toObjectArray() {
+        Object[] array = new Object[length];
+        int pos = 0;
+        for (Node<E> first = head; first != null; first = first.next, pos++) {
+            array[pos] = first.val;
+        }
+        return array;
+    }
+
+    /**
      * Returns count of element in this list
      *
      * @param element some element
@@ -501,23 +529,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
         length = 0;
     }
 
-    /**
-     * Reverse linkedList
-     */
-    public void reverse() {
-        Node<E> temp = null;
-        Node<E> current = head;
-        while (current != null) {
-            temp = current.prev;
-            current.prev = current.next;
-            current.next = temp;
-            current = current.prev;
-        }
-        if (temp != null) {
-            head = temp.prev;
-        }
-    }
-
     @Override
     public Iterator<E> iterator() {
         return new SelfIterator();
@@ -544,15 +555,8 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     }
 
     @Override
-    protected void finalize() {
-        clear();
-    }
-
-    @Override
     public String toString() {
-        if (head == null) {
-            return "[]";
-        }
+        if (head == null) return "[]";
         Node<E> first = head;
         StringBuilder lst = new StringBuilder("[");
         while (first.next != null) {
