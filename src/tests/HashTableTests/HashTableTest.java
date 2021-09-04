@@ -183,6 +183,27 @@ public class HashTableTest {
     }
 
     @Test
+    public void itemsForEach() {
+        String[] keySet = new String[30];
+        String[] values = new String[30];
+        for (int i = 0; i < keySet.length; i++) {
+            keySet[i] = i + "_key";
+            values[i] = i + "_value";
+            hashTable.add(keySet[i], values[i]);
+        }
+        int count = 0;
+        for (HashTable.Entry<String, String> s : hashTable.items) {
+            for (int i = 0; i < keySet.length; i++) {
+                if (keySet[i].equals(s.key) && values[i].equals(s.value)) {
+                    count++;
+                    break;
+                }
+            }
+        }
+        assertEquals(keySet.length, count);
+    }
+
+    @Test
     public void getCapacity() {
         for (int i = 0; i < 100; i++) {
             hashTable.add(i + "_k", i + "_v");

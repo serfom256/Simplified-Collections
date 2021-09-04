@@ -20,8 +20,6 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     public ArrayList(int capacity) {
         this.capacity = capacity;
         this.size = 0;
-        //TODO remove init from constructor and add toGenericArray method to AbstractList
-        init(capacity);
     }
 
     @SuppressWarnings("unchecked")
@@ -51,6 +49,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      */
     @Override
     public void add(E element) {
+        if(data == null) init(capacity);
         data[size] = element;
         if (++size >= capacity) {
             capacity += (capacity >> 1);

@@ -11,6 +11,7 @@ public class HashTable<K, V> implements Iterable<K> {
     private final double LOAD_FACTOR = 0.8;
     private int CAPACITY;
     private int size;
+    public final Items items;
 
     private static class Node<K, V> {
         final K key;
@@ -33,7 +34,7 @@ public class HashTable<K, V> implements Iterable<K> {
     public HashTable(int capacity) {
         this.CAPACITY = capacity;
         this.size = 0;
-        initTable(this.CAPACITY);
+        items = new Items();
     }
 
     @SuppressWarnings("unchecked")
@@ -89,6 +90,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public void add(K key, V value) {
+        if (Table == null) initTable(CAPACITY);
         if ((++size) >= CAPACITY * LOAD_FACTOR) {
             resizeTable();
         }
@@ -126,9 +128,7 @@ public class HashTable<K, V> implements Iterable<K> {
      */
     public V removeValue(K key, V value) {
         int pos = getPosByKey(key, CAPACITY);
-        if (Table[pos] == null) {
-            return null;
-        }
+        if (Table == null || Table[pos] == null) return null;
         int keyHash;
         if (Table[pos].hash == (keyHash = generateHash(key)) && Table[pos].value.equals(value)) {
             Table[pos] = Table[pos].next;
@@ -188,7 +188,7 @@ public class HashTable<K, V> implements Iterable<K> {
      */
     public V remove(K key) {
         int pos = getPosByKey(key, CAPACITY);
-        if (Table[pos] == null) {
+        if (Table == null || Table[pos] == null) {
             return null;
         }
         return removeByHash(pos, generateHash(key));
@@ -203,6 +203,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public V updateValue(K key, V value) {
+        if (Table == null) return null;
         int keyHash = generateHash(key);
         V oldVal = null;
         for (Node<K, V> current = Table[getPosByKey(key, CAPACITY)]; current != null; current = current.next) {
@@ -220,12 +221,12 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @param oldKey old key of item to replace
      * @param newKey new key to replace oldKey
-     * @return replaced key if updated is successful otherwise null
+     * @return replaced key if update was successful otherwise null
      * @throws IllegalArgumentException if (oldKey or newKey) is null
      */
     public K replace(K oldKey, K newKey) {
         int pos;
-        if (Table[pos = getPosByKey(oldKey, CAPACITY)] == null || !containsKey(oldKey)) {
+        if (Table == null || Table[pos = getPosByKey(oldKey, CAPACITY)] == null || !containsKey(oldKey)) {
             return null;
         }
         addToBucket(
@@ -246,7 +247,7 @@ public class HashTable<K, V> implements Iterable<K> {
     public V get(K key) {
         int pos = getPosByKey(key, CAPACITY);
         int keyHash = generateHash(key);
-        if (Table[pos] != null) {
+        if (Table != null && Table[pos] != null) {
             for (Node<K, V> current = Table[pos]; current != null; current = current.next) {
                 if (current.hash == keyHash) {
                     return current.value;
@@ -264,7 +265,7 @@ public class HashTable<K, V> implements Iterable<K> {
      */
     public boolean containsValue(V value) {
         for (int i = 0; i < CAPACITY; i++) {
-            if (Table[i] != null) {
+            if (Table != null && Table[i] != null) {
                 for (Node<K, V> current = Table[i]; current != null; current = current.next) {
                     if (current.value.equals(value)) {
                         return true;
@@ -283,7 +284,7 @@ public class HashTable<K, V> implements Iterable<K> {
      */
     public K getKeyByValue(V value) {
         for (int i = 0; i < CAPACITY; i++) {
-            if (Table[i] != null) {
+            if (Table != null && Table[i] != null) {
                 for (Node<K, V> current = Table[i]; current != null; current = current.next) {
                     if (current.value.equals(value)) {
                         return current.key;
@@ -302,6 +303,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * @throws IllegalArgumentException if key is null
      */
     public boolean containsKey(K key) {
+        if (Table == null) return false;
         int keyHash = generateHash(key);
         for (Node<K, V> current = Table[getPosByKey(key, CAPACITY)]; current != null; current = current.next) {
             if (current.hash == keyHash) {
@@ -311,19 +313,53 @@ public class HashTable<K, V> implements Iterable<K> {
         return false;
     }
 
-    //TODO implement method keySet and add Entry class which represent bucket and do more tests
-//    public K[] keySet() {
-//        AbstractList<K> result = new ArrayList<>(size>>1);
-//        for (Node<K, V> bucket : Table){
-//            if(bucket != null){
-//                Node<K,V> start = bucket;
-//                while (bucket != null){
-//                    result.add(bucket.key);
-//                    bucket = bucket.next;
-//                }
-//            }
-//        }
-//    }
+    public static final class Entry<K, V> {
+        public final K key;
+        public final V value;
+
+        Entry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    public final class Items implements Iterable<Entry<K, V>> {
+        @Override
+        public Iterator<Entry<K, V>> iterator() {
+            return new NodesIterator();
+        }
+
+        private class NodesIterator implements Iterator<Entry<K, V>> {
+            private int pos;
+            private Node<K, V> current = null;
+
+            NodesIterator() {
+                pos = 0;
+            }
+
+            @Override
+            public boolean hasNext() {
+                for (int i = pos; i < CAPACITY; ++i) {
+                    if (Table[i] != null) {
+                        pos = i;
+                        if (current == null) current = Table[pos];
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public Entry<K, V> next() {
+                K key = current.key;
+                V value = current.value;
+                if ((current = current.next) == null) {
+                    pos++;
+                }
+                return new Entry<>(key, value);
+            }
+        }
+    }
 
     /**
      * Method which provide get size of the HashTable
@@ -368,6 +404,7 @@ public class HashTable<K, V> implements Iterable<K> {
 
         @Override
         public boolean hasNext() {
+            if (Table == null) return false;
             for (int i = pos; i < CAPACITY; i++) {
                 if (Table[i] != null) {
                     pos = i;
