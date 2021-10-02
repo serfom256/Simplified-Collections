@@ -33,7 +33,7 @@ public class HeapTest {
         for (int i = 0; i < 10; i++) {
             heap.push(i);
         }
-        assertEquals(10,heap.getLength());
+        assertEquals(10,heap.getSize());
     }
 
     @Test
@@ -85,8 +85,8 @@ public class HeapTest {
     }
 
     @Test
-    public void getLength() {
-        assertEquals(testArr.length, heap.getLength());
+    public void getSize() {
+        assertEquals(testArr.length, heap.getSize());
     }
 
     @Test
@@ -95,6 +95,6 @@ public class HeapTest {
             heap.push(integer);
         }
         heap.clear();
-        assertEquals(heap.getLength(), 0);
+        assertEquals(heap.getSize(), 0);
     }
 }

@@ -4,6 +4,8 @@ import HashSet.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class SetTest {
@@ -99,5 +101,14 @@ public class SetTest {
             }
         }
         assertEquals(elements.length, count);
+    }
+    @Test
+    public void toObjectArray() {
+        set.clear();
+        set.addAll("data1", "data2", "data3", "data4");
+        String[] testArr = {"data1", "data2", "data3", "data4"};
+        Object[] result = set.toObjectArray();
+        Arrays.sort(result);
+        assertArrayEquals(testArr, result);
     }
 }

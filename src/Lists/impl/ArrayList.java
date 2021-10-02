@@ -248,7 +248,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     @Override
     public Object[] toObjectArray() {
         Object[] array = new Object[size];
-        if (size >= 0) System.arraycopy(data, 0, array, 0, size);
+        if (size > 0) System.arraycopy(data, 0, array, 0, size);
         return array;
     }
 
@@ -256,7 +256,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      * @return length of current list
      */
     @Override
-    public int getLength() {
+    public int getSize() {
         return size;
     }
 

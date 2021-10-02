@@ -319,7 +319,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     }
 
     @Override
-    public int getLength() {
+    public int getSize() {
         return this.length;
     }
 

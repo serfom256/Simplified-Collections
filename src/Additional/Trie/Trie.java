@@ -1,18 +1,18 @@
 package Additional.Trie;
 
+import HashSet.AbstractSet;
+import HashSet.SortedSet;
 import HashTables.HashTable;
-import Lists.AbstractList;
-import Lists.impl.ArrayList;
 
 import java.util.Arrays;
 
 public class Trie {
 
-    private final HashTable<Character, TNode> root;
-    private int size;
-    private int entriesCount;
+    TNode root;
+    int size;
+    int entriesCount;
 
-    private static class TNode {
+    static class TNode {
         Character element;
         boolean isEnd;
         TNode prev;
@@ -24,31 +24,48 @@ public class Trie {
             this.prev = null;
             this.nodes = new HashTable<>(35);
         }
+
+        public TNode() {
+            this.isEnd = false;
+            this.prev = null;
+            this.nodes = new HashTable<>(35);
+        }
     }
 
     public Trie() {
-        this.root = new HashTable<>();
+        this.root = new TNode();
         this.size = 0;
     }
 
-    public void put(char[] sequence) {
+    /**
+     * Append specified sequence to the Trie if sequence not equals null
+     *
+     * @param sequence sequence to append
+     */
+    public void put(String sequence) {
         if (sequence == null) return;
         putSequence(sequence);
     }
 
-    private void putSequence(char[] sequence) {
-        if (sequence.length == 0) return;
-        HashTable<Character, TNode> curr = root;
-        TNode currNode = null, prevNode;
-        for (Character c : sequence) {
-            if (!curr.containsKey(c)) {
+    /**
+     * Inserts sequence char by char to the root if sequence length not equals 0
+     *
+     * @param sequence sequence to insert
+     */
+    private void putSequence(String sequence) {
+        if (sequence.length() == 0) return;
+        TNode curr = root;
+        TNode currNode = root, prevNode;
+        for (int i = 0; i < sequence.length(); i++) {
+            char c = sequence.charAt(i);
+            if (!curr.nodes.containsKey(c)) {
                 size++;
-                curr.add(c, new TNode(c));
+                curr.nodes.add(c, new TNode(c));
             }
             prevNode = currNode;
-            currNode = curr.get(c);
+            currNode = curr.nodes.get(c);
             currNode.prev = prevNode;
-            curr = currNode.nodes;
+            curr = currNode;
         }
         if (!currNode.isEnd) {
             entriesCount++;
@@ -57,60 +74,88 @@ public class Trie {
     }
 
     /**
-     * Returns true if specified sequence present in trie
+     * @return true if specified sequence present in trie as a prefix
+     * @throws IllegalArgumentException if specified sequence is null
      */
-    public boolean presents(char[] sequence) {
+    public boolean presents(String sequence) {
         if (sequence == null) throw new IllegalArgumentException("Value to find must be not null");
-        HashTable<Character, TNode> curr = root;
-        for (Character c : sequence) {
-            if (!curr.containsKey(c)) return false;
-            curr = curr.get(c).nodes;
+        TNode curr = root;
+        for (int i = 0; i < sequence.length(); i++) {
+            char c = sequence.charAt(i);
+            if (!curr.nodes.containsKey(c)) return false;
+            curr = curr.nodes.get(c);
         }
         return true;
     }
 
     /**
      * Returns true if specified sequence was added to trie otherwise false
+     *
+     * @throws IllegalArgumentException if specified sequence is null
      */
-    public boolean contains(char[] sequence) {
+    public boolean contains(String sequence) {
         if (sequence == null) throw new IllegalArgumentException("Value to find must be not null");
-        if (sequence.length == 0) return true;
-        HashTable<Character, TNode> curr = root;
+        if (sequence.length() == 0) return false;
+        TNode curr = root;
         TNode last = null;
-        for (Character c : sequence) {
-            if (!curr.containsKey(c)) return false;
-            last = curr.get(c);
-            curr = last.nodes;
+        for (int i = 0; i < sequence.length(); i++) {
+            char c = sequence.charAt(i);
+            if (!curr.nodes.containsKey(c)) return false;
+            last = curr.nodes.get(c);
+            curr = last;
         }
         return last.isEnd;
     }
 
-    public String getByPrefix(char[] prefix) {
+    /**
+     * Returns one founded sequence as a String if sequence founded
+     *
+     * @param prefix to search sequences with specified prefix
+     * @return sequences as a String if found otherwise empty String
+     */
+    public String getByPrefix(String prefix) {
         String[] res = getByPrefix(prefix, 1);
         return res.length == 0 ? "" : res[0];
     }
 
-    public String[] getByPrefix(char[] prefix, int count) {
+    /**
+     * Returns founded sequences as a String array if sequences founded
+     *
+     * @param prefix to search sequences with specified prefix
+     * @return sequences as a String array if sequences with specified prefix founded
+     * otherwise empty String array
+     */
+    public String[] getByPrefix(String prefix, int count) {
         if (count <= 0) throw new IllegalArgumentException("Count must be more then 0");
-        if (prefix.length == 0) return new String[0];
-        AbstractList<String> list = new ArrayList<>();
-        HashTable<Character, TNode> curr = root;
+        if (prefix.length() == 0) return new String[0];
+        AbstractSet<String> list = new SortedSet<>(count + 1);
+        TNode curr = root;
         StringBuilder result = new StringBuilder();
-        for (int c = 0; c < prefix.length; c++) {
-            if (!curr.containsKey(prefix[c])) return new String[0];
-            result.append(prefix[c]);
-            if (c == prefix.length - 1 && curr.get(prefix[c]).isEnd) {
+        for (int i = 0; i < prefix.length(); i++) {
+            char c = prefix.charAt(i);
+            if (!curr.nodes.containsKey(c)) return new String[0];
+            result.append(c);
+            if (i == prefix.length() - 1 && curr.nodes.get(c).isEnd) {
                 count--;
                 list.add(result.toString());
             }
-            curr = curr.get(prefix[c]).nodes;
+            curr = curr.nodes.get(c);
         }
-        collect(list, result, curr, count);
+        collect(list, result, curr.nodes, count);
         Object[] instance = list.toObjectArray();
         return Arrays.copyOf(instance, instance.length, String[].class);
     }
 
-    private int collect(AbstractList<String> result, StringBuilder prefix, HashTable<Character, TNode> start, int count) {
+    /**
+     * Provides to collect all branches of the specified node to list
+     *
+     * @param result list to collect all founded sequences
+     * @param prefix prefix of all founded sequences
+     * @param start  start position from which collect all branches
+     * @param count  number of sequences to collect
+     *               Not taken into account if specified count of sequences not found in the specified branch
+     */
+    int collect(AbstractSet<String> result, StringBuilder prefix, HashTable<Character, TNode> start, int count) {
         if (start == null || count == 0) return count;
         for (Character c : start) {
             TNode node = start.get(c);
@@ -126,53 +171,86 @@ public class Trie {
         return count;
     }
 
-    public boolean removeHard(char[] sequence) {
-        if (sequence.length == 0) return false;
+    /**
+     * Removes all data associated with the specified sequence
+     *
+     * @param sequence sequence to remove
+     * @return true if removed otherwise false
+     */
+    public boolean removeHard(String sequence) {
+        if (sequence.length() == 0) return false;
         return removeSequenceHard(sequence);
     }
 
-    private boolean removeSequenceHard(char[] sequence) {
+    private boolean removeSequenceHard(String sequence) {
         TNode lastNode = getLastNodeAfterEnd(sequence);
         if (lastNode == null) return false;
         reduceCountOfElements(lastNode);
-        if (lastNode.prev == null) root.remove(sequence[0]);
+        if (lastNode.prev == null) root.nodes.remove(sequence.charAt(0));
         else lastNode.prev.nodes.remove(lastNode.element);
         return true;
     }
 
-    public boolean removeWeak(char[] sequence) {
-        if (sequence.length == 0) return false;
+    /**
+     * Removes only associated with specified sequence branch
+     * if the branch contains only the specified sequence
+     *
+     * @param sequence sequence to remove
+     * @return true if removed otherwise false
+     */
+    public boolean removeWeak(String sequence) {
+        if (sequence.length() == 0) return false;
         return removeSequenceWeak(sequence);
     }
 
-    public boolean remove(char[] sequence) {
-        if (sequence.length == 0) return false;
-        TNode node = getLastNodeAfterEnd(sequence);
-        if (node == null || !node.isEnd) return false;
-        if (node.nodes.getSize() != 0) {
-            node.isEnd = false;
+    /**
+     * Removes only specified sequence from branch (Recommended for use)
+     *
+     * @param sequence sequence to remove
+     * @return true if removed otherwise false
+     */
+    // TODO optimize it
+    public boolean remove(String sequence) {
+        if (sequence.length() == 0) return false;
+        TNode curr = root, lastNode = root;
+        Character lastChar = sequence.charAt(0);
+        for (int i = 0; i < sequence.length(); i++) {
+            Character c = sequence.charAt(i);
+            if (!curr.nodes.containsKey(c)) return false;
+            curr = curr.nodes.get(c);
+            if (curr.nodes.getSize() > 1 || (curr.isEnd && i != sequence.length() - 1)) {
+                lastChar = curr.nodes.get(sequence.charAt(i + 1)).element;
+                lastNode = curr;
+            }
+        }
+        if (curr.nodes.getSize() == 0) {
+            reduceCountOfElements(lastNode.nodes.get(lastChar));
+            lastNode.nodes.remove(lastChar);
+        } else if (curr.isEnd) {
+            curr.isEnd = false;
             entriesCount--;
         } else {
-            reduceCountOfElements(node);
-            if (node.prev == null) root.remove(sequence[0]);
-            else node.prev.nodes.remove(node.element);
+            return false;
         }
         return true;
     }
 
-    private boolean removeSequenceWeak(char[] sequence) {
+    private boolean removeSequenceWeak(String sequence) {
         TNode lastNode = getLastNodeAfterEnd(sequence);
         if (lastNode == null || hasSucceedingBranches(lastNode)) return false;
         reduceCountOfElements(lastNode);
-        if (lastNode.prev == null) root.remove(sequence[0]);
+        if (lastNode.prev == null) root.nodes.remove(sequence.charAt(0));
         else lastNode.prev.nodes.remove(lastNode.element);
         return true;
     }
 
+    /**
+     * Returns true if the branches of the specified node is empty otherwise false.
+     */
     private boolean hasSucceedingBranches(TNode node) {
         HashTable<Character, TNode> table = node.nodes;
-        while(table.getSize() != 0) {
-            if(table.getSize() > 1 || node.isEnd) return true;
+        while (table.getSize() != 0) {
+            if (table.getSize() > 1 || node.isEnd) return true;
             for (Character c : table) {
                 node = node.nodes.get(c);
                 table = node.nodes;
@@ -181,22 +259,30 @@ public class Trie {
         return false;
     }
 
-    private TNode getLastNodeAfterEnd(char[] sequence) {
-        HashTable<Character, TNode> curr = root;
+    /**
+     * Provides to get last node of the specified sequence end
+     *
+     * @return node if founded otherwise null
+     */
+    private TNode getLastNodeAfterEnd(String sequence) {
+        TNode curr = root;
         TNode lastEnd = null;
         boolean ifPrevIsEnd = false;
-        for (int i = 0; i < sequence.length; i++) {
-            Character c = sequence[i];
-            if (!curr.containsKey(c)) return null;
-            TNode node = curr.get(c);
-            if ((node.isEnd || node.nodes.getSize() > 1) && i != sequence.length - 1) ifPrevIsEnd = true;
+        for (int i = 0; i < sequence.length(); i++) {
+            Character c = sequence.charAt(i);
+            if (!curr.nodes.containsKey(c)) return null;
+            TNode node = curr.nodes.get(c);
+            if ((node.isEnd || node.nodes.getSize() > 1) && i != sequence.length() - 1) ifPrevIsEnd = true;
             else if (ifPrevIsEnd) lastEnd = node;
-            curr = curr.get(c).nodes;
+            curr = curr.nodes.get(c);
         }
-        if (lastEnd == null) lastEnd = root.get(sequence[0]);
+        if (lastEnd == null) lastEnd = root.nodes.get(sequence.charAt(0));
         return lastEnd;
     }
 
+    /**
+     * Provides to remove all elements on the specified node branches
+     */
     private void reduceCountOfElements(TNode node) {
         if (node == null) return;
         if (node.isEnd) entriesCount--;
@@ -206,19 +292,31 @@ public class Trie {
         }
     }
 
+    /**
+     * Clear trie
+     */
     public void clear() {
         this.size = this.entriesCount = 0;
-        this.root.clear();
+        this.root = new TNode();
     }
 
+    /**
+     * Returns count all characters in the trie
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * Returns count of inserted sequences
+     */
     public int getEntriesCount() {
         return entriesCount;
     }
 
+    /**
+     * Method which helps to collect all entries from the trie
+     */
     private StringBuilder getAll(StringBuilder result, StringBuilder current, HashTable<Character, TNode> nodes) {
         for (Character c : nodes) {
             TNode node = nodes.get(c);
@@ -233,7 +331,7 @@ public class Trie {
     @Override
     public String toString() {
         if (entriesCount == 0) return "[]";
-        StringBuilder res = getAll(new StringBuilder("["), new StringBuilder(), root);
+        StringBuilder res = getAll(new StringBuilder("["), new StringBuilder(), root.nodes);
         return res.delete(res.length() - 2, res.length()).append(']').toString();
     }
 

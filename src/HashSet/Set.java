@@ -1,10 +1,12 @@
 package HashSet;
 
 import HashTables.HashTable;
+import Lists.AbstractList;
+import Lists.impl.ArrayList;
 
 import java.util.Iterator;
 
-public class Set<E> implements Iterable<E>, AbstractSet<E>{
+public class Set<E> implements Iterable<E>, AbstractSet<E> {
 
     private final HashTable<E, Object> hashTable;
     private final Object VALUE = new Object();
@@ -61,6 +63,13 @@ public class Set<E> implements Iterable<E>, AbstractSet<E>{
         return hashTable.containsKey(element);
     }
 
+    @Override
+    public Object[] toObjectArray() {
+        AbstractList<E> result = new ArrayList<>(hashTable.getSize() + 1);
+        for (E key : hashTable) result.add(key);
+        return result.toObjectArray();
+    }
+
     /**
      * Replace element in the Set if element present in the Set
      *
@@ -98,6 +107,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E>{
 
     @Override
     public String toString() {
+        if (hashTable.getSize() == 0) return "{}";
         StringBuilder res = new StringBuilder("{");
         for (E e : hashTable) {
             res.append(e).append(", ");

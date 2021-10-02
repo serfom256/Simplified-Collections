@@ -281,7 +281,7 @@ public class MaxHeap<T extends Comparable<? super T>> {
     /**
      * @return length of the heap
      */
-    public int getLength() {
+    public int getSize() {
         return size;
     }
 

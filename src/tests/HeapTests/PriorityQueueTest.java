@@ -30,7 +30,7 @@ public class PriorityQueueTest {
         for (int i = 0; i < 10; i++) {
             queue.push(testArr[i],i);
         }
-        assertEquals(10,queue.getLength());
+        assertEquals(10,queue.getSize());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class PriorityQueueTest {
 
     @Test
     public void countOf() {
-        for (int i = 0; i < queue.getLength(); i++) {
+        for (int i = 0; i < queue.getSize(); i++) {
             assertSame(1, queue.countOf(testArr[i]));
         }
     }
@@ -96,7 +96,7 @@ public class PriorityQueueTest {
             queue.remove(s);
             assertSame(false, queue.contains(s));
         }
-        assertSame(0,queue.getLength());
+        assertSame(0,queue.getSize());
     }
 
     @Test
@@ -106,16 +106,16 @@ public class PriorityQueueTest {
     }
 
     @Test
-    public void getLength() {
+    public void getSize() {
         for (int i = testArr.length-1; i >= 0; i--) {
             queue.poll();
-            assertSame(i, queue.getLength());
+            assertSame(i, queue.getSize());
         }
     }
 
     @Test
     public void clear() {
         queue.clear();
-        assertSame(0, queue.getLength());
+        assertSame(0, queue.getSize());
     }
 }

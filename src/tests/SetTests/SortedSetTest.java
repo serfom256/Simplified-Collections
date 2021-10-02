@@ -4,6 +4,8 @@ import HashSet.SortedSet;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class SortedSetTest {
@@ -119,5 +121,14 @@ public class SortedSetTest {
             }
         }
         assertEquals(elements.length, count);
+    }
+
+    @Test
+    public void toObjectArray() {
+        set.clear();
+        set.addAll("data1", "data2", "data3", "data4");
+        String[] testArr = {"data1", "data2", "data3", "data4"};
+        Object[] result = set.toObjectArray();
+        assertArrayEquals(testArr, result);
     }
 }

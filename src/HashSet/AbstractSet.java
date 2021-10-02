@@ -1,6 +1,6 @@
 package HashSet;
 
-interface AbstractSet<E> {
+public interface AbstractSet<E> {
 
     void update(E OldElement, E newElement);
 
@@ -13,6 +13,8 @@ interface AbstractSet<E> {
     boolean contains(E element);
 
     int getSize();
+
+    Object[] toObjectArray();
 
 
 }

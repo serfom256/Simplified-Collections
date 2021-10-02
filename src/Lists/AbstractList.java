@@ -24,7 +24,7 @@ public interface AbstractList<E> extends Iterable<E> {
 
     int lastIndexOf(E element);
 
-    int getLength();
+    int getSize();
 
     AbstractList<E> slice(int start, int end);
 

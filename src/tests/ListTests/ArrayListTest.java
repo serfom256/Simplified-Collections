@@ -28,11 +28,11 @@ public class ArrayListTest {
     public void addAll() {
         Integer[] testArr = {99, 999, 9999, 9999};
         list.addAll(99, 999, 9999, 9999);
-        int len = list.getLength();
+        int len = list.getSize();
         for (int i = len - 1, pos = testArr.length - 1; pos >= 0; i--, pos--) {
             assertEquals(testArr[pos], list.get(i));
         }
-        assertEquals(list.getLength(), 34);
+        assertEquals(list.getSize(), 34);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ArrayListTest {
         for (int i = 0; i < 100; i++) {
             list.add(i);
         }
-        assertEquals(100, list.getLength());
+        assertEquals(100, list.getSize());
         for (int i = 0; i < 100; i++) {
             assertEquals((Integer) i, list.get(i));
         }
@@ -55,7 +55,7 @@ public class ArrayListTest {
             list.insert(elements[i], positions[i]);
             assertEquals(elements[i], list.get(positions[i]));
         }
-        assertEquals(34, list.getLength());
+        assertEquals(34, list.getSize());
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
@@ -82,7 +82,7 @@ public class ArrayListTest {
     @Test
     public void clear() {
         list.clear();
-        assertEquals(0, list.getLength());
+        assertEquals(0, list.getSize());
     }
 
     @Test
@@ -90,13 +90,13 @@ public class ArrayListTest {
         for (int i = 1; i <= 30; i++) {
             assertEquals((Integer) i, list.pop(0));
         }
-        assertEquals(0, list.getLength());
+        assertEquals(0, list.getSize());
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void pop_value_at_empty_list_should_throw_exception() {
         list.clear();
-        assertEquals(0, list.getLength());
+        assertEquals(0, list.getSize());
         list.pop(0);
     }
 
@@ -113,15 +113,15 @@ public class ArrayListTest {
             assertEquals((Integer) i, list.remove(i));
         }
         assertNull(list.remove(0));
-        assertEquals(0, list.getLength());
+        assertEquals(0, list.getSize());
     }
 
     @Test
     public void update() {
-        for (int i = 0; i < list.getLength(); i++) {
+        for (int i = 0; i < list.getSize(); i++) {
             list.update(i, 0);
         }
-        for (int i = 0; i < list.getLength(); i++) {
+        for (int i = 0; i < list.getSize(); i++) {
             assertEquals((Integer) 0, list.get(i));
         }
     }
@@ -132,12 +132,12 @@ public class ArrayListTest {
         for (int i = 6; i <= 10; i++) {
             assertEquals(-1, list.indexOf(i));
         }
-        assertEquals(25, list.getLength());
+        assertEquals(25, list.getSize());
         list.removeRange(5, 10);
         for (int i = 6; i <= 15; i++) {
             assertEquals(-1, list.indexOf(i));
         }
-        assertEquals(20, list.getLength());
+        assertEquals(20, list.getSize());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -163,12 +163,12 @@ public class ArrayListTest {
         for (int i = 0; i < testArr.length; i++) {
             assertEquals(testArr[i], sublist.get(i));
         }
-        assertEquals(testArr.length, sublist.getLength());
+        assertEquals(testArr.length, sublist.getSize());
     }
 
     @Test
     public void get() {
-        for (int i = 0; i < list.getLength(); i++) {
+        for (int i = 0; i < list.getSize(); i++) {
             assertEquals((Integer) (i + 1), list.get(i));
         }
     }
@@ -192,10 +192,10 @@ public class ArrayListTest {
     }
 
     @Test
-    public void getLength() {
-        assertEquals(30, list.getLength());
+    public void getSize() {
+        assertEquals(30, list.getSize());
         list.remove(1);
-        assertEquals(29, list.getLength());
+        assertEquals(29, list.getSize());
     }
 
     @Test

@@ -383,6 +383,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * Clear current HashTable
      */
     public void clear() {
+        if(Table == null) return;
         for (int i = 0; i < CAPACITY; i++) {
             Table[i] = null;
         }

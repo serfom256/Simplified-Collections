@@ -13,15 +13,16 @@
 - [x] Stack(Based at Array)
 
 ### In developing
-- Trie
-- Set (Based at RBT tree)
-- MutableString
+- Trie (TrieMap and Fuzzy Search Trie)
+- Set (Based at RBT or AVL tree)
 
 ### Will be released later
 
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Skip List
+- [ ] BK Tree
+- [ ] Expression interpreter
 
 
 

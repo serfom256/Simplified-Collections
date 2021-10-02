@@ -312,7 +312,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     /**
      * @return length of the queue
      */
-    public int getLength() {
+    public int getSize() {
         return size;
     }
 

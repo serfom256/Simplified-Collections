@@ -211,7 +211,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     private void reBalance() {
         AbstractList<TNode<E>> list = new ArrayList<>();
         getAllNodes(list, root);
-        root = balance(list, 0, list.getLength() - 1);
+        root = balance(list, 0, list.getSize() - 1);
     }
 
     /**
@@ -339,6 +339,27 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
             }
         }
         return true;
+    }
+
+    /**
+     * Append all values of the root to the list
+     *
+     * @param lst  list to append values
+     * @param root root of Binary Tree
+     */
+    private void collectAllNodes(AbstractList<E> lst, TNode<E> root) {
+        if (root != null) {
+            collectAllNodes(lst, root.left);
+            lst.add(root.element);
+            collectAllNodes(lst, root.right);
+        }
+    }
+
+    @Override
+    public Object[] toObjectArray() {
+      AbstractList<E> result = new ArrayList<>(size+1);
+        collectAllNodes(result, root);
+      return result.toObjectArray();
     }
 
     /**

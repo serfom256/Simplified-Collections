@@ -516,7 +516,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     /**
      * @return length of current list
      */
-    public int getLength() {
+    public int getSize() {
         return length;
     }
 

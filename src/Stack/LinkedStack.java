@@ -18,7 +18,7 @@ public class LinkedStack<E> implements AbstractStack<E> {
      */
     @Override
     public E peek() {
-        if (linkedList.getLength() == 0) {
+        if (linkedList.getSize() == 0) {
             throw new UnsupportedOperationException("stack is empty");
         }
         return linkedList.peekFirst();
@@ -32,7 +32,7 @@ public class LinkedStack<E> implements AbstractStack<E> {
      */
     @Override
     public E poll() {
-        if (linkedList.getLength() == 0) {
+        if (linkedList.getSize() == 0) {
             throw new UnsupportedOperationException("stack is empty");
         }
         return linkedList.popFirst();
@@ -63,7 +63,7 @@ public class LinkedStack<E> implements AbstractStack<E> {
      */
     @Override
     public boolean isEmpty() {
-        return linkedList.getLength() == 0;
+        return linkedList.getSize() == 0;
     }
 
     /**
@@ -83,15 +83,15 @@ public class LinkedStack<E> implements AbstractStack<E> {
      */
     @Override
     public int getSize() {
-        return linkedList.getLength();
+        return linkedList.getSize();
     }
 
     @Override
     public String toString() {
-        int stackLen = linkedList.getLength();
+        int stackLen = linkedList.getSize();
         if (stackLen == 0) return "[]";
         StringBuilder res = new StringBuilder("[");
-        for (int i = 0; i < linkedList.getLength() - 1; i++) {
+        for (int i = 0; i < linkedList.getSize() - 1; i++) {
             res.append(linkedList.get(i)).append(", ");
         }
         return res.toString() + linkedList.get(stackLen - 1) + "]";
