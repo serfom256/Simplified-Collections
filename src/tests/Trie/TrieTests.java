@@ -6,8 +6,6 @@ import Lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.*;
 
 public class TrieTests {
@@ -103,8 +101,8 @@ public class TrieTests {
         for (String s : list) assertNotEquals(trie.getByPrefix(s), "");
 
         assertEquals(trie.getByPrefix("1001"), "1001212454");
-        assertEquals(trie.getByPrefix("00"), "000qwerty");
-        assertEquals(trie.getByPrefix("qwe"), "qwerty");
+        assertEquals(trie.getByPrefix("00"), "0000");
+        assertEquals(trie.getByPrefix("qwe"), "qwebcd");
         assertEquals(trie.getByPrefix("abcde"), "abcde");
         assertEquals(trie.getByPrefix(""), "");
     }
@@ -113,8 +111,8 @@ public class TrieTests {
     public void getByPrefixStringArray() {
 
         assertArrayEquals(trie.getByPrefix("1001", 1), new String[]{"1001212454"});
-        assertArrayEquals(trie.getByPrefix("00", 1), new String[]{"000qwerty"});
-        assertArrayEquals(trie.getByPrefix("qwe", 1), new String[]{"qwerty"});
+        assertArrayEquals(trie.getByPrefix("00", 1), new String[]{"0000"});
+        assertArrayEquals(trie.getByPrefix("qwe", 1), new String[]{"qwebcd"});
         assertArrayEquals(trie.getByPrefix("abcde", 1), new String[]{"abcde"});
         assertArrayEquals(trie.getByPrefix("", 1), new String[0]);
 
@@ -124,7 +122,7 @@ public class TrieTests {
         assertArrayEquals(trie.getByPrefix("ab", 4), new String[]{"ab", "abc", "abcd", "abcde"});
         assertArrayEquals(trie.getByPrefix("ab", 999), new String[]{"ab", "abc", "abcd", "abcde"});
         assertArrayEquals(trie.getByPrefix("q", 4), new String[]{"q", "qwebcd", "qwerty"});
-        assertArrayEquals(trie.getByPrefix("qwe", 1), new String[]{"qwerty"});
+        assertArrayEquals(trie.getByPrefix("qwe", 1), new String[]{"qwebcd"});
         assertArrayEquals(trie.getByPrefix("0", 2), new String[]{"0000", "000qwerty"});
     }
 
@@ -153,10 +151,10 @@ public class TrieTests {
 
     @Test
     public void removeHard() {
-
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
         assertTrue(trie.removeHard("abc"));
+
         assertTrue(trie.contains("ab"));
         assertFalse(trie.contains("abc"));
         assertFalse(trie.contains("abcd"));

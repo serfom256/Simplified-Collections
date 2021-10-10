@@ -1,61 +1,58 @@
 package Additional.Trie;
 
-import Lists.AbstractList;
-import Lists.impl.ArrayList;
-
-import java.util.Random;
+import HashSet.Set;
+import HashTables.HashTable;
 
 public class TrieMap {
 
-    public static void main(String[] args) {
+    TNode root;
+    int size;
+    int entriesCount;
 
-        Trie trie = new Trie();
-        AbstractList<String> values = new ArrayList<>();
-        int count = 1000000;
-        for (int i = 0; i < count; i++) {
-            values.add(gen(10));
+    static class TNode {
+        Character element;
+        boolean isEnd;
+        TNode prev;
+        Set<TNode> pairs;
+        HashTable<Character, TNode> nodes;
+        int size;
+        int entriesCount;
+
+        public TNode(Character element) {
+            this.element = element;
+            this.isEnd = false;
+            this.prev = null;
+            this.nodes = new HashTable<>();
+            this.size = this.entriesCount = 1;
         }
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < count; i++) {
-            trie.put(values.get(i));
+
+        public TNode() {
+            this.isEnd = false;
+            this.prev = null;
+            this.nodes = new HashTable<>();
+            this.size = this.entriesCount = 0;
         }
-        for (int i = 0; i < count; i++) {
-            trie.contains(values.get(i));
+
+        void removePair(TNode toRemove) {
+            pairs.remove(toRemove);
         }
-        System.out.println(System.currentTimeMillis() - start);
-        System.out.println(trie.getEntriesCount());
+
+        void remove(Character c) {
+            TNode toRemove = nodes.get(c);
+            toRemove.prev = null;
+            entriesCount -= toRemove.entriesCount;
+            size -= toRemove.size;
+            nodes.remove(c);
+        }
+
+        TNode getSubTrie(Character c) {
+            return nodes.get(c);
+        }
     }
-    public static String gen(int targetStringLength) {
-        int leftLimit = 48; // numeral '0'
-        int rightLimit = 122; // letter 'z'
-        Random random = new Random();
 
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-
-        return generatedString;
+    public TrieMap() {
+        this.root = new TNode();
+        this.size = 0;
     }
 
-
-
-//    public static void main(String[] args) {
-//        AbstractList<String> source = new Lists.impl.ArrayList<>();
-//        source.addAll("one", "two", "abc", "abg", "ad", "bca", "aba");
-//        FuzzySearchTrie trie = new FuzzySearchTrie();
-//        for (String c : source) trie.put(c);
-//
-//        AbstractList<String> red = new ArrayList<>();
-//        red.addAll("obe", "tgo", "abca", "habg", "ad", "ada");
-//        for (String c : red) {
-//            System.out.println(Arrays.toString(trie.getByPrefix(c, 2, 1)));
-//        }
-//        for (String c : source) {
-//            boolean x = trie.remove(c);
-//            System.out.println(c + " " + trie + " " + x);
-//        }
-//        System.out.println(trie);
-//    }
 }

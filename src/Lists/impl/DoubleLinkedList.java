@@ -33,6 +33,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
         this.head = null;
         this.last = null;
         this.length = 0;
+        //FIXME
         addFrom(object);
     }
 

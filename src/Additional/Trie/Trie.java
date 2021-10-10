@@ -5,8 +5,9 @@ import HashSet.SortedSet;
 import HashTables.HashTable;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
-public class Trie {
+public class Trie implements Iterable<String> {
 
     TNode root;
     int size;
@@ -22,13 +23,13 @@ public class Trie {
             this.element = element;
             this.isEnd = false;
             this.prev = null;
-            this.nodes = new HashTable<>(35);
+            this.nodes = new HashTable<>();
         }
 
         public TNode() {
             this.isEnd = false;
             this.prev = null;
-            this.nodes = new HashTable<>(35);
+            this.nodes = new HashTable<>();
         }
     }
 
@@ -43,7 +44,7 @@ public class Trie {
      * @param sequence sequence to append
      */
     public void put(String sequence) {
-        if (sequence == null) return;
+        if (sequence == null || sequence.length() == 0) return;
         putSequence(sequence);
     }
 
@@ -53,24 +54,24 @@ public class Trie {
      * @param sequence sequence to insert
      */
     private void putSequence(String sequence) {
-        if (sequence.length() == 0) return;
         TNode curr = root;
-        TNode currNode = root, prevNode;
         for (int i = 0; i < sequence.length(); i++) {
             char c = sequence.charAt(i);
-            if (!curr.nodes.containsKey(c)) {
+            TNode next = curr.nodes.get(c);
+            if (next == null) {
                 size++;
-                curr.nodes.add(c, new TNode(c));
+                next = new TNode(c);
+                curr.nodes.add(c, next);
             }
-            prevNode = currNode;
-            currNode = curr.nodes.get(c);
-            currNode.prev = prevNode;
-            curr = currNode;
+            next.prev = curr;
+            curr = next;
         }
-        if (!currNode.isEnd) {
-            entriesCount++;
-            currNode.isEnd = true;
-        }
+        if (!curr.isEnd) entriesCount++;
+        curr.isEnd = true;
+    }
+
+    public final void addAll(String... data) {
+        for (String obj : data) put(obj);
     }
 
     /**
@@ -82,8 +83,8 @@ public class Trie {
         TNode curr = root;
         for (int i = 0; i < sequence.length(); i++) {
             char c = sequence.charAt(i);
-            if (!curr.nodes.containsKey(c)) return false;
             curr = curr.nodes.get(c);
+            if (curr == null) return false;
         }
         return true;
     }
@@ -100,8 +101,8 @@ public class Trie {
         TNode last = null;
         for (int i = 0; i < sequence.length(); i++) {
             char c = sequence.charAt(i);
-            if (!curr.nodes.containsKey(c)) return false;
             last = curr.nodes.get(c);
+            if (last == null) return false;
             curr = last;
         }
         return last.isEnd;
@@ -178,13 +179,14 @@ public class Trie {
      * @return true if removed otherwise false
      */
     public boolean removeHard(String sequence) {
-        if (sequence.length() == 0) return false;
+        if (sequence == null || sequence.length() == 0) return false;
         return removeSequenceHard(sequence);
     }
 
     private boolean removeSequenceHard(String sequence) {
         TNode lastNode = getLastNodeAfterEnd(sequence);
         if (lastNode == null) return false;
+        lastNode.prev.nodes.remove(lastNode.element);
         reduceCountOfElements(lastNode);
         if (lastNode.prev == null) root.nodes.remove(sequence.charAt(0));
         else lastNode.prev.nodes.remove(lastNode.element);
@@ -199,8 +201,18 @@ public class Trie {
      * @return true if removed otherwise false
      */
     public boolean removeWeak(String sequence) {
-        if (sequence.length() == 0) return false;
+        if (sequence == null || sequence.length() == 0) return false;
         return removeSequenceWeak(sequence);
+    }
+
+    private boolean removeSequenceWeak(String sequence) {
+        TNode lastNode = getLastNodeAfterEnd(sequence);
+        if (lastNode == null || hasSucceedingBranches(lastNode)) return false;
+        lastNode.prev.nodes.remove(lastNode.element);
+        reduceCountOfElements(lastNode);
+        if (lastNode.prev == null) root.nodes.remove(sequence.charAt(0));
+        else lastNode.prev.nodes.remove(lastNode.element);
+        return true;
     }
 
     /**
@@ -209,38 +221,29 @@ public class Trie {
      * @param sequence sequence to remove
      * @return true if removed otherwise false
      */
-    // TODO optimize it
     public boolean remove(String sequence) {
-        if (sequence.length() == 0) return false;
+        if (sequence == null || sequence.length() == 0) return false;
         TNode curr = root, lastNode = root;
-        Character lastChar = sequence.charAt(0);
-        for (int i = 0; i < sequence.length(); i++) {
+        int lastCharPos = 0;
+        int len = sequence.length() - 1;
+        for (int i = 0; i <= len; i++) {
             Character c = sequence.charAt(i);
-            if (!curr.nodes.containsKey(c)) return false;
             curr = curr.nodes.get(c);
-            if (curr.nodes.getSize() > 1 || (curr.isEnd && i != sequence.length() - 1)) {
-                lastChar = curr.nodes.get(sequence.charAt(i + 1)).element;
+            if (curr == null) return false;
+            if (curr.nodes.getSize() > 1 || (curr.isEnd && i != len)) {
+                lastCharPos = i + 1;
                 lastNode = curr;
             }
         }
         if (curr.nodes.getSize() == 0) {
-            reduceCountOfElements(lastNode.nodes.get(lastChar));
-            lastNode.nodes.remove(lastChar);
+            size -= len + 1 - lastCharPos;
+            lastNode.nodes.remove(sequence.charAt(lastCharPos));
         } else if (curr.isEnd) {
             curr.isEnd = false;
-            entriesCount--;
         } else {
             return false;
         }
-        return true;
-    }
-
-    private boolean removeSequenceWeak(String sequence) {
-        TNode lastNode = getLastNodeAfterEnd(sequence);
-        if (lastNode == null || hasSucceedingBranches(lastNode)) return false;
-        reduceCountOfElements(lastNode);
-        if (lastNode.prev == null) root.nodes.remove(sequence.charAt(0));
-        else lastNode.prev.nodes.remove(lastNode.element);
+        entriesCount--;
         return true;
     }
 
@@ -260,24 +263,24 @@ public class Trie {
     }
 
     /**
-     * Provides to get last node of the specified sequence end
+     * Provides to get last node which equals end of the specified sequence
      *
      * @return node if founded otherwise null
      */
     private TNode getLastNodeAfterEnd(String sequence) {
-        TNode curr = root;
-        TNode lastEnd = null;
-        boolean ifPrevIsEnd = false;
-        for (int i = 0; i < sequence.length(); i++) {
+        TNode curr = root, lastNode = root;
+        int lastCharPos = 0;
+        int len = sequence.length() - 1;
+        for (int i = 0; i <= len; i++) {
             Character c = sequence.charAt(i);
-            if (!curr.nodes.containsKey(c)) return null;
-            TNode node = curr.nodes.get(c);
-            if ((node.isEnd || node.nodes.getSize() > 1) && i != sequence.length() - 1) ifPrevIsEnd = true;
-            else if (ifPrevIsEnd) lastEnd = node;
             curr = curr.nodes.get(c);
+            if (curr == null) return null;
+            if (curr.nodes.getSize() > 1 || (curr.isEnd && i != len)){
+                lastCharPos = i + 1;
+                lastNode = curr;
+            }
         }
-        if (lastEnd == null) lastEnd = root.nodes.get(sequence.charAt(0));
-        return lastEnd;
+        return lastNode.nodes.get(sequence.charAt(lastCharPos));
     }
 
     /**
@@ -335,5 +338,28 @@ public class Trie {
         return res.delete(res.length() - 2, res.length()).append(']').toString();
     }
 
-}
 
+    @Override
+    public Iterator<String> iterator() {
+        return new SelfIterator();
+    }
+
+
+    private static class SelfIterator implements Iterator<String> {
+        public SelfIterator() {
+
+        }
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public String next() {
+            return null;
+        }
+    }
+
+
+}
