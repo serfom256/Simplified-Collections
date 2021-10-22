@@ -5,6 +5,7 @@ import Lists.AbstractLinkedList;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 
 public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
@@ -27,14 +28,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
         this.head = null;
         this.last = null;
         this.length = 0;
-    }
-
-    public DoubleLinkedList(Iterable<E> object) {
-        this.head = null;
-        this.last = null;
-        this.length = 0;
-        //FIXME
-        addFrom(object);
     }
 
     /**
@@ -109,6 +102,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
      * @param data data to add to the position
      * @param pos  this is position to insert the data
      */
+    //FIXME
     @Override
     public void insert(E data, int pos) {
         if (pos <= 0 || head == null) {
@@ -136,7 +130,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     /**
      * Remove all duplicates from the list
      */
-    //ATTENTION THIS METHOD VERY SLOW
     public void removeDuplicates() {
         int pos = 0;
         for (Node<E> first = head; first != null; first = first.next, pos++) {
@@ -178,7 +171,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
      *
      * @param element elements which equals will be removed
      */
-    //ATTENTION THIS METHOD VERY SLOW
     public void removeAllLike(E element) {
         removeAllLike(element, 0);
     }
@@ -189,7 +181,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
      * @param element  elements which equals will be removed
      * @param startPos start position from which remove elements
      */
-    //ATTENTION THIS METHOD VERY SLOW
     public void removeAllLike(E element, int startPos) {
         if (startPos < 0) {
             throw new ArrayIndexOutOfBoundsException();
@@ -337,7 +328,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
         Node<E> curr;
         if (h) {
             curr = last;
-            for (; position > 0; position--){
+            for (; position > 0; position--) {
                 curr = curr.prev;
             }
         } else {
@@ -345,12 +336,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
             for (; position > 0; position--) curr = curr.next;
         }
         return curr.val;
-
-//        Node<E> first = head;
-//        for (; position > 0; position--) {
-//            first = first.next;
-//        }
-//        return first.val;
     }
 
     /**
@@ -549,6 +534,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
 
         @Override
         public E next() {
+            if (current == null) throw new NoSuchElementException();
             E data = current.val;
             current = current.next;
             return data;

@@ -11,27 +11,16 @@ public class DynamicLinkedStringTests {
     @Test
     public void add() {
         DynamicLinkedString s = new DynamicLinkedString("");
-        s.add('a');
-        s.add('b');
-        s.add('c');
+        s.add('a').add('b').add('c');
         assertEquals("abc", s.toString());
         assertEquals(3, s.getSize());
-        s = new DynamicLinkedString("xyz");
-        s.add('a');
-        s.add('b');
-        s.add('c');
-        assertEquals("xyzabc", s.toString());
-        assertEquals(6, s.getSize());
-        String c = "xyzabc";
-        for (int i = 0; i < 6; i++) {
-            c = c.substring(0, c.length() - 1);
-            assertEquals(c, s.popLast().toString());
-            assertEquals(c.length(), s.getSize());
-        }
-    }
-
-    @Test
-    public void testAdd1() {
+        s = new DynamicLinkedString("xyz" + s.toString());
+        s.add("m").add('n').add("qwerty");
+        assertEquals("xyzabcmnqwerty", s.toString());
+        assertEquals(14, s.getSize());
+        assertEquals("xyzabcmnqwerty", new DynamicLinkedString(s).toString());
+        assertEquals(14, new DynamicLinkedString(s).getSize());
+        assertEquals(14, new DynamicLinkedString(s.toCharArray()).getSize());
     }
 
     @Test
@@ -78,7 +67,7 @@ public class DynamicLinkedStringTests {
     public void testSubString() {
         DynamicLinkedString s = new DynamicLinkedString("abcd");
 
-        System.out.println(s.subString(0,0));
+        System.out.println(s.subSequence(0, 0));
     }
 
     @Test

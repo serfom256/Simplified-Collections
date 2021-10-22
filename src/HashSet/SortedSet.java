@@ -381,7 +381,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         return size;
     }
 
-
+    //FIXME
     @Override
     public Iterator<E> iterator() {
         return new SelfIterator();

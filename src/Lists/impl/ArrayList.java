@@ -4,6 +4,7 @@ import Lists.AbstractList;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
 
@@ -49,7 +50,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      */
     @Override
     public void add(E element) {
-        if(data == null) init(capacity);
+        if (data == null) init(capacity);
         data[size] = element;
         if (++size >= capacity) {
             capacity += (capacity >> 1);
@@ -242,7 +243,6 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
-     *
      * Returns all data from current list as array of objects
      */
     @Override
@@ -286,6 +286,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
 
         @Override
         public E next() {
+            if (pos == size) throw new NoSuchElementException();
             return data[pos++];
         }
 

@@ -162,8 +162,8 @@ public class HashTableTest {
 
     @Test
     public void forEach() {
-        String[] keySet = new String[30];
-        String[] values = new String[30];
+        String[] keySet = new String[10000];
+        String[] values = new String[10000];
         for (int i = 0; i < keySet.length; i++) {
             keySet[i] = i + "_key";
             values[i] = i + "_value";
@@ -184,8 +184,8 @@ public class HashTableTest {
 
     @Test
     public void itemsForEach() {
-        String[] keySet = new String[30];
-        String[] values = new String[30];
+        String[] keySet = new String[10000];
+        String[] values = new String[10000];
         for (int i = 0; i < keySet.length; i++) {
             keySet[i] = i + "_key";
             values[i] = i + "_value";

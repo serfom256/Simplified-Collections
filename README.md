@@ -13,7 +13,7 @@
 - [x] Stack(Based at Array)
 
 ### In developing
-- Trie (TrieMap and Fuzzy Search Trie)
+- TrieMap
 - Set (Based at RBT or AVL tree)
 
 ### Will be released later

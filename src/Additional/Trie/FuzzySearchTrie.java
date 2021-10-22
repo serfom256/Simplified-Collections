@@ -46,7 +46,7 @@ public class FuzzySearchTrie extends Trie {
             if (!curr.nodes.containsKey(c)) {
                 AbstractDynamicString res = new DynamicLinkedString(prefix);
                 for (int j = i; j >= 0; j--) {
-                    collectWordsFuzzy(curr, prefix, j, distance, count, founded, res.subString(0, j));
+                    collectWordsFuzzy(curr, prefix, j, distance, count, founded, res.subSequence(0, j));
                     if (founded.getSize() >= count) break;
                     curr = curr.prev;
                 }
@@ -81,16 +81,16 @@ public class FuzzySearchTrie extends Trie {
             TNode v = start.nodes.get(k);
             if (pos < word.length() && k.equals(word.charAt(pos))) {
                 collectWordsFuzzy(v, word, pos + 1, typos, count, founded, prefix.add(k));
-                prefix.popLast();
+                prefix.removeLast();
             } else if (typos >= 0 && count > founded.getSize()) {
                 collectWordsFuzzy(v, word, pos + 1, typos - 1, count, founded, prefix.add(k));
-                collectWordsFuzzy(v, word, pos, typos - 1, count, founded, prefix.popLast().add(k));
-                collectWordsFuzzy(start, word, pos + 1, typos - 1, count, founded, prefix.popLast());
+                collectWordsFuzzy(v, word, pos, typos - 1, count, founded, prefix.removeLast().add(k));
+                collectWordsFuzzy(start, word, pos + 1, typos - 1, count, founded, prefix.removeLast());
             } else break;
         }
         if (count == founded.getSize()) return;
         if (word.length() - pos <= typos && start.nodes.getSize() == 0 && count > 0) {
-            collect(founded, new StringBuilder(prefix.subString(0, prefix.getSize() - 1).toString()), start.prev.nodes, count - founded.getSize());
+            collect(founded, new StringBuilder(prefix.subSequence(0, prefix.getSize() - 1).toString()), start.prev.nodes, count - founded.getSize());
         }
     }
 

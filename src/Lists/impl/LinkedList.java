@@ -4,6 +4,7 @@ import Lists.AbstractLinkedList;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class LinkedList<E> implements AbstractLinkedList<E> {
     private static class Node<T> {
@@ -49,6 +50,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @param element the element to add
      */
     @Override
+    //FIXME
     public void pushLast(E element) {
         Node<E> newNode = new Node<>(element);
         if (head == null) {
@@ -305,7 +307,6 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     *
      * Returns all data from current list as array of objects
      */
     @Override
@@ -369,6 +370,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
 
         @Override
         public E next() {
+            if (current == null) throw new NoSuchElementException();
             E data = current.val;
             current = current.next;
             return data;

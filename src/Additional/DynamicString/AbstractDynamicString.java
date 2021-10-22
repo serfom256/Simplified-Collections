@@ -16,20 +16,25 @@ public interface AbstractDynamicString {
 
     AbstractDynamicString insert(int pos, AbstractDynamicString s);
 
-    AbstractDynamicString subString(int start, int end);
+    AbstractDynamicString subSequence(int start, int end);
 
-    AbstractDynamicString subString(int start);
+    AbstractDynamicString subSequence(int start);
+
+    AbstractDynamicString reverse();
 
     char getLast();
 
     char getFirst();
 
-    AbstractDynamicString popFirst();
+    AbstractDynamicString removeFirst();
 
-    AbstractDynamicString popLast();
+    AbstractDynamicString removeLast();
 
     int count(char element);
 
     int getSize();
+
+    char[] toCharArray();
+
 
 }

@@ -2,6 +2,7 @@ package HashTables;
 
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class HashTable<K, V> implements Iterable<K> {
 
@@ -383,7 +384,7 @@ public class HashTable<K, V> implements Iterable<K> {
      * Clear current HashTable
      */
     public void clear() {
-        if(Table == null) return;
+        if (Table == null) return;
         for (int i = 0; i < CAPACITY; i++) {
             Table[i] = null;
         }
@@ -397,34 +398,35 @@ public class HashTable<K, V> implements Iterable<K> {
 
     private class SelfIterator implements Iterator<K> {
         private int pos;
-        private Node<K, V> current = null;
+        private Node<K, V> current;
 
         SelfIterator() {
             pos = 0;
+            current = null;
         }
 
         @Override
         public boolean hasNext() {
             if (Table == null) return false;
-            for (int i = pos; i < CAPACITY; i++) {
-                if (Table[i] != null) {
-                    pos = i;
-                    if (current == null) {
-                        current = Table[pos];
-                    }
-                    return true;
-                }
+            for (int i = pos; i < CAPACITY; i++, pos++) {
+                if (Table[i] != null) return true;
             }
             return false;
         }
 
         @Override
         public K next() {
-            K key = current.key;
-            if ((current = current.next) == null) {
-                pos++;
+            for (int i = pos; i < CAPACITY; i++) {
+                if (Table[i] != null) {
+                    pos = i;
+                    if (current == null) current = Table[pos];
+                    K key = current.key;
+                    current = current.next;
+                    if (current == null) pos++;
+                    return key;
+                }
             }
-            return key;
+            throw new NoSuchElementException();
         }
     }
 

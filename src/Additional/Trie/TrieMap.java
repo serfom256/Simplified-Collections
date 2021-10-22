@@ -23,6 +23,7 @@ public class TrieMap {
             this.isEnd = false;
             this.prev = null;
             this.nodes = new HashTable<>();
+            this.pairs = new Set<>(4);
             this.size = this.entriesCount = 1;
         }
 
@@ -30,6 +31,7 @@ public class TrieMap {
             this.isEnd = false;
             this.prev = null;
             this.nodes = new HashTable<>();
+            this.pairs = new Set<>(4);
             this.size = this.entriesCount = 0;
         }
 
@@ -53,6 +55,24 @@ public class TrieMap {
     public TrieMap() {
         this.root = new TNode();
         this.size = 0;
+    }
+
+    public void put(String key, String value) {
+        if (key == null || value == null) throw new IllegalArgumentException("Key or Value must be not null");
+        TNode curr = root;
+        for (int i = 0; i < key.length(); i++) {
+            char c = key.charAt(i);
+            TNode next = curr.nodes.get(c);
+            if (next == null) {
+                size++;
+                next = new TNode(c);
+                curr.nodes.add(c, next);
+            }
+            next.prev = curr;
+            curr = next;
+        }
+        if(!curr.isEnd)entriesCount++;
+        curr.isEnd = true;
     }
 
 }

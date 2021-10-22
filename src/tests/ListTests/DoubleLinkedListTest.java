@@ -393,7 +393,8 @@ public class DoubleLinkedListTest {
         LinkedList<Integer> linkedList = new LinkedList<>();
         linkedList.addAll(1, 2, 3, 4, 5, 6);
 
-        DoubleLinkedList<Integer> doubleLinkedList = new DoubleLinkedList<>(linkedList);
+        DoubleLinkedList<Integer> doubleLinkedList = new DoubleLinkedList<>();
+        doubleLinkedList.addFrom(linkedList);
         assertEquals(linkedList.getSize(), doubleLinkedList.getSize());
         for (int i = 0; i < doubleLinkedList.getSize(); i++) {
             assertEquals(linkedList.get(i), doubleLinkedList.get(i));

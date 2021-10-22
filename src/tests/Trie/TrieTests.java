@@ -1,6 +1,8 @@
 package tests.Trie;
 
 import Additional.Trie.Trie;
+import HashSet.AbstractSet;
+import HashSet.Set;
 import Lists.AbstractList;
 import Lists.impl.ArrayList;
 import org.junit.Before;
@@ -240,4 +242,16 @@ public class TrieTests {
         assertEquals(trie.getSize(), 0);
         assertEquals(trie.getEntriesCount(), 0);
     }
+
+    @Test
+    public void forEach() {
+        AbstractSet<String> prev = new Set<>();
+        for (String s : trie) {
+            assertFalse(prev.contains(s));
+            prev.add(s);
+            assertNotEquals(-1, lst.indexOf(s));
+        }
+        assertEquals(lst.getSize(), prev.getSize());
+    }
+
 }

@@ -1,8 +1,10 @@
 package Additional.Trie;
 
+import Additional.DynamicString.DynamicLinkedString;
 import HashSet.AbstractSet;
 import HashSet.SortedSet;
 import HashTables.HashTable;
+import Lists.impl.DoubleLinkedList;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -275,7 +277,7 @@ public class Trie implements Iterable<String> {
             Character c = sequence.charAt(i);
             curr = curr.nodes.get(c);
             if (curr == null) return null;
-            if (curr.nodes.getSize() > 1 || (curr.isEnd && i != len)){
+            if (curr.nodes.getSize() > 1 || (curr.isEnd && i != len)) {
                 lastCharPos = i + 1;
                 lastNode = curr;
             }
@@ -344,22 +346,82 @@ public class Trie implements Iterable<String> {
         return new SelfIterator();
     }
 
+    private class SelfIterator implements Iterator<String> {
+        DynamicLinkedString lastString;
+        DynamicLinkedString tempString = new DynamicLinkedString();
+        DoubleLinkedList<Pair> prevNodes = new DoubleLinkedList<>();
 
-    private static class SelfIterator implements Iterator<String> {
+
         public SelfIterator() {
-
+            prevNodes.pushLast(new Pair(root, root.nodes.iterator()));
         }
+
+        private TNode getNext(HashTable<Character, TNode> table, Iterator<Character> iterator) {
+            if (iterator.hasNext()) return table.get(iterator.next());
+            return null;
+        }
+
+        class Pair {
+            private final TNode table;
+            private final Iterator<Character> iterator;
+
+            public Pair(TNode node, Iterator<Character> iterator) {
+                this.table = node;
+                this.iterator = iterator;
+            }
+        }
+
+
+        private boolean getNextNode(DynamicLinkedString prefix) {
+            if (prevNodes.getSize() == 0) return false;
+            Pair last = prevNodes.peekLast();
+            if (last == null) return false;
+            HashTable<Character, TNode> table = last.table.nodes;
+            Iterator<Character> iterator = last.iterator;
+            TNode newNode = getNext(table, iterator);
+            Character newChar;
+            if (newNode == null) {
+                Pair prev = prevNodes.peekLast();
+                while (!prev.iterator.hasNext() && prevNodes.getSize() > 0) {
+                    prev = prevNodes.popLast();
+                    if (prev == null) return false;
+                    if (prevNodes.getSize() == 0 || prev.iterator.hasNext()) break;
+                    prefix.removeLast();
+                }
+                newNode = prev.table;
+                iterator = prev.iterator;
+                if (!iterator.hasNext()) return false;
+                newChar = iterator.next();
+                table = newNode.nodes;
+                if (prevNodes.getSize() == 0) {
+                    prevNodes.add(new Pair(newNode, iterator));
+                    prefix.removeLast();
+                } else if (iterator.hasNext()) {
+                    prevNodes.add(new Pair(newNode, iterator));
+                }
+
+            } else {
+                newChar = newNode.element;
+            }
+            prefix.add(newChar);
+            newNode = table.get(newChar);
+            prevNodes.add(new Pair(newNode, newNode.nodes.iterator()));
+            if (newNode.isEnd) {
+                lastString = new DynamicLinkedString(prefix);
+                return true;
+            }
+            return getNextNode(prefix);
+        }
+
 
         @Override
         public boolean hasNext() {
-            return false;
+            return getNextNode(tempString);
         }
 
         @Override
         public String next() {
-            return null;
+            return lastString.toString();
         }
     }
-
-
 }
