@@ -2,6 +2,8 @@ package HashSet;
 
 import Lists.AbstractList;
 import Lists.impl.ArrayList;
+import Stack.AbstractStack;
+import Stack.LinkedStack;
 
 import java.util.Iterator;
 
@@ -17,14 +19,19 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         }
     }
 
+    private static class Wrapper<E> {
+        E value;
+
+        public Wrapper() {
+            this.value = null;
+        }
+    }
+
     private TNode<E> root;
     private int size;
     private int balanceCount;
     private final int maxBalanceThreshold;
     private static final int defaultBalanceThreshold = 10;
-
-    // currentPos variable used for search element in the Set(Binary Tree) by position
-    private int currentPos = 0;
 
     public SortedSet() {
         this(defaultBalanceThreshold);
@@ -53,33 +60,30 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @throws ArrayIndexOutOfBoundsException if position out of Set bounds
      */
     public E get(int pos) {
-        if (pos < 0 || pos >= size) {
-            throw new ArrayIndexOutOfBoundsException("if position out of Set bounds");
-        }
-        currentPos = 0;
-        return searchValue(root, pos);
+        if (pos < 0 || pos >= size) throw new ArrayIndexOutOfBoundsException("if position out of Set bounds");
+        Wrapper<E> obj = new Wrapper<>();
+        searchValue(root, 0, pos, obj);
+        return obj.value;
     }
 
     /**
-     * Search specified element in the Binary Tree
+     * Provides to get element from the tree by the position
      *
-     * @param root root of the Binary Tree
-     * @param pos  position of element
-     * @return Element if element present in the Binary Tree, otherwise null
+     * @param currPos     initial position of first node should be 0
+     * @param pos         position for searched element
+     * @param searchedVal value to search in the wrapper
      */
-    private E searchValue(TNode<E> root, int pos) {
-        E result = null;
-        if (root != null) {
-            result = searchValue(root.left, pos);
-            if (pos == currentPos++) {
-                return root.element;
-            }
-            if (result == null) {
-                result = searchValue(root.right, pos);
-            }
+    private int searchValue(TNode<E> root, int currPos, int pos, Wrapper<E> searchedVal) {
+        if (root == null || searchedVal.value != null) return currPos;
+        currPos = searchValue(root.left, currPos, pos, searchedVal);
+        if (currPos == pos && searchedVal.value == null) {
+            searchedVal.value = root.element;
+            return currPos;
         }
-        return result;
+        currPos = searchValue(root.right, currPos + 1, pos, searchedVal);
+        return currPos;
     }
+
 
     /**
      * Replace element in the Set if element present in the Set
@@ -103,7 +107,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @param newElement new element to replace old element
      * @param root       root of Binary Tree
      */
-    public void update(E OldElement, E newElement, TNode<E> root) {
+    private void update(E OldElement, E newElement, TNode<E> root) {
         if (root != null) {
             if (root.element.equals(OldElement)) {
                 root.element = newElement;
@@ -357,9 +361,9 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
 
     @Override
     public Object[] toObjectArray() {
-      AbstractList<E> result = new ArrayList<>(size+1);
+        AbstractList<E> result = new ArrayList<>(size + 1);
         collectAllNodes(result, root);
-      return result.toObjectArray();
+        return result.toObjectArray();
     }
 
     /**
@@ -381,30 +385,40 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         return size;
     }
 
-    //FIXME
     @Override
     public Iterator<E> iterator() {
         return new SelfIterator();
     }
 
-private class SelfIterator implements Iterator<E> {
-    int position;
+    //FIXME
+    private class SelfIterator implements Iterator<E> {
 
-    public SelfIterator() {
-        position = 0;
+        private final AbstractStack<TNode<E>> stack;
+
+        private TNode<E> current, next;
+
+        public SelfIterator() {
+            this.stack = new LinkedStack<TNode<E>>();
+            current = next = root;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null || !stack.isEmpty();
+        }
+
+        @Override
+        public E next() {
+            current = next;
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            current = stack.poll();
+            next = current.right;
+            return current.element;
+        }
     }
-
-    @Override
-    public boolean hasNext() {
-        return position < size;
-    }
-
-    @Override
-    public E next() {
-        return get(position++);
-    }
-
-}
 
     /**
      * Utility method for print Set

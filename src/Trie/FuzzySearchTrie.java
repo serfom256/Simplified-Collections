@@ -1,4 +1,4 @@
-package Additional.Trie;
+package Trie;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
@@ -39,7 +39,7 @@ public class FuzzySearchTrie extends Trie {
             throw new IllegalArgumentException("Prefix length must be more then distance");
         }
         AbstractSet<String> founded = new Set<>(distance + 1);
-        StringBuilder result = new StringBuilder();
+        AbstractDynamicString result = new DynamicLinkedString();
         TNode curr = root;
         for (int i = 0; i < prefix.length(); i++) {
             char c = prefix.charAt(i);
@@ -53,19 +53,28 @@ public class FuzzySearchTrie extends Trie {
                 Object[] instance = founded.toObjectArray();
                 return Arrays.copyOf(instance, instance.length, String[].class);
             }
-            result.append(c);
+            result.add(c);
             if (i == prefix.length() - 1 && curr.nodes.get(c).isEnd) {
                 count--;
                 founded.add(result.toString());
             }
             curr = curr.nodes.get(c);
         }
-        collect(founded, new StringBuilder(prefix), curr.nodes, count);
+        collect(founded, new DynamicLinkedString(prefix), curr.nodes, count);
         Object[] instance = founded.toObjectArray();
         return Arrays.copyOf(instance, instance.length, String[].class);
     }
 
-
+    /**
+     * Provides to collect all data from the specified node with using fuzzy search
+     *
+     * @param word    word of all collected words
+     * @param pos     position in word from which search starts
+     * @param typos   maximum count of typos in searched word
+     * @param count   maximum count of founded words
+     * @param founded set which contains all founded words
+     * @param prefix  prefix from which will starts all founded words
+     */
     private void collectWordsFuzzy(TNode start, String word, int pos, int typos, int count, AbstractSet<String> founded, AbstractDynamicString prefix) {
         if (count == founded.getSize()) return;
         if (pos == word.length() && typos >= 0) {
@@ -74,7 +83,7 @@ public class FuzzySearchTrie extends Trie {
                 if (start.prev != null && start.prev.nodes.containsKey(lastChar) && start.isEnd)
                     founded.add(prefix.toString());
             }
-            collect(founded, new StringBuilder(prefix.toString()), start.nodes, count - founded.getSize());
+            collect(founded, prefix, start.nodes, count - founded.getSize());
             return;
         }
         for (Character k : start.nodes) {
@@ -90,7 +99,7 @@ public class FuzzySearchTrie extends Trie {
         }
         if (count == founded.getSize()) return;
         if (word.length() - pos <= typos && start.nodes.getSize() == 0 && count > 0) {
-            collect(founded, new StringBuilder(prefix.subSequence(0, prefix.getSize() - 1).toString()), start.prev.nodes, count - founded.getSize());
+            collect(founded, prefix.subSequence(0, prefix.getSize() - 1), start.prev.nodes, count - founded.getSize());
         }
     }
 

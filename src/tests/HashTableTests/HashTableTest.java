@@ -1,6 +1,7 @@
 package tests.HashTableTests;
 
 
+import Additional.Nodes.HashNode;
 import HashTables.HashTable;
 import org.junit.Before;
 import org.junit.Test;
@@ -192,9 +193,9 @@ public class HashTableTest {
             hashTable.add(keySet[i], values[i]);
         }
         int count = 0;
-        for (HashTable.Entry<String, String> s : hashTable.items) {
+        for (HashNode<String, String> s : hashTable.items) {
             for (int i = 0; i < keySet.length; i++) {
-                if (keySet[i].equals(s.key) && values[i].equals(s.value)) {
+                if (keySet[i].equals(s.getKey()) && values[i].equals(s.getValue())) {
                     count++;
                     break;
                 }

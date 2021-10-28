@@ -1,6 +1,5 @@
 package tests.Trie;
 
-import Additional.Trie.ExtendedTrie;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -19,7 +18,7 @@ public class TrieTestsRunner {
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("Trie tests" + (result.wasSuccessful() ? " was successful" : "was failed"));
+        System.out.println("Trie tests" + (result.wasSuccessful() ? " was successful" : " was failed"));
     }
 
     private static void runFuzzyTrieTest() {
@@ -28,7 +27,7 @@ public class TrieTestsRunner {
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("Fuzzy Trie tests" + (result.wasSuccessful() ? " was successful" : "was failed"));
+        System.out.println("Fuzzy Trie tests" + (result.wasSuccessful() ? " was successful" : " was failed"));
     }
 
     private static void runTrieMapTest() {
@@ -37,7 +36,7 @@ public class TrieTestsRunner {
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("Trie Map tests" + (result.wasSuccessful() ? " was successful" : "was failed"));
+        System.out.println("Trie Map tests" + (result.wasSuccessful() ? " was successful" : " was failed"));
     }
 
     private static void runExtendedTrieTest() {
@@ -46,7 +45,7 @@ public class TrieTestsRunner {
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("Extended Trie tests" + (result.wasSuccessful() ? " was successful" : "was failed"));
+        System.out.println("Extended Trie tests" + (result.wasSuccessful() ? " was successful" : " was failed"));
     }
 
 }

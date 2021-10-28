@@ -31,6 +31,24 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     }
 
     /**
+     * Add specified element to end of the list
+     *
+     * @param element the element to add
+     */
+    public void add(E element) {
+        pushLast(element);
+    }
+
+
+    @Override
+    @SafeVarargs
+    public final void addAll(E... data) {
+        for (E obj : data) {
+            pushLast(obj);
+        }
+    }
+
+    /**
      * Add element to end of the list
      *
      * @param element the element to add
@@ -39,8 +57,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     public void pushLast(E element) {
         Node<E> newNode = new Node<>(element);
         if (last == null) {
-            head = newNode;
-            last = head;
+            head = last = newNode;
         } else {
             newNode.prev = last;
             last.next = newNode;
@@ -68,24 +85,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
     }
 
     /**
-     * Add specified element to end of the list
-     *
-     * @param element the element to add
-     */
-    public void add(E element) {
-        pushLast(element);
-    }
-
-
-    @Override
-    @SafeVarargs
-    public final void addAll(E... data) {
-        for (E obj : data) {
-            pushLast(obj);
-        }
-    }
-
-    /**
      * Add all data from Iterable objects in the end of list
      *
      * @param data it is all iterable object of elements to add
@@ -102,7 +101,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E>, Iterable<E> {
      * @param data data to add to the position
      * @param pos  this is position to insert the data
      */
-    //FIXME
     @Override
     public void insert(E data, int pos) {
         if (pos <= 0 || head == null) {

@@ -1,10 +1,12 @@
-package Additional.Trie;
+package Trie;
 
+import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
 import HashSet.AbstractSet;
 import HashSet.SortedSet;
 import HashTables.HashTable;
-import Lists.impl.DoubleLinkedList;
+import Stack.AbstractStack;
+import Stack.LinkedStack;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -25,7 +27,7 @@ public class Trie implements Iterable<String> {
             this.element = element;
             this.isEnd = false;
             this.prev = null;
-            this.nodes = new HashTable<>();
+            this.nodes = new HashTable<>(4);
         }
 
         public TNode() {
@@ -133,11 +135,11 @@ public class Trie implements Iterable<String> {
         if (prefix.length() == 0) return new String[0];
         AbstractSet<String> list = new SortedSet<>(count + 1);
         TNode curr = root;
-        StringBuilder result = new StringBuilder();
+        AbstractDynamicString result = new DynamicLinkedString();
         for (int i = 0; i < prefix.length(); i++) {
             char c = prefix.charAt(i);
             if (!curr.nodes.containsKey(c)) return new String[0];
-            result.append(c);
+            result.add(c);
             if (i == prefix.length() - 1 && curr.nodes.get(c).isEnd) {
                 count--;
                 list.add(result.toString());
@@ -158,18 +160,18 @@ public class Trie implements Iterable<String> {
      * @param count  number of sequences to collect
      *               Not taken into account if specified count of sequences not found in the specified branch
      */
-    int collect(AbstractSet<String> result, StringBuilder prefix, HashTable<Character, TNode> start, int count) {
+    int collect(AbstractSet<String> result, AbstractDynamicString prefix, HashTable<Character, TNode> start, int count) {
         if (start == null || count == 0) return count;
         for (Character c : start) {
             TNode node = start.get(c);
-            prefix.append(node.element);
+            prefix.add(node.element);
             if (node.isEnd) {
                 count--;
                 result.add(prefix.toString());
             }
             count = collect(result, prefix, node.nodes, count);
             if (count == 0) return 0;
-            prefix.deleteCharAt(prefix.length() - 1);
+            prefix.removeLast();
         }
         return count;
     }
@@ -216,6 +218,7 @@ public class Trie implements Iterable<String> {
         else lastNode.prev.nodes.remove(lastNode.element);
         return true;
     }
+    //FIXME
 
     /**
      * Removes only specified sequence from branch (Recommended for use)
@@ -349,11 +352,11 @@ public class Trie implements Iterable<String> {
     private class SelfIterator implements Iterator<String> {
         DynamicLinkedString lastString;
         DynamicLinkedString tempString = new DynamicLinkedString();
-        DoubleLinkedList<Pair> prevNodes = new DoubleLinkedList<>();
+        AbstractStack<Pair> prevNodes = new LinkedStack<Pair>();
 
 
         public SelfIterator() {
-            prevNodes.pushLast(new Pair(root, root.nodes.iterator()));
+            prevNodes.push(new Pair(root, root.nodes.iterator()));
         }
 
         private TNode getNext(HashTable<Character, TNode> table, Iterator<Character> iterator) {
@@ -374,16 +377,16 @@ public class Trie implements Iterable<String> {
 
         private boolean getNextNode(DynamicLinkedString prefix) {
             if (prevNodes.getSize() == 0) return false;
-            Pair last = prevNodes.peekLast();
+            Pair last = prevNodes.peek();
             if (last == null) return false;
             HashTable<Character, TNode> table = last.table.nodes;
             Iterator<Character> iterator = last.iterator;
             TNode newNode = getNext(table, iterator);
             Character newChar;
             if (newNode == null) {
-                Pair prev = prevNodes.peekLast();
+                Pair prev = prevNodes.peek();
                 while (!prev.iterator.hasNext() && prevNodes.getSize() > 0) {
-                    prev = prevNodes.popLast();
+                    prev = prevNodes.poll();
                     if (prev == null) return false;
                     if (prevNodes.getSize() == 0 || prev.iterator.hasNext()) break;
                     prefix.removeLast();
@@ -394,10 +397,10 @@ public class Trie implements Iterable<String> {
                 newChar = iterator.next();
                 table = newNode.nodes;
                 if (prevNodes.getSize() == 0) {
-                    prevNodes.add(new Pair(newNode, iterator));
+                    prevNodes.push(new Pair(newNode, iterator));
                     prefix.removeLast();
                 } else if (iterator.hasNext()) {
-                    prevNodes.add(new Pair(newNode, iterator));
+                    prevNodes.push(new Pair(newNode, iterator));
                 }
 
             } else {
@@ -405,7 +408,7 @@ public class Trie implements Iterable<String> {
             }
             prefix.add(newChar);
             newNode = table.get(newChar);
-            prevNodes.add(new Pair(newNode, newNode.nodes.iterator()));
+            prevNodes.push(new Pair(newNode, newNode.nodes.iterator()));
             if (newNode.isEnd) {
                 lastString = new DynamicLinkedString(prefix);
                 return true;

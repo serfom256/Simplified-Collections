@@ -14,7 +14,6 @@ public class Stack<E> implements AbstractStack<E> {
     public Stack(int capacity) {
         this.size = 0;
         this.capacity = capacity;
-        init(capacity);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,6 +71,7 @@ public class Stack<E> implements AbstractStack<E> {
      */
     @Override
     public void push(E element) {
+        if(data == null) init(capacity);
         data[size] = element;
         if (++size >= capacity) {
             capacity += (capacity >> 1);

@@ -1,4 +1,4 @@
-package Additional.Trie;
+package Trie;
 
 public class ExtendedTrie extends FuzzySearchTrie {
 

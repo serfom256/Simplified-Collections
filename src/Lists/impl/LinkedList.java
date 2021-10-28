@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class LinkedList<E> implements AbstractLinkedList<E> {
+
     private static class Node<T> {
         T val;
         Node<T> next;
@@ -50,12 +51,10 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @param element the element to add
      */
     @Override
-    //FIXME
     public void pushLast(E element) {
         Node<E> newNode = new Node<>(element);
         if (head == null) {
-            head = newNode;
-            last = head;
+            head = last = newNode;
         } else {
             last.next = newNode;
             last = last.next;
@@ -84,9 +83,6 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      */
     @Override
     public E peekLast() {
-        if (length == 1) {
-            return head.val;
-        }
         return length != 0 ? last.val : null;
     }
 

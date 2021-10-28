@@ -1,6 +1,8 @@
 package HashTables;
 
 
+import Additional.Nodes.HashNode;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -14,7 +16,7 @@ public class HashTable<K, V> implements Iterable<K> {
     private int size;
     public final Items items;
 
-    private static class Node<K, V> {
+    private static class Node<K, V> implements HashNode<K, V> {
         final K key;
         final int hash;
         V value;
@@ -25,6 +27,21 @@ public class HashTable<K, V> implements Iterable<K> {
             this.value = value;
             this.hash = hash;
             next = null;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public int getHash() {
+            return hash;
         }
     }
 
@@ -85,6 +102,7 @@ public class HashTable<K, V> implements Iterable<K> {
 
     /**
      * Append and associate specified key with specified value in the HashTable
+     * If current table size equals or higher then threshold param(table capacity * table load factor) table will be resized
      *
      * @param key   key to associate with specified value
      * @param value value to associate with specified key
@@ -314,6 +332,7 @@ public class HashTable<K, V> implements Iterable<K> {
         return false;
     }
 
+    @Deprecated
     public static final class Entry<K, V> {
         public final K key;
         public final V value;
@@ -324,40 +343,43 @@ public class HashTable<K, V> implements Iterable<K> {
         }
     }
 
-    public final class Items implements Iterable<Entry<K, V>> {
+    public final class Items implements Iterable<HashNode<K, V>> {
         @Override
-        public Iterator<Entry<K, V>> iterator() {
+        public Iterator<HashNode<K, V>> iterator() {
             return new NodesIterator();
         }
 
-        private class NodesIterator implements Iterator<Entry<K, V>> {
+        private class NodesIterator implements Iterator<HashNode<K, V>> {
             private int pos;
-            private Node<K, V> current = null;
+            private Node<K, V> current;
 
             NodesIterator() {
                 pos = 0;
+                current = null;
             }
 
             @Override
             public boolean hasNext() {
-                for (int i = pos; i < CAPACITY; ++i) {
-                    if (Table[i] != null) {
-                        pos = i;
-                        if (current == null) current = Table[pos];
-                        return true;
-                    }
+                if (Table == null) return false;
+                for (int i = pos; i < CAPACITY; i++, pos++) {
+                    if (Table[i] != null) return true;
                 }
                 return false;
             }
 
             @Override
-            public Entry<K, V> next() {
-                K key = current.key;
-                V value = current.value;
-                if ((current = current.next) == null) {
-                    pos++;
+            public HashNode<K, V> next() {
+                for (int i = pos; i < CAPACITY; i++) {
+                    if (Table[i] != null) {
+                        pos = i;
+                        if (current == null) current = Table[pos];
+                        HashNode<K, V> hashNode = current;
+                        current = current.next;
+                        if (current == null) pos++;
+                        return hashNode;
+                    }
                 }
-                return new Entry<>(key, value);
+                throw new NoSuchElementException();
             }
         }
     }

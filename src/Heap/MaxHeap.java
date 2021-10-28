@@ -44,7 +44,6 @@ public class MaxHeap<T extends Comparable<? super T>> {
             throw new IllegalArgumentException("Capacity if heap must be more then 10");
         }
         this.capacity = capacity;
-        initHeap(this.capacity);
         this.size = 0;
     }
 
@@ -54,7 +53,6 @@ public class MaxHeap<T extends Comparable<? super T>> {
             push(el);
         }
     }
-
 
     /**
      * Add element to the heap
@@ -66,10 +64,8 @@ public class MaxHeap<T extends Comparable<? super T>> {
         if (element == null) {
             throw new IllegalArgumentException("Element must be not null");
         }
-
-        if (isOverFlow()) {
-            grow();
-        }
+        if (heap == null) initHeap(this.capacity);
+        if (isOverFlow()) grow();
         heap[size] = new Data<>(element);
         raiseUp(size++);
     }
@@ -193,6 +189,7 @@ public class MaxHeap<T extends Comparable<? super T>> {
         if (newElement == null || oldElement == null) {
             throw new IllegalArgumentException("Elements must be not null");
         }
+        if (heap == null) initHeap(this.capacity);
         for (int i = 0; i < size; i++) {
             if (heap[i].value.equals(oldElement)) {
                 update(newElement, i);
@@ -212,6 +209,7 @@ public class MaxHeap<T extends Comparable<? super T>> {
         if (newElement == null || oldElement == null) {
             throw new IllegalArgumentException("Elements must be not null");
         }
+        if (heap == null) initHeap(this.capacity);
         for (int i = 0; i < size; i++) {
             if (heap[i].value.equals(oldElement)) {
                 update(newElement, i);

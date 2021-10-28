@@ -1,6 +1,6 @@
 package tests.Trie;
 
-import Additional.Trie.FuzzySearchTrie;
+import Trie.FuzzySearchTrie;
 import Lists.AbstractList;
 import Lists.impl.ArrayList;
 import org.junit.Before;

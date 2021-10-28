@@ -22,19 +22,31 @@ public interface AbstractDynamicString {
 
     AbstractDynamicString reverse();
 
-    char getLast();
+    AbstractDynamicString insert(int pos, char[] s);
 
-    char getFirst();
+    AbstractDynamicString delete(int startPos, int endPos);
+
+    AbstractDynamicString delete(int start);
+
+    AbstractDynamicString deleteAtPosition(int pos);
 
     AbstractDynamicString removeFirst();
 
     AbstractDynamicString removeLast();
+
+    AbstractDynamicString clear();
+
+    char getLast();
+
+    char getFirst();
 
     int count(char element);
 
     int getSize();
 
     char[] toCharArray();
+
+
 
 
 }
