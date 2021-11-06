@@ -1,5 +1,8 @@
 package Heap;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
+
 /**
  * This is simple PriorityQueue
  *
@@ -328,13 +331,13 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     public String toString() {
         if (size == 0) return "[]";
 
-        StringBuilder res = new StringBuilder("[");
+        AbstractDynamicString res = new DynamicLinkedString("[");
         for (int i = 0; i < size - 1; i++) {
-            res.append("{").append(queue[i].value).append(":").append(queue[i].priority).append("}, ");
+            res.add("{").add(queue[i].value).add(":").add(queue[i].priority).add("}, ");
         }
         if (queue[size - 1] == null) {
-            return res.toString() + "]";
+            return res.add("]").toString();
         }
-        return res.toString() + "{" + queue[size - 1].value + ":" + queue[size - 1].priority + "}" + "]";
+        return res.add("{").add(queue[size - 1].value).add(":").add(queue[size - 1].priority).add("}").add("]").toString();
     }
 }

@@ -4,6 +4,8 @@ public interface AbstractDynamicString {
 
     AbstractDynamicString add(AbstractDynamicString s);
 
+    AbstractDynamicString add(Object o);
+
     AbstractDynamicString add(String s);
 
     AbstractDynamicString add(char element);
@@ -34,7 +36,27 @@ public interface AbstractDynamicString {
 
     AbstractDynamicString removeLast();
 
+    AbstractDynamicString replace(int start, int end, String s);
+
+    AbstractDynamicString replace(int start, String s);
+
+    AbstractDynamicString replace(int start, int end, DynamicLinkedString s);
+
+    AbstractDynamicString replace(int start, DynamicLinkedString s);
+
+    AbstractDynamicString replace(int start, int end, char[] c);
+
+    AbstractDynamicString replace(int start, char[] c);
+
+    AbstractDynamicString replace(int start, int end, char c);
+
+    AbstractDynamicString replace(int start, char c);
+
     AbstractDynamicString clear();
+
+    String subString(int start, int end);
+
+    String subString(int start);
 
     char getLast();
 
@@ -45,8 +67,6 @@ public interface AbstractDynamicString {
     int getSize();
 
     char[] toCharArray();
-
-
 
 
 }

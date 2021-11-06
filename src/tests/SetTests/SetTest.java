@@ -102,6 +102,7 @@ public class SetTest {
         }
         assertEquals(elements.length, count);
     }
+
     @Test
     public void toObjectArray() {
         set.clear();
@@ -110,5 +111,15 @@ public class SetTest {
         Object[] result = set.toObjectArray();
         Arrays.sort(result);
         assertArrayEquals(testArr, result);
+    }
+
+    @Test
+    public void speedTest() {
+        Set<Integer> testSet = new Set<>();
+        testSet.clear();
+        for (int i = 0; i < 1_000_000; i++) {
+            testSet.add(i);
+        }
+        assertEquals(1_000_000, testSet.getSize());
     }
 }

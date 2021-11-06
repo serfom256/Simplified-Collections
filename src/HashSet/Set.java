@@ -1,5 +1,7 @@
 package HashSet;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
 import HashTables.HashTable;
 import Lists.AbstractList;
 import Lists.impl.ArrayList;
@@ -108,10 +110,10 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
     @Override
     public String toString() {
         if (hashTable.getSize() == 0) return "{}";
-        StringBuilder res = new StringBuilder("{");
+        AbstractDynamicString res = new DynamicLinkedString("{");
         for (E e : hashTable) {
-            res.append(e).append(", ");
+            res.add(e).add(", ");
         }
-        return res.substring(0, res.length() - 2) + "}";
+        return res.subSequence(0, res.getSize() - 2).addFirst('{').add('}').toString();
     }
 }

@@ -1,6 +1,8 @@
 package HashTables;
 
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
 import Additional.Nodes.HashNode;
 
 import java.util.Iterator;
@@ -459,15 +461,15 @@ public class HashTable<K, V> implements Iterable<K> {
      * @return string of all node keys and node values
      */
     private String toStringBucket(Node<K, V> node) {
-        StringBuilder res = new StringBuilder("[" + node.key + ":" + node.value);
+        AbstractDynamicString res = new DynamicLinkedString("[").add(node.key).add(":").add(node.value);
         Node<K, V> prev = node;
         for (Node<K, V> current = node.next; current != null; current = current.next) {
             if (!(prev.hash == current.hash)) {
-                res.append("], [").append(current.key).append(":").append(current.value);
+                res.add("], [").add(current.key).add(":").add(current.value);
             }
             prev = current;
         }
-        return res + "], ";
+        return res.add("], ").toString();
     }
 
     @Override
@@ -475,12 +477,12 @@ public class HashTable<K, V> implements Iterable<K> {
         if (size == 0) {
             return "{}";
         }
-        StringBuilder res = new StringBuilder("{");
+        AbstractDynamicString res = new DynamicLinkedString("{");
         for (int i = 0; i < CAPACITY; i++) {
             if (Table[i] != null) {
-                res.append(toStringBucket(Table[i]));
+                res.add(toStringBucket(Table[i]));
             }
         }
-        return res.replace(res.length() - 2, res.length() - 1, "}").toString();
+        return res.replace(res.getSize() - 2, "}").toString();
     }
 }

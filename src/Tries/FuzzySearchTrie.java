@@ -1,4 +1,4 @@
-package Trie;
+package Tries;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;

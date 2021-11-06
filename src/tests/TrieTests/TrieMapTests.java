@@ -1,4 +1,4 @@
-package tests.Trie;
+package tests.TrieTests;
 
 public class TrieMapTests {
 }

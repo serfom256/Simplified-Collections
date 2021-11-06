@@ -47,6 +47,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     @Override
+    public AbstractDynamicString add(Object o) {
+        return add(String.valueOf(o));
+    }
+
+    @Override
     public DynamicLinkedString add(String s) {
         insertSequenceAfter(last, s, 0);
         return this;
@@ -69,6 +74,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
 
 
     private void insertSequenceBefore(Node node, String s, int posInWord) {
+        if (s.length() == 0) return;
         if (node == null) {
             size++;
             node = head = last = new Node(s.charAt(posInWord++));
@@ -80,6 +86,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     private void insertSequenceAfter(Node node, String s, int posInWord) {
+        if (s.length() == 0) return;
         if (node == null) {
             size++;
             node = head = last = new Node(s.charAt(posInWord++));
@@ -174,12 +181,12 @@ public class DynamicLinkedString implements AbstractDynamicString {
      *
      * @param startPos start position of removed range
      * @param endPos   end position of removed range
-     * @throws UnsupportedOperationException if startPos > endPos or specified positions out of string range
+     * @throws IllegalArgumentException if startPos > endPos or specified positions out of string range
      */
     @Override
     public DynamicLinkedString delete(int startPos, int endPos) {
         if (startPos >= endPos || startPos < 0) {
-            throw new UnsupportedOperationException("Specified position is invalid");
+            throw new IllegalArgumentException("Specified position is invalid");
         }
         if (endPos >= size) endPos = size;
         Node node = getNodeByPos(startPos);
@@ -195,12 +202,12 @@ public class DynamicLinkedString implements AbstractDynamicString {
     /**
      * Provides to all characters from the specified position
      *
-     * @throws UnsupportedOperationException if the specified start position out of string bounds
+     * @throws IllegalArgumentException if the specified start position out of string bounds
      */
     @Override
     public DynamicLinkedString delete(int start) {
         if (start < 0) {
-            throw new UnsupportedOperationException("Specified position out of String bounds");
+            throw new IllegalArgumentException("Specified position out of String bounds");
         }
         if (start == 0) return clear();
         if (start >= size) start = size;
@@ -215,11 +222,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
     /**
      * Provides to remove character on the specified position
      *
-     * @throws UnsupportedOperationException if the specified position out of string bounds
+     * @throws IllegalArgumentException if the specified position out of string bounds
      */
     @Override
     public DynamicLinkedString deleteAtPosition(int pos) {
-        if (pos < 0 || pos > size) throw new UnsupportedOperationException("Specified position out of String bounds");
+        if (pos < 0 || pos > size) throw new IllegalArgumentException("Specified position out of String bounds");
         Node node = getNodeByPos(pos - 1);
         if (node.prev == null) return removeFirst();
         if (node.next == null) return removeLast();
@@ -237,7 +244,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
         if (toRemove == null) return null;
         Node prev = toRemove.prev;
         if (prev != null) prev.next = node;
-        node.prev = node;
+        node.prev = prev;
         return node;
     }
 
@@ -273,6 +280,70 @@ public class DynamicLinkedString implements AbstractDynamicString {
         if (last != null) last.next = null;
         else head = null;
         return this;
+    }
+
+    // TODO write comments for methods
+    @Override
+    public DynamicLinkedString replace(int start, int end, String s) {
+        if (start < 0 || start >= end || start >= size) {
+            throw new IllegalArgumentException("Specified position is illegal to replace");
+        }
+        if (end >= size) end = size;
+        Node temp = getNodeByPos(start).next, curr;
+        for (curr = temp; curr != null && start < end; start++, curr = curr.next) {
+            if (curr.prev == head) {
+                removeFirst();
+            } else {
+                curr = deleteBefore(curr);
+                size--;
+            }
+            if (curr == null) break;
+        }
+        if (curr == null && start < end && size == 0) {
+            removeFirst();
+            insertSequenceAfter(head, s, 0);
+        } else if (curr == null && start < end) {
+            removeLast();
+            insertSequenceAfter(last, s, 0);
+        } else {
+            insertSequenceBefore(curr == null ? head : curr.prev, s, 0);
+        }
+        return this;
+    }
+
+    @Override
+    public AbstractDynamicString replace(int start, String s) {
+        return replace(start, size, s);
+    }
+
+    @Override
+    public AbstractDynamicString replace(int start, int end, DynamicLinkedString s) {
+        return replace(start, end, s.toString());
+    }
+
+    @Override
+    public AbstractDynamicString replace(int start, DynamicLinkedString s) {
+        return replace(start, size, s.toString());
+    }
+
+    @Override
+    public AbstractDynamicString replace(int start, int end, char[] c) {
+        return replace(start, end, new String(c));
+    }
+
+    @Override
+    public AbstractDynamicString replace(int start, char[] c) {
+        return replace(start, size, new String(c));
+    }
+
+    @Override
+    public AbstractDynamicString replace(int start, int end, char c) {
+        return replace(start, end, String.valueOf(c));
+    }
+
+    @Override
+    public AbstractDynamicString replace(int start, char c) {
+        return replace(start, size, String.valueOf(c));
     }
 
 
@@ -335,10 +406,12 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return new DynamicLinkedString(subStr(start, size));
     }
 
+    @Override
     public String subString(int start, int end) {
         return new String(subStr(start, end));
     }
 
+    @Override
     public String subString(int start) {
         return new String(subStr(start, size));
     }

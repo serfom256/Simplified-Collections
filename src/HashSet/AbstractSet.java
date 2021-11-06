@@ -17,7 +17,7 @@ public interface AbstractSet<E> {
     Object[] toObjectArray();
 
 
-    // TODO add methods like (union, exclusion, between, merge)
+    // TODO add builder methods like (union, exclusion, between, merge)
 
 
 }

@@ -1,5 +1,7 @@
 package Lists.impl;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
 import Lists.AbstractList;
 
 import java.util.Arrays;
@@ -295,11 +297,11 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     @Override
     public String toString() {
         if (size == 0) return "[]";
-        StringBuilder res = new StringBuilder("[");
+        AbstractDynamicString res = new DynamicLinkedString("[");
         for (int i = 0; i < size - 1; i++) {
-            res.append(data[i]).append(", ");
+            res.add(data[i]).add(", ");
         }
-        return res.toString() + data[size - 1] + "]";
+        return res.add(data[size - 1]).add("]").toString();
     }
 }
 

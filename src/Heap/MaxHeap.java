@@ -1,5 +1,8 @@
 package Heap;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
+
 /**
  * This is simple MAX binary Heap
  *
@@ -294,11 +297,10 @@ public class MaxHeap<T extends Comparable<? super T>> {
     @Override
     public String toString() {
         if (size == 0) return "[]";
-
-        StringBuilder res = new StringBuilder("[");
+        AbstractDynamicString res = new DynamicLinkedString("[");
         for (int i = 0; i < size - 1; i++) {
-            res.append(heap[i].value).append(", ");
+            res.add(heap[i].value).add(", ");
         }
-        return res.toString() + (heap[size - 1] == null ? "" : heap[size - 1].value) + "]";
+        return res.add(heap[size - 1] == null ? "" : heap[size - 1].value).add("]").toString();
     }
 }

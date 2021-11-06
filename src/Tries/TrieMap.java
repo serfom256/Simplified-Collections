@@ -1,8 +1,7 @@
-package Trie;
+package Tries;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
-import Additional.Nodes.HashNode;
 import HashSet.AbstractSet;
 import HashSet.Set;
 import HashSet.SortedSet;

@@ -8,14 +8,16 @@ public class SetTestsRunner {
     public static void main(String[] args) {
         runSetTest();
         runSortedSetTest();
+        runSortedSetIPTest();
     }
+
     private static void runSetTest() {
         Result result = JUnitCore.runClasses(SetTest.class);
 
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("Set tests"+(result.wasSuccessful() ? " was successful" : "was failed"));
+        System.out.println("Set tests" + (result.wasSuccessful() ? " was successful" : "was failed"));
     }
 
     private static void runSortedSetTest() {
@@ -25,5 +27,14 @@ public class SetTestsRunner {
             System.out.println(failure.toString());
         }
         System.out.println("SortedSet tests" + (result.wasSuccessful() ? " was successful" : "  was failed"));
+    }
+
+    private static void runSortedSetIPTest() {
+        Result result = JUnitCore.runClasses(SortedSetIPTest.class);
+
+        for (Failure failure : result.getFailures()) {
+            System.out.println(failure.toString());
+        }
+        System.out.println("SortedSetIP tests" + (result.wasSuccessful() ? " was successful" : "  was failed"));
     }
 }

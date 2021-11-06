@@ -240,6 +240,41 @@ public class DynamicLinkedStringTests {
     }
 
     @Test
+    public void replaceFromTo() {
+        string.add("01234").add("56789");
+        assertEquals("abc3456789", string.replace(0, 3, "abc").toString());
+        assertEquals(10, string.getSize());
+
+        assertEquals("00456789", string.replace(0, 4, "00").toString());
+        assertEquals(8, string.getSize());
+
+        assertEquals("0045675", string.replace(6, 9999, "5").toString());
+        assertEquals(7, string.getSize());
+
+        assertEquals("0", string.replace(1, 7, "").toString());
+        assertEquals(1, string.getSize());
+
+        assertEquals("123", string.replace(0, 1, "123").toString());
+        assertEquals(3, string.getSize());
+    }
+
+    @Test
+    public void replaceFrom() {
+        string.add("01234").add("56789");
+        assertEquals("012abc", string.replace(3,  "abc").toString());
+        assertEquals(6, string.getSize());
+
+        assertEquals("012a|", string.replace(4, "|").toString());
+        assertEquals(5, string.getSize());
+
+        assertEquals("5", string.replace(0, "5").toString());
+        assertEquals(1, string.getSize());
+        assertEquals("4", string.replace(0, "4").toString());
+        assertEquals(1, string.getSize());
+
+    }
+
+    @Test
     public void equals() {
         string.add("01234").add("56789");
         assertEquals(new DynamicLinkedString("0123456789"), string);

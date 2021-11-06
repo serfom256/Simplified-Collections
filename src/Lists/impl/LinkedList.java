@@ -1,5 +1,7 @@
 package Lists.impl;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
 import Lists.AbstractLinkedList;
 
 import java.util.Arrays;
@@ -377,12 +379,12 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     public String toString() {
         if (head == null) return "[]";
         Node<E> first = head;
-        StringBuilder lst = new StringBuilder("[");
+        AbstractDynamicString lst = new DynamicLinkedString("[");
         while (first.next != null) {
-            lst.append(first.val).append(", ");
+            lst.add(first.val).add(", ");
             first = first.next;
         }
-        return lst.toString() + first.val + "]";
+        return lst.add(first.val).add("]").toString();
     }
 }
 

@@ -1,5 +1,7 @@
 package Stack;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
 import Lists.AbstractLinkedList;
 import Lists.impl.LinkedList;
 
@@ -88,12 +90,12 @@ public class LinkedStack<E> implements AbstractStack<E> {
 
     @Override
     public String toString() {
-        int stackLen = linkedList.getSize();
-        if (stackLen == 0) return "[]";
-        StringBuilder res = new StringBuilder("[");
-        for (int i = 0; i < linkedList.getSize() - 1; i++) {
-            res.append(linkedList.get(i)).append(", ");
+        int stackLength = linkedList.getSize();
+        if (stackLength == 0) return "[]";
+        AbstractDynamicString res = new DynamicLinkedString("[");
+        for (int i = 0; i < stackLength - 1; i++) {
+            res.add(linkedList.get(i)).add(", ");
         }
-        return res.toString() + linkedList.get(stackLen - 1) + "]";
+        return res.add(linkedList.get(stackLength - 1)) + "]";
     }
 }

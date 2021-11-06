@@ -211,4 +211,13 @@ public class HashTableTest {
         }
         assertEquals(162, hashTable.getCapacity());
     }
+
+    @Test
+    public void speedTest() {
+        hashTable.clear();
+        for (int i = 0; i < 1_000_000; i++) {
+            hashTable.add(i + "_k", i + "_v");
+        }
+        assertEquals(1_000_000, hashTable.getSize());
+    }
 }

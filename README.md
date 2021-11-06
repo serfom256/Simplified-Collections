@@ -14,7 +14,7 @@
 
 ### In developing
 - TrieMap
-- Set (Based at RBT or AVL tree)
+- Set (Based on RBT tree)
 
 ### Will be released later
 

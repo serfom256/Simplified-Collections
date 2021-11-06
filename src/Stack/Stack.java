@@ -1,5 +1,8 @@
 package Stack;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
+
 public class Stack<E> implements AbstractStack<E> {
     private static final int DEFAULT_CAPACITY = 20;
     private int capacity;
@@ -71,7 +74,7 @@ public class Stack<E> implements AbstractStack<E> {
      */
     @Override
     public void push(E element) {
-        if(data == null) init(capacity);
+        if (data == null) init(capacity);
         data[size] = element;
         if (++size >= capacity) {
             capacity += (capacity >> 1);
@@ -126,10 +129,10 @@ public class Stack<E> implements AbstractStack<E> {
     @Override
     public String toString() {
         if (size == 0) return "[]";
-        StringBuilder res = new StringBuilder("[");
+        AbstractDynamicString res = new DynamicLinkedString("[");
         for (int i = size - 1; i > 0; i--) {
-            res.append(data[i]).append(", ");
+            res.add(data[i]).add(", ");
         }
-        return res.toString() + data[0] + "]";
+        return res.add(data[0]).add("]").toString();
     }
 }

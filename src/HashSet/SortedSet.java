@@ -1,5 +1,8 @@
 package HashSet;
 
+import Additional.DynamicString.AbstractDynamicString;
+import Additional.DynamicString.DynamicLinkedString;
+import Additional.Nodes.TreeNode;
 import Lists.AbstractList;
 import Lists.impl.ArrayList;
 import Stack.AbstractStack;
@@ -8,14 +11,30 @@ import Stack.LinkedStack;
 import java.util.Iterator;
 
 
-public class SortedSet<E extends Comparable<E>> implements Iterable<E>, AbstractSet<E> {
-    private static class TNode<V> {
+public class SortedSet<E extends Comparable<E>> implements Iterable<E>, AbstractSortedSet<E> {
+
+    private static class TNode<V> implements TreeNode<V> {
         V element;
         TNode<V> left, right;
 
         public TNode(V element) {
             this.element = element;
             this.left = this.right = null;
+        }
+
+        @Override
+        public TNode<V> getLeft() {
+            return left;
+        }
+
+        @Override
+        public TNode<V> getRight() {
+            return right;
+        }
+
+        @Override
+        public V getElement() {
+            return element;
         }
     }
 
@@ -31,7 +50,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     private int size;
     private int balanceCount;
     private final int maxBalanceThreshold;
-    private static final int defaultBalanceThreshold = 10;
+    private static final int defaultBalanceThreshold = 1024;
 
     public SortedSet() {
         this(defaultBalanceThreshold);
@@ -59,6 +78,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * @return Element if element present in the Set, otherwise null
      * @throws ArrayIndexOutOfBoundsException if position out of Set bounds
      */
+    @Override
     public E get(int pos) {
         if (pos < 0 || pos >= size) throw new ArrayIndexOutOfBoundsException("if position out of Set bounds");
         Wrapper<E> obj = new Wrapper<>();
@@ -88,33 +108,33 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     /**
      * Replace element in the Set if element present in the Set
      *
-     * @param OldElement element to replace
+     * @param oldElement element to replace
      * @param newElement new element to replace old element
-     * @throws IllegalArgumentException if (OldElement or newElement) is null
+     * @throws IllegalArgumentException if (oldElement or newElement) is null
      */
     @Override
-    public void update(E OldElement, E newElement) {
-        if (OldElement == null || newElement == null) {
-            throw new IllegalArgumentException("(OldElement or newElement) must be not null");
+    public void update(E oldElement, E newElement) {
+        if (oldElement == null || newElement == null) {
+            throw new IllegalArgumentException("(oldElement or newElement) must be not null");
         }
-        update(OldElement, newElement, root);
+        update(oldElement, newElement, root);
     }
 
     /**
      * Replace element in the Set if element present in the Set
      *
-     * @param OldElement element to replace
+     * @param oldElement element to replace
      * @param newElement new element to replace old element
      * @param root       root of Binary Tree
      */
-    private void update(E OldElement, E newElement, TNode<E> root) {
+    private void update(E oldElement, E newElement, TNode<E> root) {
         if (root != null) {
-            if (root.element.equals(OldElement)) {
+            if (root.element.equals(oldElement)) {
                 root.element = newElement;
                 return;
             }
-            update(OldElement, newElement, root.left);
-            update(OldElement, newElement, root.right);
+            update(oldElement, newElement, root.left);
+            update(oldElement, newElement, root.right);
         }
     }
 
@@ -123,6 +143,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      *
      * @return min element if Set size greater then 0 otherwise null
      */
+    @Override
     public E getMin() {
         if (root == null) {
             return null;
@@ -138,6 +159,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      *
      * @return max element if Set size greater then 0 otherwise null
      */
+    @Override
     public E getMax() {
         if (root == null) {
             return null;
@@ -157,24 +179,21 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     @Override
     public void add(E element) {
         if (element == null) {
-            throw new IllegalArgumentException("element must be not null");
+            throw new IllegalArgumentException("Inserted element must be not null");
         }
-        size++;
         if (root == null) {
             root = new TNode<>(element);
+            size++;
             return;
         }
         TNode<E> curr = root;
         while (curr.left != null || curr.right != null) {
-
             if (curr.element.compareTo(element) > 0 && curr.left != null) curr = curr.left;
             else if (curr.element.compareTo(element) < 0 && curr.right != null) curr = curr.right;
             else break;
         }
-        if (curr.element.equals(element)) {
-            size--;
-            return;
-        }
+        if (curr.element.equals(element)) return;
+        size++;
         TNode<E> newNode = new TNode<>(element);
         if (curr.element.compareTo(element) < 0) {
             newNode.right = curr.right;
@@ -213,7 +232,7 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      * Rebalanced tree after insertion element to the Binary Tree
      */
     private void reBalance() {
-        AbstractList<TNode<E>> list = new ArrayList<>();
+        AbstractList<TNode<E>> list = new ArrayList<>(size + 1);
         getAllNodes(list, root);
         root = balance(list, 0, list.getSize() - 1);
     }
@@ -421,25 +440,23 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     }
 
     /**
-     * Utility method for print Set
+     * Utility method for which provides to collect all elements of Set to string
      *
-     * @param root   root of the set
-     * @param result result is String to append elements
-     * @return String with all elements of Set in the ascending order
+     * @param root root of the set
      */
-    private StringBuilder traversePrint(TNode<E> root, StringBuilder result) {
+    private void traversePrint(TNode<E> root, AbstractDynamicString result) {
         if (root != null) {
-            result = traversePrint(root.left, result);
-            result.append(root.element).append(", ");
-            result = traversePrint(root.right, result);
+            traversePrint(root.left, result);
+            result.add(root.element).add(", ");
+            traversePrint(root.right, result);
         }
-        return result;
     }
 
     @Override
     public String toString() {
         if (size == 0) return "{}";
-        StringBuilder res = traversePrint(root, new StringBuilder());
-        return "{" + res.substring(0, res.length() - 2) + "}";
+        AbstractDynamicString res = new DynamicLinkedString();
+        traversePrint(root, res);
+        return res.subSequence(0, res.getSize() - 2).addFirst('{').add("}").toString();
     }
 }

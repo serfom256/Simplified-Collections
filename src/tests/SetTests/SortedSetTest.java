@@ -4,8 +4,6 @@ import HashSet.SortedSet;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.*;
 
 public class SortedSetTest {
@@ -130,5 +128,15 @@ public class SortedSetTest {
         String[] testArr = {"data1", "data2", "data3", "data4"};
         Object[] result = set.toObjectArray();
         assertArrayEquals(testArr, result);
+    }
+
+    @Test
+    public void speedTest() {
+        SortedSet<Integer> testSet = new SortedSet<>();
+        testSet.clear();
+        for (int i = 0; i < 1_000_000; i++) {
+            testSet.add(i);
+        }
+        assertEquals(1_000_000, testSet.getSize());
     }
 }

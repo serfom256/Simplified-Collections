@@ -1,6 +1,6 @@
-package tests.Trie;
+package tests.TrieTests;
 
-import Trie.Trie;
+import Tries.Trie;
 import HashSet.AbstractSet;
 import HashSet.Set;
 import Lists.AbstractList;
