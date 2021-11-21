@@ -3,7 +3,7 @@ package Tries;
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
 import HashSet.AbstractSet;
-import HashSet.SortedSet;
+import HashSet.SortedSetIP;
 import HashTables.HashTable;
 import Stack.AbstractStack;
 import Stack.LinkedStack;
@@ -133,7 +133,7 @@ public class Trie implements Iterable<String> {
     public String[] getByPrefix(String prefix, int count) {
         if (count <= 0) throw new IllegalArgumentException("Count must be more then 0");
         if (prefix.length() == 0) return new String[0];
-        AbstractSet<String> list = new SortedSet<>(count + 1);
+        AbstractSet<String> list = new SortedSetIP<>();
         TNode curr = root;
         AbstractDynamicString result = new DynamicLinkedString();
         for (int i = 0; i < prefix.length(); i++) {
@@ -218,7 +218,6 @@ public class Trie implements Iterable<String> {
         else lastNode.prev.nodes.remove(lastNode.element);
         return true;
     }
-    //FIXME
 
     /**
      * Removes only specified sequence from branch (Recommended for use)
@@ -323,7 +322,7 @@ public class Trie implements Iterable<String> {
     }
 
     /**
-     * Method which helps to collect all entries from the trie
+     * Helps to collect all entries from the trie
      */
     private StringBuilder getAll(StringBuilder result, StringBuilder current, HashTable<Character, TNode> nodes) {
         for (Character c : nodes) {

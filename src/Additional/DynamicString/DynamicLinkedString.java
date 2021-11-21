@@ -1,5 +1,7 @@
 package Additional.DynamicString;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class DynamicLinkedString implements AbstractDynamicString {
@@ -40,26 +42,56 @@ public class DynamicLinkedString implements AbstractDynamicString {
         for (int i = 0; i < s.length(); i++) add(s.charAt(i));
     }
 
+    /**
+     * Appends specified String to the last of this dynamicLinkedString
+     *
+     * @param s String to add to the last
+     */
     @Override
     public DynamicLinkedString add(AbstractDynamicString s) {
         insertSequenceAfter(last, s.toString(), 0);
         return this;
     }
 
+    /**
+     * Appends specified Integer to the last of this dynamicLinkedString
+     *
+     * @param i Integer to add to the last
+     */
     @Override
-    public AbstractDynamicString add(Object o) {
+    public DynamicLinkedString add(int i) {
+        return add(String.valueOf(i));
+    }
+
+    /**
+     * Appends Object as String value to the last of this dynamicLinkedString
+     *
+     * @param o String value of specified Object to add to the last
+     */
+    @Override
+    public DynamicLinkedString add(Object o) {
         return add(String.valueOf(o));
     }
 
+    /**
+     * Appends specified String to the last of this dynamicLinkedString
+     *
+     * @param s String to add to the last
+     */
     @Override
     public DynamicLinkedString add(String s) {
         insertSequenceAfter(last, s, 0);
         return this;
     }
 
+    /**
+     * Appends specified Character to the last of this dynamicLinkedString
+     *
+     * @param c Char to add to the last
+     */
     @Override
-    public DynamicLinkedString add(char element) {
-        Node newNode = new Node(element);
+    public DynamicLinkedString add(char c) {
+        Node newNode = new Node(c);
         if (last == null) {
             head = newNode;
             last = head;
@@ -72,19 +104,24 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return this;
     }
 
-
+    /**
+     * Inserts specified String s before specified node from specified position in String
+     */
     private void insertSequenceBefore(Node node, String s, int posInWord) {
         if (s.length() == 0) return;
         if (node == null) {
             size++;
-            node = head = last = new Node(s.charAt(posInWord++));
+            node = head = last = new Node(s.charAt(posInWord--));
         }
-        for (int i = s.length() - 1; i >= posInWord; i--) {
+        for (int i = posInWord; i >= 0; i--) {
             node = insertBefore(node, s.charAt(i));
             size++;
         }
     }
 
+    /**
+     * Inserts specified String s after specified node from specified position in String
+     */
     private void insertSequenceAfter(Node node, String s, int posInWord) {
         if (s.length() == 0) return;
         if (node == null) {
@@ -97,10 +134,46 @@ public class DynamicLinkedString implements AbstractDynamicString {
         }
     }
 
-
+    /**
+     * Inserts specified String s after specified node from specified position in String
+     */
     @Override
-    public DynamicLinkedString addFirst(char element) {
-        Node newNode = new Node(element);
+    public DynamicLinkedString addFirst(AbstractDynamicString s) {
+        for (Character c : s) {
+            addFirst(c);
+        }
+        return this;
+    }
+
+    /**
+     * Inserts specified Object as String value to the first position of this dynamicLinkedString
+     *
+     * @param o Object as String value to insert
+     */
+    @Override
+    public DynamicLinkedString addFirst(Object o) {
+        return addFirst(String.valueOf(String.valueOf(o)));
+    }
+
+    /**
+     * Inserts specified String to the first position of this dynamicLinkedString
+     *
+     * @param s String to insert
+     */
+    @Override
+    public DynamicLinkedString addFirst(String s) {
+        insertSequenceBefore(head, s, s.length() - 1);
+        return this;
+    }
+
+    /**
+     * Inserts specified Character to the first position of this dynamicLinkedString
+     *
+     * @param c char to insert
+     */
+    @Override
+    public DynamicLinkedString addFirst(char c) {
+        Node newNode = new Node(c);
         newNode.next = head;
         if (head != null) head.prev = newNode;
         else last = newNode;
@@ -109,6 +182,22 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return this;
     }
 
+    /**
+     * Inserts specified Number to the first position of this dynamicLinkedString
+     *
+     * @param num to insert
+     */
+    @Override
+    public DynamicLinkedString addFirst(int num) {
+        return addFirst(String.valueOf(num));
+    }
+
+    /**
+     * Inserts specified char to the specified position
+     *
+     * @param pos position to insert char
+     * @param c   char to insert
+     */
     @Override
     public DynamicLinkedString insert(int pos, char c) {
         if (pos >= size) return add(c);
@@ -119,7 +208,12 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return this;
     }
 
-
+    /**
+     * Inserts specified String to the specified position
+     *
+     * @param pos position to insert specified String
+     * @param s   String to insert
+     */
     @Override
     public DynamicLinkedString insert(int pos, String s) {
         if (pos >= size) {
@@ -127,35 +221,60 @@ public class DynamicLinkedString implements AbstractDynamicString {
             return this;
         }
         if (pos <= 0) {
-            insertSequenceBefore(head, s, 0);
+            insertSequenceBefore(head, s, s.length() - 1);
             return this;
         }
 
         Node node = getNodeByPos(pos);
-        insertSequenceBefore(node, s, 0);
+        insertSequenceBefore(node, s, s.length() - 1);
         return this;
     }
 
+    /**
+     * Inserts specified String to the specified position
+     *
+     * @param pos position to insert specified String
+     * @param s   String to insert
+     */
     @Override
     public DynamicLinkedString insert(int pos, AbstractDynamicString s) {
         return insert(pos, s.toString());
     }
 
+    /**
+     * Inserts specified char array to the specified position
+     *
+     * @param pos position to insert specified char array
+     * @param s   char array to insert
+     */
     @Override
     public DynamicLinkedString insert(int pos, char[] s) {
         return insert(pos, new String(s));
     }
 
+    /**
+     * Returns node from dynamicLinkedString by the specified position
+     */
     private Node getNodeByPos(int pos) {
-        Node current = head;
-        int currentPos = 0;
-        while (currentPos < pos && current.next != null) {
-            current = current.next;
-            currentPos++;
+        int mid = size / 2;
+        boolean h = pos >= mid;
+        pos = pos >= mid ? size - pos - 1 : pos;
+        Node curr;
+        if (h) {
+            for (curr = last; pos > 0; pos--) {
+                curr = curr.prev;
+            }
+        } else {
+            for (curr = head; pos > 0; pos--) {
+                curr = curr.next;
+            }
         }
-        return current;
+        return curr;
     }
 
+    /**
+     * Links new node with specified character after the specified node
+     */
     private Node insertAfter(Node node, char toInsert) {
         Node newNode = new Node(toInsert);
         newNode.next = node.next;
@@ -166,6 +285,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return newNode;
     }
 
+    /**
+     * Links new node with specified character before the specified node
+     */
     private Node insertBefore(Node node, char toInsert) {
         Node newNode = new Node(toInsert);
         newNode.prev = node.prev;
@@ -262,6 +384,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return node;
     }
 
+    /**
+     * Removes first character of String if string size more then 0
+     */
     @Override
     public DynamicLinkedString removeFirst() {
         if (head == null) return this;
@@ -272,6 +397,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return this;
     }
 
+    /**
+     * Removes last character of String if string size more then 0
+     */
     @Override
     public DynamicLinkedString removeLast() {
         if (last == null) return this;
@@ -282,7 +410,14 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return this;
     }
 
-    // TODO write comments for methods
+    /**
+     * Replaces specified characters in range from start to end by the new specified string
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param s     string to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
     @Override
     public DynamicLinkedString replace(int start, int end, String s) {
         if (start < 0 || start >= end || start >= size) {
@@ -306,57 +441,132 @@ public class DynamicLinkedString implements AbstractDynamicString {
             removeLast();
             insertSequenceAfter(last, s, 0);
         } else {
-            insertSequenceBefore(curr == null ? head : curr.prev, s, 0);
+            insertSequenceBefore(curr == null ? head : curr.prev, s, s.length() - 1);
         }
         return this;
     }
 
+    /**
+     * Replaces specified characters in range from start to end of dynamicLinkedSting by the new specified string
+     *
+     * @param start start of range
+     * @param s     string to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
     @Override
-    public AbstractDynamicString replace(int start, String s) {
+    public DynamicLinkedString replace(int start, String s) {
         return replace(start, size, s);
     }
 
+    /**
+     * Replaces specified characters in range from start to end by new specified string
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param s     string to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
     @Override
-    public AbstractDynamicString replace(int start, int end, DynamicLinkedString s) {
+    public DynamicLinkedString replace(int start, int end, DynamicLinkedString s) {
         return replace(start, end, s.toString());
     }
 
+    /**
+     * Replaces specified characters in range from start to end of dynamicLinkedSting by the new specified string
+     *
+     * @param start start of range
+     * @param s     string to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
     @Override
-    public AbstractDynamicString replace(int start, DynamicLinkedString s) {
+    public DynamicLinkedString replace(int start, DynamicLinkedString s) {
         return replace(start, size, s.toString());
     }
 
+    /**
+     * Replaces specified characters in range from start to end by the new specified char array
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param c     char array to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
     @Override
-    public AbstractDynamicString replace(int start, int end, char[] c) {
-        return replace(start, end, new String(c));
-    }
-
-    @Override
-    public AbstractDynamicString replace(int start, char[] c) {
-        return replace(start, size, new String(c));
-    }
-
-    @Override
-    public AbstractDynamicString replace(int start, int end, char c) {
+    public DynamicLinkedString replace(int start, int end, char[] c) {
         return replace(start, end, String.valueOf(c));
     }
 
+    /**
+     * Replaces specified characters in range from start to end of dynamicLinkedSting by the new specified  char array
+     *
+     * @param start start of range
+     * @param c     char array to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
     @Override
-    public AbstractDynamicString replace(int start, char c) {
+    public DynamicLinkedString replace(int start, char[] c) {
         return replace(start, size, String.valueOf(c));
     }
 
-
+    /**
+     * Replaces specified characters in range from start to end by the new specified char
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param c     char to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
     @Override
-    public char getLast() {
-        if (last == null) throw new UnsupportedOperationException("String is empty");
-        return last.val;
+    public DynamicLinkedString replace(int start, int end, char c) {
+        return replace(start, end, String.valueOf(c));
     }
 
+    /**
+     * Replaces specified characters in range from start to end of dynamicLinkedSting by the new specified  char
+     *
+     * @param start start of range
+     * @param c     char to replace
+     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     */
+    @Override
+    public DynamicLinkedString replace(int start, char c) {
+        return replace(start, size, String.valueOf(c));
+    }
+
+    /**
+     * Provides to get char by specified position
+     *
+     * @return char by position
+     * @throws ArrayIndexOutOfBoundsException if specified position out of string bounds
+     */
+    @Override
+    public char get(int pos) {
+        if (pos < 0 || pos >= size) {
+            throw new ArrayIndexOutOfBoundsException("Specified position out of string bounds");
+        }
+        return getNodeByPos(pos).val;
+    }
+
+    /**
+     * Returns first character of String
+     *
+     * @throws UnsupportedOperationException if string is empty
+     */
     @Override
     public char getFirst() {
         if (head == null) throw new UnsupportedOperationException("String is empty");
         return head.val;
+    }
+
+    /**
+     * Returns last character of String
+     *
+     * @throws UnsupportedOperationException if string is empty
+     */
+    @Override
+    public char getLast() {
+        if (last == null) throw new UnsupportedOperationException("String is empty");
+        return last.val;
     }
 
     @Override
@@ -367,6 +577,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return result;
     }
 
+    /**
+     * Reverses String
+     */
     @Override
     public DynamicLinkedString reverse() {
         char[] result = new char[size];
@@ -377,17 +590,25 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return this;
     }
 
+    /**
+     * Returns count of specified character in String
+     */
     @Override
-    public int count(char element) {
+    public int count(char c) {
         int count = 0;
         for (Node curr = head; curr != null; curr = curr.next) {
-            if (curr.val == element) count++;
+            if (curr.val == c) count++;
         }
         return count;
     }
 
-
+    /**
+     * Slices string in range from start to end
+     */
     private char[] subStr(int start, int end) {
+        if (start > end || start < 0) {
+            throw new IllegalArgumentException("Start or end position out of string bounds");
+        }
         Node first = head;
         for (int pos = 0; pos < start; pos++) first = first.next;
         int len = end - start;
@@ -396,24 +617,202 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return lst;
     }
 
+    /**
+     * Returns substring in range from start to end
+     *
+     * @param start start position of substring
+     * @param end   end position of substring
+     */
     @Override
     public DynamicLinkedString subSequence(int start, int end) {
         return new DynamicLinkedString(subStr(start, end));
     }
 
+
+    /**
+     * Returns substring in range from start to end of this dynamicLinkedString
+     *
+     * @param start start position of substring
+     */
     @Override
     public DynamicLinkedString subSequence(int start) {
         return new DynamicLinkedString(subStr(start, size));
     }
 
+
+    /**
+     * Returns substring in range from start to end
+     *
+     * @param start start position of substring
+     * @param end   end position of substring
+     */
     @Override
     public String subString(int start, int end) {
         return new String(subStr(start, end));
     }
 
+    /**
+     * Returns substring in range from start to end of this dynamicLinkedString
+     *
+     * @param start start position of substring
+     */
     @Override
     public String subString(int start) {
         return new String(subStr(start, size));
+    }
+
+    /**
+     * Returns true if this dynamicLinkedString starts with specified string otherwise false
+     */
+    @Override
+    public boolean startsWith(String s) {
+        if (s.length() >= size) return false;
+        Node first = head;
+        for (int i = 0; i < s.length(); i++, first = first.next) {
+            if (first.val != s.charAt(i)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if this dynamicLinkedString starts with specified char otherwise false
+     */
+    @Override
+    public boolean startsWith(char c) {
+        return head != null && head.val == c;
+    }
+
+    /**
+     * Returns true if this dynamicLinkedString starts with specified string otherwise false
+     */
+    @Override
+    public boolean startsWith(AbstractDynamicString s) {
+        if (s.getSize() >= size) return false;
+        Node first = head;
+        for (Character c : s) {
+            if (first.val != c) return false;
+            first = first.next;
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if this dynamicLinkedString ends with specified string otherwise false
+     */
+    @Override
+    public boolean endsWith(String s) {
+        if (s.length() >= size) return false;
+        Node first = last;
+        for (int i = 0; i < s.length(); i++, first = first.prev) {
+            if (first.val != s.charAt(i)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if this dynamicLinkedString ends with specified char otherwise false
+     */
+    @Override
+    public boolean endsWith(char c) {
+        return head != null && last.val == c;
+    }
+
+    /**
+     * Returns true if this dynamicLinkedString ends with specified string otherwise false
+     */
+    @Override
+    public boolean endsWith(AbstractDynamicString s) {
+        if (s.getSize() >= size) return false;
+        Node first = last;
+        for (Character c : s) {
+            if (first.val != c) return false;
+            first = first.prev;
+        }
+        return true;
+    }
+
+    /**
+     * Provides to get first occurrence of the specified char  in this dynamicLinkedString
+     *
+     * @return first occurrence of the specified char in this dynamicLinkedString or -1
+     */
+    @Override
+    public int indexOf(char c) {
+        Node first = head;
+        for (int i = 0; first != null; first = first.next, i++) {
+            if (first.val == c) return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Provides to get first index of the specified char array in this dynamicLinkedString
+     *
+     * @return first char array position in this dynamicLinkedString or -1
+     */
+    @Override
+    public int indexOf(char[] c) {
+        if (c.length > size || c.length == 0) return -1;
+        Node first = head;
+        int startPos = 0;
+        for (int i = 0; first != null; first = first.next, i++) {
+            if (first.val == c[startPos]) {
+                if (++startPos == c.length) {
+                    return i + 1 - c.length;
+                }
+            } else {
+                startPos = 0;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Provides to get first index of the specified String in this dynamicLinkedString
+     *
+     * @return first String position in this dynamicLinkedString or -1
+     */
+    @Override
+    public int indexOf(String s) {
+        int strSize = s.length();
+        if (strSize > size || strSize == 0) return -1;
+        Node first = head;
+        int startPos = 0;
+        for (int i = 0; first != null; first = first.next, i++) {
+            if (first.val == s.charAt(startPos)) {
+                if (++startPos == strSize) {
+                    return i + 1 - strSize;
+                }
+            } else {
+                startPos = 0;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Provides to get first index of the specified String in this dynamicLinkedString
+     *
+     * @return first String position in this dynamicLinkedString or -1
+     */
+    @Override
+    public int indexOf(AbstractDynamicString s) {
+        int strSize = s.getSize();
+        if (strSize > size || strSize == 0) return -1;
+        Iterator<Character> foreignIterator = s.iterator();
+        Node first = head;
+        char fChar = foreignIterator.next();
+        for (int i = 0; first != null; first = first.next, i++) {
+            if (first.val == fChar) {
+                if (!foreignIterator.hasNext()) {
+                    return i + 1 - strSize;
+                }
+            } else {
+                foreignIterator = s.iterator();
+            }
+            fChar = foreignIterator.next();
+        }
+        return -1;
     }
 
     @Override
@@ -448,5 +847,31 @@ public class DynamicLinkedString implements AbstractDynamicString {
     @Override
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public Iterator<Character> iterator() {
+        return new SelfIterator();
+    }
+
+    class SelfIterator implements Iterator<Character> {
+        Node current;
+
+        public SelfIterator() {
+            current = head;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public Character next() {
+            if (current == null) throw new NoSuchElementException();
+            Character data = current.val;
+            current = current.next;
+            return data;
+        }
     }
 }

@@ -4,6 +4,7 @@ import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
 import HashSet.AbstractSet;
 import HashSet.Set;
+import HashSet.SortedSetIP;
 
 import java.util.Arrays;
 
@@ -38,7 +39,7 @@ public class FuzzySearchTrie extends Trie {
         if (prefix.length() <= 1 || prefix.length() <= distance) {
             throw new IllegalArgumentException("Prefix length must be more then distance");
         }
-        AbstractSet<String> founded = new Set<>(distance + 1);
+        AbstractSet<String> founded = new SortedSetIP<>();
         AbstractDynamicString result = new DynamicLinkedString();
         TNode curr = root;
         for (int i = 0; i < prefix.length(); i++) {

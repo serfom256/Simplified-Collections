@@ -387,7 +387,7 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Method which provide get size of the HashTable
+     * Provides get size of the HashTable
      *
      * @return size of the hashTable
      */
@@ -396,7 +396,7 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Method which provide get capacity of the HashTable
+     * Provides get capacity of the HashTable
      *
      * @return capacity of the hashTable
      */

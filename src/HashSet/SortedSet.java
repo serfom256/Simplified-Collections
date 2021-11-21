@@ -11,11 +11,11 @@ import Stack.LinkedStack;
 import java.util.Iterator;
 
 
-public class SortedSet<E extends Comparable<E>> implements Iterable<E>, AbstractSortedSet<E> {
+public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
 
     private static class TNode<V> implements TreeNode<V> {
-        V element;
-        TNode<V> left, right;
+        private V element;
+        private TNode<V> left, right;
 
         public TNode(V element) {
             this.element = element;
@@ -117,25 +117,11 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         if (oldElement == null || newElement == null) {
             throw new IllegalArgumentException("(oldElement or newElement) must be not null");
         }
-        update(oldElement, newElement, root);
-    }
-
-    /**
-     * Replace element in the Set if element present in the Set
-     *
-     * @param oldElement element to replace
-     * @param newElement new element to replace old element
-     * @param root       root of Binary Tree
-     */
-    private void update(E oldElement, E newElement, TNode<E> root) {
-        if (root != null) {
-            if (root.element.equals(oldElement)) {
-                root.element = newElement;
-                return;
-            }
-            update(oldElement, newElement, root.left);
-            update(oldElement, newElement, root.right);
-        }
+        TNode<E> node = getNode(oldElement);
+        if (node == null || contains(newElement)) return;
+        deleteNode(node, oldElement);
+        root = insert(root, newElement);
+        size--;
     }
 
     /**
@@ -295,6 +281,19 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
     }
 
     /**
+     * Returns node by value if node founded otherwise null
+     */
+    private TNode<E> getNode(E value) {
+        TNode<E> curr = root;
+        while (!curr.element.equals(value)) {
+            if (value.compareTo(curr.element) < 0) curr = curr.left;
+            else curr = curr.right;
+            if (curr == null) return null;
+        }
+        return curr;
+    }
+
+    /**
      * Removes element from Binary Tree
      *
      * @param root    root of Binary Tree
@@ -347,21 +346,8 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
      */
     @Override
     public boolean contains(E element) {
-        if (root == null || element == null) {
-            return false;
-        }
-        TNode<E> curr = root;
-        while (!curr.element.equals(element)) {
-            if (element.compareTo(curr.element) < 0) {
-                curr = curr.left;
-            } else {
-                curr = curr.right;
-            }
-            if (curr == null) {
-                return false;
-            }
-        }
-        return true;
+        if (root == null || element == null) return false;
+        return getNode(element) != null;
     }
 
     /**
@@ -385,6 +371,26 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         return result.toObjectArray();
     }
 
+    @Override
+    public AbstractSet<E> left(AbstractSet<E> set) {
+        return null;
+    }
+
+    @Override
+    public AbstractSet<E> right(AbstractSet<E> set) {
+        return null;
+    }
+
+    @Override
+    public AbstractSet<E> between(AbstractSet<E> set) {
+        return null;
+    }
+
+    @Override
+    public AbstractSet<E> union(AbstractSet<E> set) {
+        return null;
+    }
+
     /**
      * Clear current Set
      */
@@ -394,11 +400,6 @@ public class SortedSet<E extends Comparable<E>> implements Iterable<E>, Abstract
         this.root = null;
     }
 
-    /**
-     * Method which provide get size of the Set
-     *
-     * @return size of the Set
-     */
     @Override
     public int getSize() {
         return size;

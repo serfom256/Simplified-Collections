@@ -1,6 +1,6 @@
 package Additional.DynamicString;
 
-public interface AbstractDynamicString {
+public interface AbstractDynamicString extends Iterable<Character> {
 
     AbstractDynamicString add(AbstractDynamicString s);
 
@@ -8,9 +8,19 @@ public interface AbstractDynamicString {
 
     AbstractDynamicString add(String s);
 
-    AbstractDynamicString add(char element);
+    AbstractDynamicString add(char c);
 
-    AbstractDynamicString addFirst(char element);
+    AbstractDynamicString add(int num);
+
+    AbstractDynamicString addFirst(AbstractDynamicString s);
+
+    AbstractDynamicString addFirst(Object o);
+
+    AbstractDynamicString addFirst(String s);
+
+    AbstractDynamicString addFirst(char c);
+
+    AbstractDynamicString addFirst(int num);
 
     AbstractDynamicString insert(int pos, char c);
 
@@ -58,15 +68,35 @@ public interface AbstractDynamicString {
 
     String subString(int start);
 
+    boolean startsWith(String s);
+
+    boolean startsWith(char c);
+
+    boolean endsWith(String s);
+
+    boolean endsWith(char c);
+
+    boolean startsWith(AbstractDynamicString s);
+
+    boolean endsWith(AbstractDynamicString s);
+
+    int indexOf(char c);
+
+    int indexOf(char[] c);
+
+    int indexOf(String s);
+
+    int indexOf(AbstractDynamicString s);
+
     char getLast();
+
+    char get(int pos);
 
     char getFirst();
 
-    int count(char element);
+    int count(char c);
 
     int getSize();
 
     char[] toCharArray();
-
-
 }

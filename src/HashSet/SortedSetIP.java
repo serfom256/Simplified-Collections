@@ -3,6 +3,12 @@ package HashSet;
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
 import Additional.Nodes.TreeNode;
+import Lists.AbstractList;
+import Lists.impl.ArrayList;
+import Stack.AbstractStack;
+import Stack.LinkedStack;
+
+import java.util.Iterator;
 
 public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E> {
 
@@ -11,11 +17,10 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
     private static final Color red = Color.RED;
     private static final Color black = Color.BLACK;
 
-    private static class TNode<E> implements TreeNode<E> {
-        E element;
-        TNode<E> left, right, parent;
-
-        Color color;
+    static class TNode<E> implements TreeNode<E> {
+        private TNode<E> left, right, parent;
+        private Color color;
+        private E element;
 
         public TNode(E value) {
             this(value, red);
@@ -24,7 +29,7 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         public TNode(E element, Color color) {
             this.element = element;
             this.color = color;
-            this.left = this.right = this.parent = null;
+            this.parent = null;
         }
 
         TNode<E> getGrandParent() {
@@ -65,6 +70,14 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         }
     }
 
+    private static class Wrapper<E> {
+        E value;
+
+        public Wrapper() {
+            this.value = null;
+        }
+    }
+
     private TNode<E> root;
     private int size;
 
@@ -73,9 +86,9 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         this.size = 0;
     }
 
-    @Override
-    public void update(E OldElement, E newElement) {
-
+    @SafeVarargs
+    public final void addAll(E... data) {
+        for (E el : data) add(el);
     }
 
     /**
@@ -152,12 +165,13 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
     private void rebalance(TNode<E> node) {
         TNode<E> uncle = node.parent.getUncle();
         while (node != root && node.parent.color == red) {
-            if (node.isLeftChild()) {
+            if (node.parent.isLeftChild()) {
                 if (uncle != null && uncle.color == red) {
                     node = repaint(node, uncle);
                 } else {
                     if (node.isRightChild()) {
                         doLeftRotate(node);
+                        node = node.left;
                     }
                     node.getParent().color = black;
                     node.getGrandParent().color = red;
@@ -169,6 +183,7 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
                 } else {
                     if (node.isLeftChild()) {
                         doRightRotate(node);
+                        node = node.right;
                     }
                     node.getParent().color = black;
                     node.getGrandParent().color = red;
@@ -220,18 +235,64 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
     }
 
     @Override
+    public void update(E oldElement, E newElement) {
+        throw new RuntimeException("Method not implemented yet!");
+    }
+
+
+    @Override
     public E getMax() {
-        return null;
+        if (root == null) {
+            return null;
+        }
+        while (root.right != null) {
+            root = root.right;
+        }
+        return root.element;
     }
 
     @Override
     public E getMin() {
-        return null;
+        if (root == null) {
+            return null;
+        }
+        while (root.left != null) {
+            root = root.left;
+        }
+        return root.element;
     }
 
+    /**
+     * Search specified element by the position in the Set
+     *
+     * @param pos position of element
+     * @return Element if element present in the Set, otherwise null
+     * @throws ArrayIndexOutOfBoundsException if position out of Set bounds
+     */
     @Override
     public E get(int pos) {
-        return null;
+        if (pos < 0 || pos >= size) throw new ArrayIndexOutOfBoundsException("if position out of Set bounds");
+        Wrapper<E> obj = new Wrapper<>();
+        searchValue(root, 0, pos, obj);
+        return obj.value;
+    }
+
+    /**
+     * Provides to get element from the tree by the position
+     *
+     * @param currPos     initial position of first node should be 0
+     * @param pos         position for searched element
+     * @param searchedVal value to search in the wrapper
+     */
+    private int searchValue(TNode<E> root, int currPos, int pos, Wrapper<E> searchedVal) {
+        if (root == null || searchedVal.value != null) return currPos;
+        currPos = searchValue(root.left, currPos, pos, searchedVal);
+        if (currPos == pos && searchedVal.value == null) {
+            searchedVal.value = root.element;
+            return currPos;
+        }
+        currPos = searchValue(root.right, currPos + 1, pos, searchedVal);
+        return currPos;
     }
 
     @Override
@@ -242,12 +303,19 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
 
     @Override
     public E remove(E element) {
-        return null;
+        throw new RuntimeException("Method not implemented yet!");
     }
 
     @Override
     public boolean contains(E element) {
-        return false;
+        if (root == null || element == null) return false;
+        TNode<E> curr = root;
+        while (!curr.element.equals(element)) {
+            if (element.compareTo(curr.element) < 0) curr = curr.left;
+            else curr = curr.right;
+            if (curr == null)  return false;
+        }
+        return true;
     }
 
     @Override
@@ -256,8 +324,103 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
     }
 
     @Override
+    public SortedSetIP<E> left(AbstractSet<E> set) {
+        SortedSetIP<E> left = new SortedSetIP<>();
+        for (E element : set) {
+            if (!this.contains(element)) left.add(element);
+        }
+        return left;
+    }
+
+    @Override
+    public SortedSetIP<E> right(AbstractSet<E> set) {
+        SortedSetIP<E> right = new SortedSetIP<>();
+        for (E element : this) {
+            if (!set.contains(element)) right.add(element);
+        }
+        return right;
+    }
+
+    @Override
+    public SortedSetIP<E> between(AbstractSet<E> set) {
+        SortedSetIP<E> mid = new SortedSetIP<>();
+        for (E element : set) {
+            if (this.contains(element)) mid.add(element);
+        }
+        return mid;
+    }
+
+    @Override
+    public SortedSetIP<E> union(AbstractSet<E> set) {
+        SortedSetIP<E> union = new SortedSetIP<>();
+        Iterator<E> foreignIterator = set.iterator();
+        Iterator<E> thisIterator = this.iterator();
+        while (foreignIterator.hasNext() && iterator().hasNext()) {
+            union.add(foreignIterator.next());
+            union.add(thisIterator.next());
+        }
+        while (foreignIterator.hasNext()) {
+            union.add(foreignIterator.next());
+        }
+        while (thisIterator.hasNext()) {
+            union.add(thisIterator.next());
+        }
+        return union;
+    }
+
+    /**
+     * Append all values of the root to the list
+     *
+     * @param lst  list to append values
+     * @param node root of Binary Tree
+     */
+    private void collectAllNodes(AbstractList<E> lst, TNode<E> node) {
+        if (node != null) {
+            collectAllNodes(lst, node.left);
+            lst.add(node.element);
+            collectAllNodes(lst, node.right);
+        }
+    }
+
+    @Override
     public Object[] toObjectArray() {
-        return new Object[0];
+        AbstractList<E> result = new ArrayList<>(size + 1);
+        collectAllNodes(result, root);
+        return result.toObjectArray();
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new SelfIterator();
+    }
+
+    private class SelfIterator implements Iterator<E> {
+
+        private final AbstractStack<TNode<E>> stack;
+
+        private TNode<E> current, next;
+
+        public SelfIterator() {
+            this.stack = new LinkedStack<TNode<E>>();
+            current = next = root;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null || !stack.isEmpty();
+        }
+
+        @Override
+        public E next() {
+            current = next;
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            current = stack.poll();
+            next = current.right;
+            return current.element;
+        }
     }
 
     /**

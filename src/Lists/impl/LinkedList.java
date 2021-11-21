@@ -79,7 +79,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
 
 
     /**
-     * Method that return last element of list if list isn't empty, else null
+     * Returns last element of list if list isn't empty, else null
      *
      * @return last element of the list
      */
@@ -89,7 +89,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * Method that return first element of list if list isn't empty, else null
+     * Returns first element of list if list isn't empty, else null
      *
      * @return fist element of the list
      */
@@ -189,7 +189,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * Method that provides to remove the element of the list
+     * Provides to remove the element of the list
      *
      * @param data element to remove of list
      * @return removed element
@@ -238,7 +238,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
 
 
     /**
-     * Method which provides to get first index of specified element in the current list
+     * Provides to get first index of specified element in the current list
      *
      * @param element some element in the list
      * @return index of element in list, if list doesn't contains the element return value will be -1
@@ -255,7 +255,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * Method which provides to get last index of specified element in the current list
+     * Provides to get last index of specified element in the current list
      *
      * @param element some element in the list
      * @return index of element in list, if list doesn't contains the element return value will be -1
@@ -273,7 +273,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * Method that provides to get the element from list by position
+     * Provides to get the element from list by position
      *
      * @param position position of element
      * @return element from the specified position

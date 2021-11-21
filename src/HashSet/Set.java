@@ -75,20 +75,60 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
     /**
      * Replace element in the Set if element present in the Set
      *
-     * @param OldElement element to replace
+     * @param oldElement element to replace
      * @param newElement new element to replace old element
      * @throws IllegalArgumentException if (OldElement or newElement) is null
      */
     @Override
-    public void update(E OldElement, E newElement) {
-        hashTable.replace(OldElement, newElement);
+    public void update(E oldElement, E newElement) {
+        hashTable.replace(oldElement, newElement);
     }
 
-    /**
-     * Method which provide get size of the Set
-     *
-     * @return size of the Set
-     */
+    @Override
+    public Set<E> left(AbstractSet<E> set) {
+        Set<E> left = new Set<E>((int) (set.getSize() * 1.2));
+        for (E element : set) {
+            if (!this.contains(element)) left.add(element);
+        }
+        return left;
+    }
+
+    @Override
+    public Set<E> right(AbstractSet<E> set) {
+        Set<E> right = new Set<E>(hashTable.getCapacity());
+        for (E element : this) {
+            if (!set.contains(element)) right.add(element);
+        }
+        return right;
+    }
+
+    @Override
+    public Set<E> between(AbstractSet<E> set) {
+        Set<E> mid = new Set<E>(64);
+        for (E element : set) {
+            if (this.contains(element)) mid.add(element);
+        }
+        return mid;
+    }
+
+    @Override
+    public Set<E> union(AbstractSet<E> set) {
+        Set<E> union = new Set<E>((int) ((hashTable.getSize() + set.getSize()) * 1.4));
+        Iterator<E> foreignIterator = set.iterator();
+        Iterator<E> thisIterator = this.iterator();
+        while (foreignIterator.hasNext() && iterator().hasNext()) {
+            union.add(foreignIterator.next());
+            union.add(thisIterator.next());
+        }
+        while (foreignIterator.hasNext()) {
+            union.add(foreignIterator.next());
+        }
+        while (thisIterator.hasNext()) {
+            union.add(thisIterator.next());
+        }
+        return union;
+    }
+
     @Override
     public int getSize() {
         return hashTable.getSize();
@@ -114,6 +154,6 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
         for (E e : hashTable) {
             res.add(e).add(", ");
         }
-        return res.subSequence(0, res.getSize() - 2).addFirst('{').add('}').toString();
+        return res.subSequence(0, res.getSize() - 2).add('}').toString();
     }
 }

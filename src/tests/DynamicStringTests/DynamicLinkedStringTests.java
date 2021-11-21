@@ -261,7 +261,7 @@ public class DynamicLinkedStringTests {
     @Test
     public void replaceFrom() {
         string.add("01234").add("56789");
-        assertEquals("012abc", string.replace(3,  "abc").toString());
+        assertEquals("012abc", string.replace(3, "abc").toString());
         assertEquals(6, string.getSize());
 
         assertEquals("012a|", string.replace(4, "|").toString());
@@ -273,6 +273,52 @@ public class DynamicLinkedStringTests {
         assertEquals(1, string.getSize());
 
     }
+
+    @Test
+    public void get() {
+        string.add("01234").add("56789");
+        for (int i = 0; i < 10; i++) {
+            assertEquals(i + '0', string.get(i));
+        }
+    }
+
+    @Test
+    public void indexOfChar() {
+        string.add("01234").add("56789");
+        for (int i = 0; i < 10; i++) {
+            assertEquals(i, string.indexOf(String.valueOf(i).charAt(0)));
+        }
+    }
+
+    @Test
+    public void indexOfString() {
+        string.add("01234").add("56789");
+        assertEquals(0, string.indexOf("012"));
+        assertEquals(-1, string.indexOf("1111111111111111111111111111111111"));
+        assertEquals(-1, string.indexOf(""));
+        assertEquals(-1, string.indexOf("654"));
+        assertEquals(0, string.indexOf("0123456789"));
+        assertEquals(5, string.indexOf("567"));
+        assertEquals(9, string.indexOf("9"));
+        assertEquals(-1, string.indexOf("9999"));
+        assertEquals(-1, string.indexOf("678910"));
+        assertEquals(6, string.indexOf("6789"));
+    }
+
+    @Test
+    public void indexOfDynamicString() {
+        string.add("01234").add("56789");
+        assertEquals(0, string.indexOf(new DynamicLinkedString("012")));
+        assertEquals(-1, string.indexOf(new DynamicLinkedString("1111111111111111111111111111111111")));
+        assertEquals(-1, string.indexOf(new DynamicLinkedString()));
+        assertEquals(-1, string.indexOf(new DynamicLinkedString("654")));
+        assertEquals(0, string.indexOf(new DynamicLinkedString("0123456789")));
+        assertEquals(5, string.indexOf(new DynamicLinkedString("567")));
+        assertEquals(9, string.indexOf(new DynamicLinkedString("9")));
+        assertEquals(-1, string.indexOf(new DynamicLinkedString("9999")));
+        assertEquals(-1, string.indexOf(new DynamicLinkedString("678910")));
+    }
+
 
     @Test
     public void equals() {

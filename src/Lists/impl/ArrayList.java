@@ -198,7 +198,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
-     * Method that provides to get the element from list by position
+     * Provides to get the element from list by position
      *
      * @param position position of element
      * @return element from the specified position
@@ -213,7 +213,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
-     * Method which provides to get first index of specified element in the current list
+     * Provides to get first index of specified element in the current list
      *
      * @param element some element in the list
      * @return index of element in list, if list doesn't contains the element return value will be -1
@@ -229,7 +229,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
-     * Method which provides to get last index of specified element in the current list
+     * Provides to get last index of specified element in the current list
      *
      * @param element some element in the list
      * @return index of element in list, if list doesn't contains the element return value will be -1

@@ -83,7 +83,7 @@ public class Stack<E> implements AbstractStack<E> {
     }
 
     /**
-     * Method provides to check if stack is empty
+     * Provides to check if stack is empty
      *
      * @return true if stack empty otherwise false
      */
