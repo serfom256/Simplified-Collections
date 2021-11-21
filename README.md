@@ -15,14 +15,14 @@
 ### In developing
 - TrieMap
 - Set (Based on RBT tree)
-
+- Expression interpreter
 ### Will be released later
 
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] Skip List
 - [ ] BK Tree
-- [ ] Expression interpreter
+
 
 
 
