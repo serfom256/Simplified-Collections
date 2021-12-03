@@ -3,7 +3,6 @@ package Tries;
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
 import HashSet.AbstractSet;
-import HashSet.Set;
 import HashSet.SortedSetIP;
 
 import java.util.Arrays;
@@ -91,11 +90,11 @@ public class FuzzySearchTrie extends Trie {
             TNode v = start.nodes.get(k);
             if (pos < word.length() && k.equals(word.charAt(pos))) {
                 collectWordsFuzzy(v, word, pos + 1, typos, count, founded, prefix.add(k));
-                prefix.removeLast();
+                prefix.deleteLast();
             } else if (typos >= 0 && count > founded.getSize()) {
                 collectWordsFuzzy(v, word, pos + 1, typos - 1, count, founded, prefix.add(k));
-                collectWordsFuzzy(v, word, pos, typos - 1, count, founded, prefix.removeLast().add(k));
-                collectWordsFuzzy(start, word, pos + 1, typos - 1, count, founded, prefix.removeLast());
+                collectWordsFuzzy(v, word, pos, typos - 1, count, founded, prefix.deleteLast().add(k));
+                collectWordsFuzzy(start, word, pos + 1, typos - 1, count, founded, prefix.deleteLast());
             } else break;
         }
         if (count == founded.getSize()) return;
@@ -182,61 +181,6 @@ public class FuzzySearchTrie extends Trie {
             } else break;
         }
         return word.length() - pos <= typos && start.prev.isEnd;
-    }
-
-    @Override
-    public void put(String sequence) {
-        super.put(sequence);
-    }
-
-    @Override
-    public boolean presents(String sequence) {
-        return super.presents(sequence);
-    }
-
-    @Override
-    public boolean contains(String sequence) {
-        return super.contains(sequence);
-    }
-
-    @Override
-    public String getByPrefix(String prefix) {
-        return super.getByPrefix(prefix);
-    }
-
-    @Override
-    public String[] getByPrefix(String prefix, int count) {
-        return super.getByPrefix(prefix, count);
-    }
-
-    @Override
-    public boolean removeHard(String sequence) {
-        return super.removeHard(sequence);
-    }
-
-    @Override
-    public boolean removeWeak(String sequence) {
-        return super.removeWeak(sequence);
-    }
-
-    @Override
-    public boolean remove(String sequence) {
-        return super.remove(sequence);
-    }
-
-    @Override
-    public void clear() {
-        super.clear();
-    }
-
-    @Override
-    public int getSize() {
-        return super.getSize();
-    }
-
-    @Override
-    public int getEntriesCount() {
-        return super.getEntriesCount();
     }
 
 }

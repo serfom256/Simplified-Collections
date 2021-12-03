@@ -95,7 +95,7 @@ public class HashTableTest {
         }
         int len = hashTable.getSize();
         for (int i = 0; i < len; i++) {
-            assertEquals(i + "_value", hashTable.remove(i + "_key"));
+            assertEquals(i + "_value", hashTable.delete(i + "_key"));
         }
         assertEquals(0, hashTable.getSize());
     }

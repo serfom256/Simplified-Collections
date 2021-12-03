@@ -15,7 +15,7 @@ public class MathSum implements AbstractOperation {
             result.add(carry % 10);
             carry /= 10;
         }
-        if(carry!=0) result.add(carry);
+        if (carry != 0) result.add(carry);
         return result.reverse().toString();
     }
 }

@@ -1,16 +1,16 @@
 package tests.StackTests;
 
-import Stack.Stack;
+import Stack.ArrayStack;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class StackTest {
-    Stack<Integer> stack;
+public class ArrayStackTest {
+    ArrayStack<Integer> stack;
 
-    public StackTest() {
-        stack = new Stack<Integer>();
+    public ArrayStackTest() {
+        stack = new ArrayStack<>();
     }
 
     @Before

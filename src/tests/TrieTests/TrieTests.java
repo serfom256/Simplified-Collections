@@ -1,10 +1,9 @@
 package tests.TrieTests;
 
-import Tries.Trie;
 import HashSet.AbstractSet;
 import HashSet.Set;
-import Lists.AbstractList;
 import Lists.impl.ArrayList;
+import Tries.Trie;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class TrieTests {
     Trie trie;
-    AbstractList<String> lst;
+    ArrayList<String> lst;
 
     public TrieTests() {
         trie = new Trie();
@@ -98,7 +97,7 @@ public class TrieTests {
 
     @Test
     public void getByPrefixString() {
-        AbstractList<String> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
         list.addAll("tes", "132", "1325a", "000", "000qw", "data", "new", "te");
         for (String s : list) assertNotEquals(trie.getByPrefix(s), "");
 

@@ -201,13 +201,13 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Remove key with associated value
+     * Removes key with associated value
      *
      * @param key key for associated value from which to remove
      * @return removed key and associated value by specified key in the HashTable
      * @throws IllegalArgumentException if key is null
      */
-    public V remove(K key) {
+    public V delete(K key) {
         int pos = getPosByKey(key, CAPACITY);
         if (Table == null || Table[pos] == null) {
             return null;

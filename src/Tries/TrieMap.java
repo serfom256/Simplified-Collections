@@ -48,7 +48,7 @@ public class TrieMap {
             toRemove.prev = null;
             entriesCount -= toRemove.entriesCount;
             size -= toRemove.size;
-            nodes.remove(c);
+            nodes.delete(c);
         }
 
         TNode getSubTrie(Character c) {

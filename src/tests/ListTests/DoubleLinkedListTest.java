@@ -26,27 +26,27 @@ public class DoubleLinkedListTest {
     }
 
     @Test
-    public void pushLast() {
+    public void addLast() {
         Integer[] testArr = new Integer[]{999, 99, 9};
         for (Integer integer : testArr) {
-            list.pushLast(integer);
+            list.addLast(integer);
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.popLast());
+            assertEquals(testArr[i], list.removeLast());
         }
         assertEquals(9, list.getSize());
     }
 
     @Test
-    public void pushFirst() {
+    public void addFirst() {
         Integer[] testArr = new Integer[]{999, 99, 9};
         for (Integer integer : testArr) {
-            list.pushFirst(integer);
+            list.addFirst(integer);
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.popFirst());
+            assertEquals(testArr[i], list.removeFirst());
         }
         assertEquals(9, list.getSize());
     }
@@ -59,7 +59,7 @@ public class DoubleLinkedListTest {
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.popLast());
+            assertEquals(testArr[i], list.removeLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -70,7 +70,7 @@ public class DoubleLinkedListTest {
         list.addAll(99, 999, 9999);
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.popLast());
+            assertEquals(testArr[i], list.removeLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -88,148 +88,88 @@ public class DoubleLinkedListTest {
 
     @Test
     public void insert() {
-        list.insert(999, 0);
+        list.insert(0, 999);
         assertSame(0, list.indexOf(999));
-        list.insert(54, 9);
+        list.insert(9, 54);
         assertSame(9, list.indexOf(54));
         assertEquals(11, list.getSize());
     }
 
     @Test
-    public void removeDuplicates() {
-        assertEquals(9, list.getSize());
-        list.insert(8, 4);
-        list.insert(8, 3);
-        list.insert(8, list.getSize() - 1);
-
-        assertEquals(12, list.getSize());
-        list.insert(99, 6);
-        list.insert(99, 0);
-        list.insert(99, list.getSize() - 1);
-        assertEquals(15, list.getSize());
-
-        list.removeDuplicates();
-
-        assertEquals(1, list.count(8));
-        assertEquals(1, list.count(99));
-        assertEquals(10, list.getSize());
-    }
-
-    @Test
     public void remove() {
-        list.remove(7);
+        list.delete(7);
         assertSame(-1, list.indexOf(7));
         assertEquals(8, list.getSize());
     }
 
     @Test
-    public void removeAllLike() {
-        assertEquals(9, list.getSize());
-        list.insert(5, 4);
-        list.insert(5, 3);
-        list.insert(5, list.getSize() - 1);
-        list.removeAllLike(5);
-        assertEquals(8, list.getSize());
-        assertEquals(-1, list.indexOf(5));
-
-        list.insert(99, 6);
-        list.insert(99, 0);
-        list.insert(99, list.getSize() - 1);
-        list.removeAllLike(99);
-        assertEquals(8, list.getSize());
-        assertEquals(-1, list.indexOf(99));
-    }
-
-    @Test
-    public void removeAllLikeFromPosition() {
-        list.insert(54, 4);
-        list.insert(54, 3);
-        list.insert(54, list.getSize() - 1);
-        list.removeAllLike(54, 4);
-        assertEquals(10, list.getSize());
-        assertEquals(1, list.count(54));
-
-        list.insert(99, 6);
-        list.insert(99, 4);
-        list.insert(99, list.getSize() - 1);
-        list.removeAllLike(99, 0);
-        assertEquals(10, list.getSize());
-        assertEquals(0, list.count(99));
-
-        assertEquals(0, list.count(999));
-        list.removeAllLike(999, 0);
-        assertEquals(0, list.count(999));
-        assertEquals(10, list.getSize());
-    }
-
-    @Test
     public void pop() {
         assertEquals(9, list.getSize());
-        assertSame(9, list.pop(0));
+        assertSame(9, list.deleteAtPosition(0));
         assertSame(-1, list.indexOf(9));
 
         assertEquals(8, list.getSize());
-        assertSame(3, list.pop(7));
+        assertSame(3, list.deleteAtPosition(7));
         assertSame(-1, list.indexOf(3));
 
         assertEquals(7, list.getSize());
-        assertSame(8, list.pop(4));
+        assertSame(8, list.deleteAtPosition(4));
         assertSame(-1, list.indexOf(8));
 
         assertEquals(6, list.getSize());
-        assertSame(1, list.pop(3));
+        assertSame(1, list.deleteAtPosition(3));
         assertSame(-1, list.indexOf(1));
 
         assertEquals(5, list.getSize());
-        assertSame(5, list.pop(1));
+        assertSame(5, list.deleteAtPosition(1));
         assertSame(-1, list.indexOf(5));
     }
 
     @Test
-    public void popLast() {
-        assertEquals((Integer) 3, list.popLast());
+    public void removeLast() {
+        assertEquals((Integer) 3, list.removeLast());
         assertEquals(8, list.getSize());
         while (list.getSize() != 0) {
-            list.popLast();
+            list.removeLast();
         }
-        assertNull(list.peekFirst());
-        assertNull(list.peekLast());
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
         assertEquals(0, list.getSize());
     }
 
     @Test
-    public void popFirst() {
-        assertEquals((Integer) 9, list.popFirst());
+    public void removeFirst() {
+        assertEquals((Integer) 9, list.removeFirst());
         assertEquals(8, list.getSize());
 
         while (list.getSize() != 0) {
-            Integer first = list.peekFirst();
-            assertEquals(first, list.popFirst());
+            Integer first = list.getFirst();
+            assertEquals(first, list.removeFirst());
         }
-        assertNull(list.peekFirst());
-        assertNull(list.peekLast());
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
         assertEquals(0, list.getSize());
     }
 
     @Test
-    public void peekFirst() {
+    public void getFirst() {
         while (list.getSize() != 0) {
-            Integer first = list.peekFirst();
-            assertEquals(first, list.popFirst());
+            Integer first = list.getFirst();
+            assertEquals(first, list.removeFirst());
         }
-        assertNull(list.peekFirst());
-        assertNull(list.peekLast());
-        assertNull(list.peekFirst());
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
+        assertNull(list.getFirst());
     }
 
     @Test
-    public void peekLast() {
+    public void getLast() {
         while (list.getSize() != 0) {
-            Integer last = list.peekLast();
-            assertEquals(last, list.popLast());
+            Integer last = list.getLast();
+            assertEquals(last, list.removeLast());
         }
-        assertNull(list.peekFirst());
-        assertNull(list.peekLast());
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
         assertEquals(0, list.getSize());
     }
 
@@ -334,7 +274,7 @@ public class DoubleLinkedListTest {
         Integer[] testArr = new Integer[]{0, 1, 2, 3, 4, 5, 7, 8, 9};
         Arrays.sort(testArr);
         for (Integer integer : testArr) {
-            assertEquals(integer, list.popFirst());
+            assertEquals(integer, list.removeFirst());
         }
         assertEquals(0, list.getSize());
     }
@@ -349,9 +289,9 @@ public class DoubleLinkedListTest {
 
     @Test
     public void count() {
-        list.insert(99, 6);
-        list.insert(99, 0);
-        list.insert(99, list.getSize() - 1);
+        list.insert(6, 99);
+        list.insert(0, 99);
+        list.insert(list.getSize() - 1, 99);
         assertEquals(12, list.getSize());
         assertEquals(3, list.count(99));
         assertEquals(1, list.count(5));
@@ -360,20 +300,20 @@ public class DoubleLinkedListTest {
 
     @Test
     public void lastIndexOf() {
-        list.insert(999, 1);
-        list.insert(999, 7);
+        list.insert(1, 999);
+        list.insert(7, 999);
         assertSame(7, list.lastIndexOf(999));
-        list.pop(7);
+        list.deleteAtPosition(7);
         assertSame(1, list.lastIndexOf(999));
 
     }
 
     @Test
     public void indexOf() {
-        list.insert(999, 1);
-        list.insert(999, 7);
+        list.insert(1, 999);
+        list.insert(7, 999);
         assertSame(1, list.indexOf(999));
-        list.pop(1);
+        list.deleteAtPosition(1);
         assertSame(6, list.lastIndexOf(999));
     }
 
@@ -407,5 +347,76 @@ public class DoubleLinkedListTest {
         list.addAll(1, 2, 3, 4);
         Integer[] testArr = {1, 2, 3, 4};
         assertArrayEquals(testArr, list.toObjectArray());
+    }
+
+    @Test
+    public void replaceFromTo() {
+        list.clear();
+        for (int i = 1; i <= 30; i++) {
+            list.add(i);
+        }
+        assertEquals(30, list.getSize());
+        list.replace(0, 10, 99);
+        assertEquals((Integer) 99, list.get(0));
+
+        assertEquals(21, list.getSize());
+        list.replace(20, 21, 100);
+        assertEquals((Integer) 100, list.get(list.getSize() - 1));
+
+        assertEquals(21, list.getSize());
+        list.replace(0, list.getSize(), 999);
+
+        assertEquals((Integer) 999, list.get(0));
+        assertEquals(1, list.getSize());
+    }
+
+    @Test
+    public void replaceFrom() {
+        list.clear();
+        for (int i = 1; i <= 30; i++) {
+            list.add(i);
+        }
+        assertEquals(30, list.getSize());
+        list.replace(29, 99);
+        assertEquals((Integer) 99, list.get(list.getSize() - 1));
+        assertEquals(30, list.getSize());
+
+        list.replace(20, 100);
+        assertEquals((Integer) 100, list.get(list.getSize() - 1));
+        assertEquals(21, list.getSize());
+
+        list.replace(0, 999);
+        assertEquals((Integer) 999, list.get(0));
+        assertEquals(1, list.getSize());
+    }
+
+    @Test
+    public void removeRange() {
+        list.clear();
+        for (int i = 1; i <= 30; i++) {
+            list.add(i);
+        }
+        list.delete(5, 10);
+        for (int i = 6; i <= 10; i++) {
+            assertEquals(-1, list.indexOf(i));
+        }
+        assertEquals(25, list.getSize());
+        list.delete(5, 10);
+        for (int i = 6; i <= 15; i++) {
+            assertEquals(-1, list.indexOf(i));
+        }
+        assertEquals(20, list.getSize());
+        list.delete(18, 20);
+        assertEquals(18, list.getSize());
+    }
+
+    @Test
+    public void update() {
+        for (int i = 0; i < list.getSize(); i++) {
+            list.update(i, 0);
+        }
+        for (int i = 0; i < list.getSize(); i++) {
+            assertEquals((Integer) 0, list.get(i));
+        }
     }
 }

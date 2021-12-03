@@ -418,7 +418,7 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
         private TNode<E> current, next;
 
         public SelfIterator() {
-            this.stack = new LinkedStack<TNode<E>>();
+            this.stack = new LinkedStack<>();
             current = next = root;
         }
 

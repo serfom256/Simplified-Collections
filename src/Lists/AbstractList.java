@@ -2,21 +2,35 @@ package Lists;
 
 public interface AbstractList<E> extends Iterable<E> {
 
-    void addAll(E... element);
-
     void add(E element);
 
-    void insert(E element, int position);
+    void insert(int position, E element);
 
     void sort();
 
     void clear();
 
-    E pop(int position);
+    void replace(int start, int end, E data);
 
-    E remove(E element);
+    void replace(int start, E data);
+
+    void replace(int start, int end, Iterable<E> data);
+
+    void replace(int start, Iterable<E> data);
+
+    void update(int pos, E data);
+
+    void delete(int start, int end);
+
+    E deleteAtPosition(int position);
+
+    E delete(E element);
 
     E get(int position);
+
+    E getFirst();
+
+    E getLast();
 
     Object[] toObjectArray();
 
@@ -26,6 +40,9 @@ public interface AbstractList<E> extends Iterable<E> {
 
     int getSize();
 
+    int count(E element);
+
     AbstractList<E> slice(int start, int end);
+
 
 }

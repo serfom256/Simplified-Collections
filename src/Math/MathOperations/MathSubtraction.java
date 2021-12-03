@@ -23,13 +23,13 @@ public class MathSubtraction implements AbstractOperation {
             carry /= 10;
         }
 
-        for (int i = min.length(); i < max.length() - min.length(); i++) {
-            int end = (max.charAt(i) - '0') - carry;
+        for (int i = max.length(); i > min.length(); i--) {
+            int end = (max.charAt(max.length() - i) - '0') + carry;
             carry = end < 0 ? 1 : 0;
             result.add(end % 10);
         }
-        while (result.startsWith('0')) {
-            result.removeFirst();
+        while (result.endsWith('0')) {
+            result.deleteLast();
         }
         result.reverse();
         if (s1.equals(min)) result.insert(0, '-');

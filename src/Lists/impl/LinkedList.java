@@ -29,11 +29,10 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         this.length = 0;
     }
 
-    @Override
     @SafeVarargs
     public final void addAll(E... data) {
         for (E obj : data) {
-            pushLast(obj);
+            addLast(obj);
         }
     }
 
@@ -44,7 +43,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      */
     @Override
     public void add(E element) {
-        pushLast(element);
+        addLast(element);
     }
 
     /**
@@ -52,8 +51,9 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param element the element to add
      */
+    // TODO rewrite
     @Override
-    public void pushLast(E element) {
+    public void addLast(E element) {
         Node<E> newNode = new Node<>(element);
         if (head == null) {
             head = last = newNode;
@@ -69,11 +69,13 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param element the element to add
      */
+    // TODO rewrite
     @Override
-    public void pushFirst(E element) {
+    public void addFirst(E element) {
         Node<E> newNode = new Node<>(element);
         newNode.next = head;
         head = newNode;
+        if (last == null) last = head;
         length++;
     }
 
@@ -84,7 +86,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @return last element of the list
      */
     @Override
-    public E peekLast() {
+    public E getLast() {
         return length != 0 ? last.val : null;
     }
 
@@ -94,7 +96,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @return fist element of the list
      */
     @Override
-    public E peekFirst() {
+    public E getFirst() {
         return head != null ? head.val : null;
     }
 
@@ -104,8 +106,9 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @return first element of list if list isn't empty else return null
      * @throws ArrayIndexOutOfBoundsException if list is empty
      */
+    // TODO rewrite
     @Override
-    public E popFirst() {
+    public E removeFirst() {
         if (head == null) {
             throw new ArrayIndexOutOfBoundsException("List is empty");
         }
@@ -121,8 +124,9 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @return last element of list if list isn't empty else return null
      * @throws ArrayIndexOutOfBoundsException if list is empty
      */
+    // TODO rewrite
     @Override
-    public E popLast() {
+    public E removeLast() {
         if (head == null) {
             throw new ArrayIndexOutOfBoundsException("List is empty");
         }
@@ -145,10 +149,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * Returns count of element in this list
-     *
-     * @param element some element
-     * @return count of current elements int this list
+     * Returns count of elements which equals the specified element in this list
      */
     @Override
     public int count(E element) {
@@ -168,13 +169,14 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @return removed element from position
      * @throws ArrayIndexOutOfBoundsException if position out of the list bounds
      */
+    // TODO rewrite
     @Override
-    public E pop(int pos) {
+    public E deleteAtPosition(int pos) {
         if (pos < 0 || pos >= length) {
             throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
         }
-        if (pos == 0) return popFirst();
-        if (pos == length - 1) return popLast();
+        if (pos == 0) return removeFirst();
+        if (pos == length - 1) return removeLast();
 
         Node<E> first = head;
         int position = 0;
@@ -194,12 +196,13 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @param data element to remove of list
      * @return removed element
      */
+    // TODO rewrite
     @Override
-    public E remove(E data) {
+    public E delete(E data) {
         Node<E> curr = head;
         for (int i = 0; curr != null; curr = curr.next, i++) {
             if (curr.val.equals(data)) {
-                return pop(i);
+                return deleteAtPosition(i);
             }
         }
         return null;
@@ -212,14 +215,15 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @param data data to add to the position
      * @param pos  this is position to insert the data
      */
+    // TODO rewrite
     @Override
-    public void insert(E data, int pos) {
+    public void insert(int pos, E data) {
         if (pos <= 0) {
-            pushFirst(data);
+            addFirst(data);
             return;
         }
         if (pos >= length) {
-            pushLast(data);
+            addLast(data);
             return;
         }
 
@@ -243,6 +247,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @param element some element in the list
      * @return index of element in list, if list doesn't contains the element return value will be -1
      */
+    // TODO rewrite
     @Override
     public int indexOf(E element) {
         Node<E> curr = head;
@@ -279,6 +284,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @return element from the specified position
      * @throws ArrayIndexOutOfBoundsException if position out of list bounds
      */
+    // TODO optimize it
     @Override
     public E get(int position) {
         if (position < 0 || position >= length) {
@@ -294,6 +300,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
     /**
      * Sort list in ascending order
      */
+    // TODO move to interface
     @SuppressWarnings("unchecked")
     public void sort() {
         Object[] temp = toObjectArray();
@@ -347,6 +354,85 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         this.head = null;
         this.last = null;
         this.length = 0;
+    }
+
+    /**
+     * Replaces all values in range from the specified start to the specified end with specified value
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param data  value for replacement
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, int end, E data) {
+
+    }
+
+    /**
+     * Replaces all values in range from the specified start to the size of current list with specified value
+     *
+     * @param start start of range
+     * @param data  value for replacement
+     * @throws IllegalArgumentException if start < 0 or start > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, E data) {
+
+    }
+
+    /**
+     * Replaces all values in range from the specified start to the specified end with specified elements
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param data  values for replacement
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, int end, Iterable<E> data) {
+
+    }
+
+    /**
+     * Replaces all values in range from the specified start to the size of current list with specified elements
+     *
+     * @param start start of range
+     * @param data  values for replacement
+     * @throws IllegalArgumentException if start < 0 or start > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, Iterable<E> data) {
+
+    }
+
+    /**
+     * Replace element in the list if element present in the list
+     *
+     * @param pos  position of element to replace
+     * @param data element to replace
+     * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
+     */
+    @Override
+    public void update(int pos, E data) {
+
+    }
+
+    /**
+     * Removes from the list all of the elements in specified range between start and end
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void delete(int start, int end) {
+
     }
 
     @Override

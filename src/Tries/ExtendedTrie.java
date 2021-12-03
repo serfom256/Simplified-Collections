@@ -84,13 +84,4 @@ public class ExtendedTrie extends FuzzySearchTrie {
     }
 
 
-    @Override
-    public int getSize() {
-        return super.getSize();
-    }
-
-    @Override
-    public int getEntriesCount() {
-        return super.getEntriesCount();
-    }
 }

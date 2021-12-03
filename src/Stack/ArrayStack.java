@@ -3,18 +3,18 @@ package Stack;
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
 
-public class Stack<E> implements AbstractStack<E> {
+public class ArrayStack<E> implements AbstractStack<E> {
     private static final int DEFAULT_CAPACITY = 20;
     private int capacity;
     private int size;
 
     private E[] data;
 
-    public Stack() {
+    public ArrayStack() {
         this(DEFAULT_CAPACITY);
     }
 
-    public Stack(int capacity) {
+    public ArrayStack(int capacity) {
         this.size = 0;
         this.capacity = capacity;
     }
@@ -59,7 +59,7 @@ public class Stack<E> implements AbstractStack<E> {
         E toRemove = data[--size];
 
         data[size] = null;
-        if (size <= (capacity >> 1)) {
+        if (size < (capacity >> 1)) {
             int j = (capacity >> 1) + (capacity >> 2);
             capacity = j;
             resize(j);

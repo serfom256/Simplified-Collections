@@ -17,8 +17,10 @@ public class MathMultiply implements AbstractOperation {
                 d[curr] = cVal % 10;
             }
         }
-        for (int value : d) {
-            result.addFirst(value);
+        int i = d.length - 1;
+        while (d[i] == 0) i--;
+        for (int j = i; j >= 0; j--) {
+            result.addFirst(d[j]);
         }
         return result.toString();
 

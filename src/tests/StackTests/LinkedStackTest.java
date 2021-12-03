@@ -12,7 +12,7 @@ public class LinkedStackTest {
     LinkedStack<Integer> stack;
 
     public LinkedStackTest() {
-        stack = new LinkedStack<Integer>();
+        stack = new LinkedStack<>();
     }
 
     @Before
@@ -77,7 +77,7 @@ public class LinkedStackTest {
     public void indexOf() {
         assertEquals(-1, stack.indexOf(0));
         for (int i = 1; i <= 20; i++) {
-            assertEquals(20-i, stack.indexOf(i));
+            assertEquals(20 - i, stack.indexOf(i));
         }
     }
 

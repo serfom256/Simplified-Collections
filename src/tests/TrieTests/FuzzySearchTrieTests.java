@@ -24,8 +24,8 @@ public class FuzzySearchTrieTests {
     public void setUp() {
         trie.clear();
         for (int i = 0; i < 10000; i++) {
-            int minStringLen = 3;
-            int maxStringLen = 30;
+            int minStringLen = 5;
+            int maxStringLen = 15;
             String randString = generateString(minStringLen, maxStringLen);
             trie.put(randString);
             lst.add(randString);
@@ -55,7 +55,7 @@ public class FuzzySearchTrieTests {
             }
             if (!trie.presents(mutableString.toString())) {
                 String[] founded = trie.getByPrefix(mutableString.toString(), 1000, 1);
-                AbstractList<String> list = new ArrayList<>();
+                ArrayList<String> list = new ArrayList<>();
                 list.addAll(founded);
                 assertNotEquals(list.indexOf(s), -1);
             }

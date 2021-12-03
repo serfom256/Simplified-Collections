@@ -47,7 +47,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
      */
     @Override
     public E remove(E element) {
-        if (hashTable.remove(element) != null) {
+        if (hashTable.delete(element) != null) {
             return element;
         }
         return null;

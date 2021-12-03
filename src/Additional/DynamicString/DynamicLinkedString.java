@@ -28,18 +28,23 @@ public class DynamicLinkedString implements AbstractDynamicString {
 
     public DynamicLinkedString(char[] lst) {
         this();
-        for (char c : lst) add(c);
+        for (char c : lst) {
+            add(c);
+        }
     }
 
     public DynamicLinkedString(String str) {
         this();
-        for (int i = 0; i < str.length(); i++) add(str.charAt(i));
+        for (int i = 0; i < str.length(); i++) {
+            add(str.charAt(i));
+        }
     }
 
     public DynamicLinkedString(AbstractDynamicString str) {
         this();
-        String s = str.toString();
-        for (int i = 0; i < s.length(); i++) add(s.charAt(i));
+        for (char c : str) {
+            add(c);
+        }
     }
 
     /**
@@ -91,14 +96,10 @@ public class DynamicLinkedString implements AbstractDynamicString {
      */
     @Override
     public DynamicLinkedString add(char c) {
-        Node newNode = new Node(c);
         if (last == null) {
-            head = newNode;
-            last = head;
+            head = last = new Node(c);
         } else {
-            newNode.prev = last;
-            last.next = newNode;
-            last = newNode;
+            insertAfter(last, c);
         }
         size++;
         return this;
@@ -139,7 +140,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      */
     @Override
     public DynamicLinkedString addFirst(AbstractDynamicString s) {
-        for (Character c : s) {
+        for (char c : s) {
             addFirst(c);
         }
         return this;
@@ -173,11 +174,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
      */
     @Override
     public DynamicLinkedString addFirst(char c) {
-        Node newNode = new Node(c);
-        newNode.next = head;
-        if (head != null) head.prev = newNode;
-        else last = newNode;
-        head = newNode;
+        if (head == null) {
+            head = last = new Node(c);
+        } else {
+            insertBefore(head, c);
+        }
         size++;
         return this;
     }
@@ -202,8 +203,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     public DynamicLinkedString insert(int pos, char c) {
         if (pos >= size) return add(c);
         if (pos <= 0) return addFirst(c);
-        Node node = getNodeByPos(pos);
-        insertBefore(node, c);
+        insertBefore(getNodeByPos(pos), c);
         size++;
         return this;
     }
@@ -225,8 +225,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
             return this;
         }
 
-        Node node = getNodeByPos(pos);
-        insertSequenceBefore(node, s, s.length() - 1);
+        insertSequenceBefore(getNodeByPos(pos), s, s.length() - 1);
         return this;
     }
 
@@ -299,26 +298,30 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Provides to remove range ...
+     * Provides to remove sequence in range from the specified start to the specified end
      *
-     * @param startPos start position of removed range
-     * @param endPos   end position of removed range
-     * @throws IllegalArgumentException if startPos > endPos or specified positions out of string range
+     * @param start start position of removed range
+     * @param end   end position of removed range
+     * @throws IllegalArgumentException if startPos > end or specified positions out of string range
      */
     @Override
-    public DynamicLinkedString delete(int startPos, int endPos) {
-        if (startPos >= endPos || startPos < 0) {
+    public DynamicLinkedString delete(int start, int end) {
+        if (start < 0 || start >= end) {
             throw new IllegalArgumentException("Specified position is invalid");
         }
-        if (endPos >= size) endPos = size;
-        Node node = getNodeByPos(startPos);
-        if (node == head) endPos--;
-        while (startPos < endPos && node != null) {
+        if (end >= size) end = size;
+        Node node = getNodeByPos(start);
+        if (node == head) {
+            end--;
+        } else {
+            node = node.prev;
+        }
+        while (start < end && node != null) {
             node = deleteAfter(node);
-            endPos--;
+            end--;
             size--;
         }
-        return startPos == 0 ? removeFirst() : this;
+        return start == 0 ? deleteFirst() : this;
     }
 
     /**
@@ -349,10 +352,10 @@ public class DynamicLinkedString implements AbstractDynamicString {
     @Override
     public DynamicLinkedString deleteAtPosition(int pos) {
         if (pos < 0 || pos > size) throw new IllegalArgumentException("Specified position out of String bounds");
-        Node node = getNodeByPos(pos - 1);
-        if (node.prev == null) return removeFirst();
-        if (node.next == null) return removeLast();
-        if (deleteAfter(node) != null) size--;
+        Node node = getNodeByPos(pos);
+        if (node.prev == null) return deleteFirst();
+        if (node.next == null) return deleteLast();
+        if (deleteAfter(node.prev) != null) size--;
         return this;
     }
 
@@ -364,6 +367,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     private Node deleteBefore(Node node) {
         Node toRemove = node.prev;
         if (toRemove == null) return null;
+        if (toRemove == head) head = toRemove.next;
         Node prev = toRemove.prev;
         if (prev != null) prev.next = node;
         node.prev = prev;
@@ -378,7 +382,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
     private Node deleteAfter(Node node) {
         Node toRemove = node.next;
         if (toRemove == null) return null;
+        if (toRemove == last) last = toRemove.prev;
         Node next = toRemove.next;
+        toRemove.prev = null;
         if (next != null) next.prev = node;
         node.next = next;
         return node;
@@ -388,7 +394,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Removes first character of String if string size more then 0
      */
     @Override
-    public DynamicLinkedString removeFirst() {
+    public DynamicLinkedString deleteFirst() {
         if (head == null) return this;
         size--;
         head = head.next;
@@ -401,7 +407,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Removes last character of String if string size more then 0
      */
     @Override
-    public DynamicLinkedString removeLast() {
+    public DynamicLinkedString deleteLast() {
         if (last == null) return this;
         size--;
         last = last.prev;
@@ -424,24 +430,17 @@ public class DynamicLinkedString implements AbstractDynamicString {
             throw new IllegalArgumentException("Specified position is illegal to replace");
         }
         if (end >= size) end = size;
-        Node temp = getNodeByPos(start).next, curr;
-        for (curr = temp; curr != null && start < end; start++, curr = curr.next) {
-            if (curr.prev == head) {
-                removeFirst();
-            } else {
-                curr = deleteBefore(curr);
-                size--;
-            }
-            if (curr == null) break;
+        Node curr = getNodeByPos(start);
+        int gap = end - start, pos;
+        Node temp = curr;
+        for (pos = 0; pos < s.length() && pos < gap; pos++, curr = curr.next) {
+            curr.val = s.charAt(pos);
+            temp = curr;
         }
-        if (curr == null && start < end && size == 0) {
-            removeFirst();
-            insertSequenceAfter(head, s, 0);
-        } else if (curr == null && start < end) {
-            removeLast();
-            insertSequenceAfter(last, s, 0);
-        } else {
-            insertSequenceBefore(curr == null ? head : curr.prev, s, s.length() - 1);
+        if (gap - pos > 0) {
+            return delete(start + pos, end);
+        } else if (pos < s.length()) {
+            insertSequenceAfter(temp, s, pos);
         }
         return this;
     }
@@ -531,6 +530,15 @@ public class DynamicLinkedString implements AbstractDynamicString {
     @Override
     public DynamicLinkedString replace(int start, char c) {
         return replace(start, size, String.valueOf(c));
+    }
+
+    @Override
+    public DynamicLinkedString update(int pos, char c) {
+        if (pos < 0 || pos >= size) {
+            throw new ArrayIndexOutOfBoundsException("Specified position out of string bounds");
+        }
+        getNodeByPos(pos).val = c;
+        return this;
     }
 
     /**

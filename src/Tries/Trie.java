@@ -171,7 +171,7 @@ public class Trie implements Iterable<String> {
             }
             count = collect(result, prefix, node.nodes, count);
             if (count == 0) return 0;
-            prefix.removeLast();
+            prefix.deleteLast();
         }
         return count;
     }
@@ -190,10 +190,10 @@ public class Trie implements Iterable<String> {
     private boolean removeSequenceHard(String sequence) {
         TNode lastNode = getLastNodeAfterEnd(sequence);
         if (lastNode == null) return false;
-        lastNode.prev.nodes.remove(lastNode.element);
+        lastNode.prev.nodes.delete(lastNode.element);
         reduceCountOfElements(lastNode);
-        if (lastNode.prev == null) root.nodes.remove(sequence.charAt(0));
-        else lastNode.prev.nodes.remove(lastNode.element);
+        if (lastNode.prev == null) root.nodes.delete(sequence.charAt(0));
+        else lastNode.prev.nodes.delete(lastNode.element);
         return true;
     }
 
@@ -212,10 +212,10 @@ public class Trie implements Iterable<String> {
     private boolean removeSequenceWeak(String sequence) {
         TNode lastNode = getLastNodeAfterEnd(sequence);
         if (lastNode == null || hasSucceedingBranches(lastNode)) return false;
-        lastNode.prev.nodes.remove(lastNode.element);
+        lastNode.prev.nodes.delete(lastNode.element);
         reduceCountOfElements(lastNode);
-        if (lastNode.prev == null) root.nodes.remove(sequence.charAt(0));
-        else lastNode.prev.nodes.remove(lastNode.element);
+        if (lastNode.prev == null) root.nodes.delete(sequence.charAt(0));
+        else lastNode.prev.nodes.delete(lastNode.element);
         return true;
     }
 
@@ -241,7 +241,7 @@ public class Trie implements Iterable<String> {
         }
         if (curr.nodes.getSize() == 0) {
             size -= len + 1 - lastCharPos;
-            lastNode.nodes.remove(sequence.charAt(lastCharPos));
+            lastNode.nodes.delete(sequence.charAt(lastCharPos));
         } else if (curr.isEnd) {
             curr.isEnd = false;
         } else {
@@ -351,7 +351,7 @@ public class Trie implements Iterable<String> {
     private class SelfIterator implements Iterator<String> {
         DynamicLinkedString lastString;
         DynamicLinkedString tempString = new DynamicLinkedString();
-        AbstractStack<Pair> prevNodes = new LinkedStack<Pair>();
+        AbstractStack<Pair> prevNodes = new LinkedStack<>();
 
 
         public SelfIterator() {
@@ -388,7 +388,7 @@ public class Trie implements Iterable<String> {
                     prev = prevNodes.poll();
                     if (prev == null) return false;
                     if (prevNodes.getSize() == 0 || prev.iterator.hasNext()) break;
-                    prefix.removeLast();
+                    prefix.deleteLast();
                 }
                 newNode = prev.table;
                 iterator = prev.iterator;
@@ -397,7 +397,7 @@ public class Trie implements Iterable<String> {
                 table = newNode.nodes;
                 if (prevNodes.getSize() == 0) {
                     prevNodes.push(new Pair(newNode, iterator));
-                    prefix.removeLast();
+                    prefix.deleteLast();
                 } else if (iterator.hasNext()) {
                     prevNodes.push(new Pair(newNode, iterator));
                 }

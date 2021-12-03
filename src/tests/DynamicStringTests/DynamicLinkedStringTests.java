@@ -75,7 +75,7 @@ public class DynamicLinkedStringTests {
         string.add(res);
         for (int i = res.length() - 1; i >= 0; i--) {
             assertEquals(res.charAt(i), string.getLast());
-            string.removeLast();
+            string.deleteLast();
         }
     }
 
@@ -85,31 +85,31 @@ public class DynamicLinkedStringTests {
         string.add(res);
         for (int i = 0; i < res.length(); i++) {
             assertEquals(res.charAt(i), string.getFirst());
-            string.removeFirst();
+            string.deleteFirst();
         }
     }
 
     @Test
-    public void removeFirst() {
+    public void deleteFirst() {
         String res = "123456789";
         string.add(res);
         for (int i = 0; i < res.length(); i++) {
-            assertEquals(res.substring(i + 1), string.removeFirst().toString());
+            assertEquals(res.substring(i + 1), string.deleteFirst().toString());
         }
         for (int i = 0; i < 1000; i++) {
-            assertEquals("", string.removeFirst().toString());
+            assertEquals("", string.deleteFirst().toString());
         }
     }
 
     @Test
-    public void removeLast() {
+    public void deleteLast() {
         String res = "123456789";
         string.add(res);
         for (int i = res.length() - 1; i >= 0; i--) {
-            assertEquals(res.substring(0, i), string.removeLast().toString());
+            assertEquals(res.substring(0, i), string.deleteLast().toString());
         }
         for (int i = 0; i < 1000; i++) {
-            assertEquals("", string.removeLast().toString());
+            assertEquals("", string.deleteLast().toString());
         }
     }
 
@@ -186,13 +186,14 @@ public class DynamicLinkedStringTests {
     @Test
     public void deleteFromTo() {
         string.add("01234").add("56789");
-        assertEquals("01234789", string.delete(4, 6).toString());
+        assertEquals("01236789", string.delete(4, 6).toString());
+
         assertEquals(8, string.getSize());
 
-        assertEquals("012347", string.delete(5, string.getSize() - 1).toString());
+        assertEquals("012369", string.delete(5, string.getSize() - 1).toString());
         assertEquals(6, string.getSize());
 
-        assertEquals("347", string.delete(0, 3).toString());
+        assertEquals("369", string.delete(0, 3).toString());
         assertEquals(3, string.getSize());
 
         assertEquals("", string.delete(0, 3).toString());
@@ -203,6 +204,11 @@ public class DynamicLinkedStringTests {
 
         assertEquals("1", string.delete(1, 2).toString());
         assertEquals(1, string.getSize());
+        string.insert(0, "abc");
+        assertEquals(4, string.getSize());
+
+        assertEquals("", string.delete(0, 4).toString());
+
     }
 
     @Test
@@ -216,6 +222,12 @@ public class DynamicLinkedStringTests {
         assertEquals("12", string.deleteAtPosition(0).toString());
         assertEquals("2", string.deleteAtPosition(0).toString());
         assertEquals("", string.deleteAtPosition(0).toString());
+        string.add("01234").add("56789");
+        assertEquals(10, string.getSize());
+        assertEquals("123456789", string.deleteAtPosition(0).toString());
+        assertEquals(9, string.getSize());
+        assertEquals("12345679", string.deleteAtPosition(7).toString());
+        assertEquals(8, string.getSize());
     }
 
     @Test
@@ -256,6 +268,15 @@ public class DynamicLinkedStringTests {
 
         assertEquals("123", string.replace(0, 1, "123").toString());
         assertEquals(3, string.getSize());
+
+        assertEquals("1abc3", string.replace(1, 2, "abc").toString());
+        assertEquals(5, string.getSize());
+
+        assertEquals("123", string.replace(1, 5, "23").toString());
+        assertEquals(3, string.getSize());
+
+        assertEquals("00000000000", string.replace(0, 99, "00000000000").toString());
+        assertEquals(11, string.getSize());
     }
 
     @Test
@@ -330,7 +351,6 @@ public class DynamicLinkedStringTests {
         assertNotEquals(new DynamicLinkedString("012345678"), string);
     }
 
-
     @Test
     public void clear() {
         assertEquals(0, string.getSize());
@@ -341,5 +361,17 @@ public class DynamicLinkedStringTests {
         assertEquals(0, string.getSize());
         string = new DynamicLinkedString("abc");
         assertEquals(0, string.clear().getSize());
+    }
+
+    @Test
+    public void update() {
+        string.add("01234").add("56789");
+        for (int i = 0; i < 10; i++) {
+            string.update(i, 'z');
+        }
+        assertEquals(10, string.getSize());
+        for (int i = 0; i < 10; i++) {
+            assertEquals('z', string.get(i));
+        }
     }
 }

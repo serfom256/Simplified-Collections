@@ -23,7 +23,7 @@ public class LinkedStack<E> implements AbstractStack<E> {
         if (linkedList.getSize() == 0) {
             throw new UnsupportedOperationException("stack is empty");
         }
-        return linkedList.peekFirst();
+        return linkedList.getFirst();
     }
 
     /**
@@ -37,7 +37,7 @@ public class LinkedStack<E> implements AbstractStack<E> {
         if (linkedList.getSize() == 0) {
             throw new UnsupportedOperationException("stack is empty");
         }
-        return linkedList.popFirst();
+        return linkedList.removeFirst();
     }
 
     /**
@@ -47,7 +47,7 @@ public class LinkedStack<E> implements AbstractStack<E> {
      */
     @Override
     public void push(E element) {
-        linkedList.pushFirst(element);
+        linkedList.addLast(element);
     }
 
     /**

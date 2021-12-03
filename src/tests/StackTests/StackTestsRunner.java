@@ -10,12 +10,12 @@ public class StackTestsRunner {
         runLinkedStackTest();
     }
     private static void runStackTest() {
-        Result result = JUnitCore.runClasses(StackTest.class);
+        Result result = JUnitCore.runClasses(ArrayStackTest.class);
 
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
-        System.out.println("Stack tests"+(result.wasSuccessful() ? " was successful" : "was failed"));
+        System.out.println("ArrayStack tests"+(result.wasSuccessful() ? " was successful" : "was failed"));
     }
 
     private static void runLinkedStackTest() {

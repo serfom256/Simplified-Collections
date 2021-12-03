@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
+public class ArrayList<E> implements AbstractList<E> {
 
     private static final int DEFAULT_CAPACITY = 20;
     private int capacity;
@@ -37,7 +37,6 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
         data = newData;
     }
 
-    @Override
     @SafeVarargs
     public final void addAll(E... data) {
         for (E element : data) {
@@ -67,8 +66,8 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      * @param pos     this is position to insert the element
      */
     @Override
-    public void insert(E element, int pos) {
-        if (pos < 0 || pos >= size) {
+    public void insert(int pos, E element) {
+        if (pos < 0 || pos > size) {
             throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
         }
         if (++size >= capacity) {
@@ -80,29 +79,6 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
-     * Sort list in ascending order
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void sort() {
-        if (size > 1) {
-            E[] temp = (E[]) new Object[size];
-            System.arraycopy(data, 0, temp, 0, size);
-            Arrays.sort(temp);
-            System.arraycopy(temp, 0, data, 0, size);
-        }
-    }
-
-    /**
-     * Clear current list
-     */
-    @Override
-    public void clear() {
-        init(capacity);
-        size = 0;
-    }
-
-    /**
      * Remove element by position
      *
      * @param pos position of element to remove
@@ -110,14 +86,14 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
      */
     @Override
-    public E pop(int pos) {
+    public E deleteAtPosition(int pos) {
         if (pos < 0 || pos >= size) {
             throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
         }
         E toRemove = data[pos];
         System.arraycopy(data, pos + 1, data, pos, size - pos - 1);
         data[--size] = null;
-        if (size <= (capacity >> 1)) {
+        if (size < (capacity >> 1)) {
             capacity = (capacity >> 1) + (capacity >> 2);
             resize(capacity);
         }
@@ -131,10 +107,10 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      * @return removed element if element present in the list otherwise null
      */
     @Override
-    public E remove(E element) {
+    public E delete(E element) {
         for (int i = 0; i < size; i++) {
             if (data[i].equals(element)) {
-                return pop(i);
+                return deleteAtPosition(i);
             }
         }
         return null;
@@ -147,6 +123,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      * @param element  element to replace
      * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
      */
+    @Override
     public void update(int position, E element) {
         if (position < 0 || position >= size) {
             throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
@@ -159,11 +136,12 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end >= list size
+     * @throws IllegalArgumentException if start < 0 or end > list size
      *                                  or if start index larger then end index
      */
-    public void removeRange(int start, int end) {
-        if (start < 0 || end >= size || start >= end) {
+    @Override
+    public void delete(int start, int end) {
+        if (start < 0 || end > size || start >= end) {
             throw new IllegalArgumentException("Invalid method parameters");
         }
         int gap = end - start;
@@ -171,7 +149,7 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
             data[i] = data[i + gap];
             data[i + gap] = null;
         }
-        if ((size -= gap) <= (capacity >> 1)) {
+        if ((size -= gap) < (capacity >> 1)) {
             capacity = (capacity >> 1);
             resize(capacity);
         }
@@ -213,6 +191,26 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
+     * return first element of list if list isn't empty otherwise null
+     *
+     * @return fist element of the list
+     */
+    @Override
+    public E getFirst() {
+        return size != 0 ? data[0] : null;
+    }
+
+    /**
+     * return last element of list if list isn't empty otherwise null
+     *
+     * @return last element of the list
+     */
+    @Override
+    public E getLast() {
+        return size != 0 ? data[size - 1] : null;
+    }
+
+    /**
      * Provides to get first index of specified element in the current list
      *
      * @param element some element in the list
@@ -245,6 +243,83 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
+     * Sort list in ascending order
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void sort() {
+        if (size > 1) {
+            E[] temp = (E[]) new Object[size];
+            System.arraycopy(data, 0, temp, 0, size);
+            Arrays.sort(temp);
+            System.arraycopy(temp, 0, data, 0, size);
+        }
+    }
+
+
+    /**
+     * Replaces all values in range from the specified start to the specified end with specified value
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param data  value for replacement
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, int end, E data) {
+        delete(start, end);
+        insert(start, data);
+    }
+
+    /**
+     * Replaces all values in range from the specified start to the size of current list with specified value
+     *
+     * @param start start of range
+     * @param data  value for replacement
+     * @throws IllegalArgumentException if start < 0 or start > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, E data) {
+        delete(start, size);
+        insert(start, data);
+    }
+
+    /**
+     * Replaces all values in range from the specified start to the specified end with specified elements
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @param data  values for replacement
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, int end, Iterable<E> data) {
+        delete(start, end);
+        for (E element : data) {
+            insert(start++, element);
+        }
+    }
+
+    /**
+     * Replaces all values in range from the specified start to the size of current list with specified elements
+     *
+     * @param start start of range
+     * @param data  values for replacement
+     * @throws IllegalArgumentException if start < 0 or start > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public void replace(int start, Iterable<E> data) {
+        delete(start, size);
+        for (E element : data) {
+            insert(start++, element);
+        }
+    }
+
+    /**
      * Returns all data from current list as array of objects
      */
     @Override
@@ -255,11 +330,34 @@ public class ArrayList<E> implements AbstractList<E>, Iterable<E> {
     }
 
     /**
+     * Returns count of elements which equals the specified element in this list
+     */
+    @Override
+    public int count(E element) {
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            if (data[i].equals(element)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * @return length of current list
      */
     @Override
     public int getSize() {
         return size;
+    }
+
+    /**
+     * Clears current list
+     */
+    @Override
+    public void clear() {
+        init(capacity);
+        size = 0;
     }
 
     @Override

@@ -36,15 +36,15 @@ public interface AbstractDynamicString extends Iterable<Character> {
 
     AbstractDynamicString insert(int pos, char[] s);
 
-    AbstractDynamicString delete(int startPos, int endPos);
+    AbstractDynamicString delete(int start, int end);
 
     AbstractDynamicString delete(int start);
 
     AbstractDynamicString deleteAtPosition(int pos);
 
-    AbstractDynamicString removeFirst();
+    AbstractDynamicString deleteFirst();
 
-    AbstractDynamicString removeLast();
+    AbstractDynamicString deleteLast();
 
     AbstractDynamicString replace(int start, int end, String s);
 
@@ -62,23 +62,25 @@ public interface AbstractDynamicString extends Iterable<Character> {
 
     AbstractDynamicString replace(int start, char c);
 
+    AbstractDynamicString update(int pos, char c);
+
     AbstractDynamicString clear();
 
     String subString(int start, int end);
 
     String subString(int start);
 
+    boolean startsWith(AbstractDynamicString s);
+
     boolean startsWith(String s);
 
     boolean startsWith(char c);
 
+    boolean endsWith(AbstractDynamicString s);
+
     boolean endsWith(String s);
 
     boolean endsWith(char c);
-
-    boolean startsWith(AbstractDynamicString s);
-
-    boolean endsWith(AbstractDynamicString s);
 
     int indexOf(char c);
 

@@ -52,7 +52,7 @@ public class ArrayListTest {
         Integer[] elements = {99, 54, 123, 543};
         Integer[] positions = {0, 8, 19, 16};
         for (int i = 0; i < positions.length; i++) {
-            list.insert(elements[i], positions[i]);
+            list.insert(positions[i], elements[i]);
             assertEquals(elements[i], list.get(positions[i]));
         }
         assertEquals(34, list.getSize());
@@ -63,7 +63,7 @@ public class ArrayListTest {
         Integer[] elements = {99, 54, 123, 543};
         Integer[] positions = {-10, -8, 99, 58};
         for (int i = 0; i < positions.length; i++) {
-            list.insert(elements[i], positions[i]);
+            list.insert(positions[i], elements[i]);
         }
     }
 
@@ -88,7 +88,7 @@ public class ArrayListTest {
     @Test
     public void pop() {
         for (int i = 1; i <= 30; i++) {
-            assertEquals((Integer) i, list.pop(0));
+            assertEquals((Integer) i, list.deleteAtPosition(0));
         }
         assertEquals(0, list.getSize());
     }
@@ -97,22 +97,22 @@ public class ArrayListTest {
     public void pop_value_at_empty_list_should_throw_exception() {
         list.clear();
         assertEquals(0, list.getSize());
-        list.pop(0);
+        list.deleteAtPosition(0);
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void pop_out_of_list_bounds_should_throw_exception() {
         list.clear();
-        list.pop(99);
-        list.pop(-90);
+        list.deleteAtPosition(99);
+        list.deleteAtPosition(-90);
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         for (int i = 1; i <= 30; i++) {
-            assertEquals((Integer) i, list.remove(i));
+            assertEquals((Integer) i, list.delete(i));
         }
-        assertNull(list.remove(0));
+        assertNull(list.delete(0));
         assertEquals(0, list.getSize());
     }
 
@@ -128,31 +128,33 @@ public class ArrayListTest {
 
     @Test
     public void removeRange() {
-        list.removeRange(5, 10);
+        list.delete(5, 10);
         for (int i = 6; i <= 10; i++) {
             assertEquals(-1, list.indexOf(i));
         }
         assertEquals(25, list.getSize());
-        list.removeRange(5, 10);
+        list.delete(5, 10);
         for (int i = 6; i <= 15; i++) {
             assertEquals(-1, list.indexOf(i));
         }
         assertEquals(20, list.getSize());
+        list.delete(18, 20);
+        assertEquals(18, list.getSize());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void removeRange_should_throw_exception_Invalid_start_index() {
-        list.removeRange(-10, 8);
+        list.delete(-10, 8);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void removeRange_should_throw_exception_Invalid_end_index() {
-        list.removeRange(5, 40);
+        list.delete(5, 40);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void removeRange_should_throw_exception_Invalid_start_and_end_indexes() {
-        list.removeRange(9, 1);
+        list.delete(9, 1);
     }
 
 
@@ -175,8 +177,8 @@ public class ArrayListTest {
 
     @Test
     public void indexOf() {
-        list.insert(99, 26);
-        list.insert(99, 5);
+        list.insert(26, 99);
+        list.insert(5, 99);
         assertEquals(5, list.indexOf(99));
         list.update(5, 0);
         assertEquals(27, list.indexOf(99));
@@ -184,8 +186,8 @@ public class ArrayListTest {
 
     @Test
     public void lastIndexOf() {
-        list.insert(99, 26);
-        list.insert(99, 5);
+        list.insert(26, 99);
+        list.insert(5, 99);
         assertEquals(27, list.lastIndexOf(99));
         list.update(27, 0);
         assertEquals(5, list.lastIndexOf(99));
@@ -194,7 +196,7 @@ public class ArrayListTest {
     @Test
     public void getSize() {
         assertEquals(30, list.getSize());
-        list.remove(1);
+        list.delete(1);
         assertEquals(29, list.getSize());
     }
 
@@ -206,7 +208,6 @@ public class ArrayListTest {
         }
     }
 
-
     @Test
     public void toObjectArray() {
         list.clear();
@@ -214,5 +215,70 @@ public class ArrayListTest {
         Integer[] testArr = {1, 2, 3, 4};
         assertArrayEquals(testArr, list.toObjectArray());
     }
+
+    @Test
+    public void replaceFromTo() {
+        list.replace(0, 10, 99);
+        assertEquals((Integer) 99, list.get(0));
+
+        assertEquals(21, list.getSize());
+        list.replace(20, 21, 100);
+        assertEquals((Integer) 100, list.get(list.getSize() - 1));
+
+        assertEquals(21, list.getSize());
+        list.replace(0, list.getSize(), 999);
+
+        assertEquals((Integer) 999, list.get(0));
+        assertEquals(1, list.getSize());
+    }
+
+    @Test
+    public void replaceFrom() {
+        list.replace(29, 99);
+        assertEquals((Integer) 99, list.get(list.getSize() - 1));
+        assertEquals(30, list.getSize());
+
+        list.replace(20, 100);
+        assertEquals((Integer) 100, list.get(list.getSize() - 1));
+        assertEquals(21, list.getSize());
+
+        list.replace(0, 999);
+        assertEquals((Integer) 999, list.get(0));
+        assertEquals(1, list.getSize());
+    }
+
+    @Test
+    public void count() {
+        list.insert(6, 99);
+        list.insert(0, 99);
+        list.insert(list.getSize() - 1, 99);
+        assertEquals(33, list.getSize());
+        assertEquals(3, list.count(99));
+        assertEquals(1, list.count(5));
+        assertEquals(0, list.count(54));
+    }
+
+    @Test
+    public void getFirst() {
+        while (list.getSize() != 0) {
+            Integer first = list.getFirst();
+            assertEquals(first, list.deleteAtPosition(0));
+        }
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
+        assertNull(list.getFirst());
+    }
+
+    @Test
+    public void getLast() {
+        while (list.getSize() != 0) {
+            Integer last = list.getLast();
+            assertEquals(last, list.deleteAtPosition(list.getSize() - 1));
+        }
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
+        assertEquals(0, list.getSize());
+    }
+
 
 }
