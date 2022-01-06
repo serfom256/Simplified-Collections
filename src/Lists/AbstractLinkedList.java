@@ -7,8 +7,8 @@ public interface AbstractLinkedList<E> extends AbstractList<E> {
 
     void addLast(E element);
 
-    E removeFirst();
+    E deleteFirst();
 
-    E removeLast();
+    E deleteLast();
 
 }

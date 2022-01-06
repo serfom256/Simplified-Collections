@@ -340,6 +340,58 @@ public class DynamicLinkedStringTests {
         assertEquals(-1, string.indexOf(new DynamicLinkedString("678910")));
     }
 
+    @Test
+    public void lastIndexOfChar() {
+        string.add("012434").add("596789");
+        assertEquals(11, string.lastIndexOf('9'));
+        assertEquals(5, string.lastIndexOf('4'));
+        assertEquals(-1, string.lastIndexOf('q'));
+    }
+
+    @Test
+    public void lastIndexOfCharArray() {
+        string.add("012434").add("59667809");
+        assertEquals(0, string.lastIndexOf("012".toCharArray()));
+        assertEquals(-1, string.lastIndexOf("1111111111111111111111111111111111".toCharArray()));
+        assertEquals(-1, string.lastIndexOf("".toCharArray()));
+        assertEquals(7, string.lastIndexOf("966".toCharArray()));
+        assertEquals(0, string.lastIndexOf("01243459667809".toCharArray()));
+        assertEquals(11, string.lastIndexOf("80".toCharArray()));
+        assertEquals(1, string.lastIndexOf("1".toCharArray()));
+        assertEquals(-1, string.lastIndexOf("9999".toCharArray()));
+        assertEquals(3, string.lastIndexOf("434".toCharArray()));
+        assertEquals(string.getSize() - 1, string.lastIndexOf("9".toCharArray()));
+    }
+
+    @Test
+    public void lastIndexOfString() {
+        string.add("012434").add("59667809");
+        assertEquals(0, string.lastIndexOf("012"));
+        assertEquals(-1, string.lastIndexOf("1111111111111111111111111111111111"));
+        assertEquals(-1, string.lastIndexOf(""));
+        assertEquals(7, string.lastIndexOf("966"));
+        assertEquals(0, string.lastIndexOf("01243459667809"));
+        assertEquals(11, string.lastIndexOf("80"));
+        assertEquals(1, string.lastIndexOf("1"));
+        assertEquals(-1, string.lastIndexOf("9999"));
+        assertEquals(3, string.lastIndexOf("434"));
+        assertEquals(string.getSize() - 1, string.lastIndexOf("9"));
+    }
+
+    @Test
+    public void lastIndexOfDynamicString() {
+        string.add("012434").add("59667809");
+        assertEquals(0, string.lastIndexOf("012"));
+        assertEquals(-1, string.lastIndexOf("1111111111111111111111111111111111"));
+        assertEquals(-1, string.lastIndexOf(""));
+        assertEquals(7, string.lastIndexOf("966"));
+        assertEquals(0, string.lastIndexOf("01243459667809"));
+        assertEquals(11, string.lastIndexOf("80"));
+        assertEquals(1, string.lastIndexOf("1"));
+        assertEquals(-1, string.lastIndexOf("9999"));
+        assertEquals(3, string.lastIndexOf("434"));
+        assertEquals(string.getSize() - 1, string.lastIndexOf("9"));
+    }
 
     @Test
     public void equals() {

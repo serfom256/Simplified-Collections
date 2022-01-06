@@ -33,7 +33,7 @@ public class DoubleLinkedListTest {
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeLast());
+            assertEquals(testArr[i], list.deleteLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -46,7 +46,7 @@ public class DoubleLinkedListTest {
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeFirst());
+            assertEquals(testArr[i], list.deleteFirst());
         }
         assertEquals(9, list.getSize());
     }
@@ -59,7 +59,7 @@ public class DoubleLinkedListTest {
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeLast());
+            assertEquals(testArr[i], list.deleteLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -70,7 +70,7 @@ public class DoubleLinkedListTest {
         list.addAll(99, 999, 9999);
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeLast());
+            assertEquals(testArr[i], list.deleteLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -79,10 +79,10 @@ public class DoubleLinkedListTest {
     public void addFrom() {
         ArrayList<Integer> testList = new ArrayList<>();
         testList.addAll(10, 11, 12, 13, 14, 15);
-        list.addFrom(testList);
+        list.add(testList);
         assertEquals(15, list.getSize());
         list.clear();
-        list.addFrom(testList);
+        list.add(testList);
         assertEquals(6, list.getSize());
     }
 
@@ -96,14 +96,31 @@ public class DoubleLinkedListTest {
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         list.delete(7);
         assertSame(-1, list.indexOf(7));
         assertEquals(8, list.getSize());
+
+        list.delete(9);
+
+        assertSame(2, list.getFirst());
+        assertEquals(7, list.getSize());
+
+
+        list.delete(9);
+
+        while (list.getSize() != 1) {
+            Integer last = list.getLast();
+            assertEquals(last, list.delete(last));
+        }
+        assertEquals(1, list.getSize());
+
+        assertNull(list.delete(999));
+
     }
 
     @Test
-    public void pop() {
+    public void deleteAtPosition() {
         assertEquals(9, list.getSize());
         assertSame(9, list.deleteAtPosition(0));
         assertSame(-1, list.indexOf(9));
@@ -126,11 +143,11 @@ public class DoubleLinkedListTest {
     }
 
     @Test
-    public void removeLast() {
-        assertEquals((Integer) 3, list.removeLast());
+    public void deleteFirst() {
+        assertEquals((Integer) 3, list.deleteLast());
         assertEquals(8, list.getSize());
         while (list.getSize() != 0) {
-            list.removeLast();
+            list.deleteLast();
         }
         assertNull(list.getFirst());
         assertNull(list.getLast());
@@ -138,13 +155,13 @@ public class DoubleLinkedListTest {
     }
 
     @Test
-    public void removeFirst() {
-        assertEquals((Integer) 9, list.removeFirst());
+    public void deleteLast() {
+        assertEquals((Integer) 9, list.deleteFirst());
         assertEquals(8, list.getSize());
 
         while (list.getSize() != 0) {
             Integer first = list.getFirst();
-            assertEquals(first, list.removeFirst());
+            assertEquals(first, list.deleteFirst());
         }
         assertNull(list.getFirst());
         assertNull(list.getLast());
@@ -155,7 +172,7 @@ public class DoubleLinkedListTest {
     public void getFirst() {
         while (list.getSize() != 0) {
             Integer first = list.getFirst();
-            assertEquals(first, list.removeFirst());
+            assertEquals(first, list.deleteFirst());
         }
         assertNull(list.getFirst());
         assertNull(list.getLast());
@@ -166,7 +183,7 @@ public class DoubleLinkedListTest {
     public void getLast() {
         while (list.getSize() != 0) {
             Integer last = list.getLast();
-            assertEquals(last, list.removeLast());
+            assertEquals(last, list.deleteLast());
         }
         assertNull(list.getFirst());
         assertNull(list.getLast());
@@ -274,7 +291,7 @@ public class DoubleLinkedListTest {
         Integer[] testArr = new Integer[]{0, 1, 2, 3, 4, 5, 7, 8, 9};
         Arrays.sort(testArr);
         for (Integer integer : testArr) {
-            assertEquals(integer, list.removeFirst());
+            assertEquals(integer, list.deleteFirst());
         }
         assertEquals(0, list.getSize());
     }
@@ -334,7 +351,7 @@ public class DoubleLinkedListTest {
         linkedList.addAll(1, 2, 3, 4, 5, 6);
 
         DoubleLinkedList<Integer> doubleLinkedList = new DoubleLinkedList<>();
-        doubleLinkedList.addFrom(linkedList);
+        doubleLinkedList.add(linkedList);
         assertEquals(linkedList.getSize(), doubleLinkedList.getSize());
         for (int i = 0; i < doubleLinkedList.getSize(); i++) {
             assertEquals(linkedList.get(i), doubleLinkedList.get(i));

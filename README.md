@@ -10,17 +10,18 @@
 - [x] HashTable
 - [x] Set (Based at HashTable)
 - [x] Set (Based at BST tree)
+- [x] Set (Based on RBT tree)
 - [x] Stack(Based at Array)
 
 ### In developing
 - TrieMap
-- Set (Based on RBT tree)
 - Expression interpreter
+- Skip List
+
 ### Will be released later
 
 - [ ] SortedHashTable
 - [ ] MaxBinaryHeap (Based at Binary Tree)
-- [ ] Skip List
 - [ ] BK Tree
 
 

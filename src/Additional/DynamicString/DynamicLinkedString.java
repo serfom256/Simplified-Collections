@@ -672,6 +672,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     /**
      * Returns true if this dynamicLinkedString starts with specified string otherwise false
      */
+    // todo cover with tests
     @Override
     public boolean startsWith(String s) {
         if (s.length() >= size) return false;
@@ -821,6 +822,75 @@ public class DynamicLinkedString implements AbstractDynamicString {
             fChar = foreignIterator.next();
         }
         return -1;
+    }
+
+    /**
+     * Provides to get last occurrence of the specified char  in this dynamicLinkedString
+     *
+     * @return last5 occurrence of the specified char in this dynamicLinkedString or -1
+     */
+    @Override
+    public int lastIndexOf(char c) {
+        Node end = last;
+        for (int i = size - 1; end != null; end = end.prev, i--) {
+            if (end.val == c) return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Provides to get last index of the specified char array in this dynamicLinkedString
+     *
+     * @return last char array position in this dynamicLinkedString or -1
+     */
+    @Override
+    public int lastIndexOf(char[] c) {
+        if (c.length > size || c.length == 0) return -1;
+        Node end = last;
+        int startPos = c.length - 1;
+        for (int i = size - 1; end != null; end = end.prev, i--) {
+            if (end.val == c[startPos]) {
+                if (--startPos == -1) {
+                    return i;
+                }
+            } else {
+                startPos = c.length - 1;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Provides to get last index of the specified String in this dynamicLinkedString
+     *
+     * @return last String position in this dynamicLinkedString or -1
+     */
+    @Override
+    public int lastIndexOf(String s) {
+        int strSize = s.length();
+        if (strSize > size || strSize == 0) return -1;
+        Node end = last;
+        int startPos = s.length() - 1;
+        for (int i = size - 1; end != null; end = end.prev, i--) {
+            if (end.val == s.charAt(startPos)) {
+                if (--startPos == -1) {
+                    return i;
+                }
+            } else {
+                startPos = s.length() - 1;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Provides to get last index of the specified String in this dynamicLinkedString
+     *
+     * @return last String position in this dynamicLinkedString or -1
+     */
+    @Override
+    public int lastIndexOf(AbstractDynamicString s) {
+        return lastIndexOf(s.toCharArray());
     }
 
     @Override

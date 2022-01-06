@@ -4,6 +4,8 @@ public interface AbstractList<E> extends Iterable<E> {
 
     void add(E element);
 
+    <T extends Iterable<E>> void add(T data);
+
     void insert(int position, E element);
 
     void sort();
@@ -33,6 +35,8 @@ public interface AbstractList<E> extends Iterable<E> {
     E getLast();
 
     Object[] toObjectArray();
+
+    <T> E[] toArray(Class<T> type);
 
     int indexOf(E element);
 

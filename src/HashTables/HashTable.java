@@ -12,8 +12,8 @@ public class HashTable<K, V> implements Iterable<K> {
 
     Node<K, V>[] Table;
 
-    private final static int DEFAULT_CAPACITY = 32;
-    private final double LOAD_FACTOR = 0.8;
+    private static final int DEFAULT_CAPACITY = 32;
+    private static final double LOAD_FACTOR = 0.8;
     private int CAPACITY;
     private int size;
     public final Items items;
@@ -59,7 +59,7 @@ public class HashTable<K, V> implements Iterable<K> {
 
     @SuppressWarnings("unchecked")
     private void initTable(int capacity) {
-        Table = (Node<K, V>[]) new Node[capacity];
+        Table = new Node[capacity];
     }
 
     /**
@@ -76,7 +76,7 @@ public class HashTable<K, V> implements Iterable<K> {
                 }
             }
         }
-        Table = (Node<K, V>[]) newTab;
+        Table = newTab;
         CAPACITY = newCapacity;
     }
 
@@ -179,13 +179,12 @@ public class HashTable<K, V> implements Iterable<K> {
      */
     private V removeByHash(int pos, int hash) {
         V value = Table[pos].value;
-        int start = 0;
         if (Table[pos].hash == hash) {
             Table[pos] = Table[pos].next;
             size--;
             return value;
         }
-        for (Node<K, V> current = Table[pos]; current.next != null; current = current.next, start++) {
+        for (Node<K, V> current = Table[pos]; current.next != null; current = current.next) {
             if (current.next.hash == hash) {
                 value = current.next.value;
                 if (current.next.next == null) { // if remove item is last in the bucket
@@ -332,17 +331,6 @@ public class HashTable<K, V> implements Iterable<K> {
             }
         }
         return false;
-    }
-
-    @Deprecated
-    public static final class Entry<K, V> {
-        public final K key;
-        public final V value;
-
-        Entry(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
     }
 
     public final class Items implements Iterable<HashNode<K, V>> {

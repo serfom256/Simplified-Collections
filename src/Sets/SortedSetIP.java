@@ -1,4 +1,4 @@
-package HashSet;
+package Sets;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
@@ -9,6 +9,7 @@ import Stack.AbstractStack;
 import Stack.LinkedStack;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E> {
 
@@ -37,11 +38,8 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
             return parent.parent;
         }
 
-        TNode<E> getParent() {
-            return parent;
-        }
-
-        TNode<E> getUncle() {
+        TNode<E> getSibling() {
+            if (parent == null) return null;
             return isLeftChild() ? parent.right : parent.left;
         }
 
@@ -53,6 +51,20 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
             return parent != null && this == parent.right;
         }
 
+        public int countOfRedChildren() {
+            int cnt = 0;
+            if (left != null && left.color == red) cnt++;
+            if (right != null && right.color == red) cnt++;
+            return cnt;
+        }
+
+        public int countOfBlackChildren() {
+            int cnt = 0;
+            if (left != null && left.color == black) cnt++;
+            if (right != null && right.color == black) cnt++;
+            return cnt;
+        }
+
         @Override
         public TNode<E> getLeft() {
             return left;
@@ -62,7 +74,6 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         public TNode<E> getRight() {
             return right;
         }
-
 
         @Override
         public E getElement() {
@@ -121,7 +132,7 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
      * @return Root after insertion
      */
     private TNode<E> insert(TNode<E> curr, E value) {
-        curr = getParentNodeForValue(curr, value);
+        curr = findNodeByValue(curr, value);
         if (curr.element.equals(value)) return null;
         return linkNodes(curr, new TNode<>(value));
     }
@@ -145,9 +156,37 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
     }
 
     /**
+     * Unlink node to parentNode node
+     */
+    private void unlinkNodes(TNode<E> parentNode, TNode<E> childNode) {
+        TNode<E> successor = null;
+        if (parentNode.left != null && parentNode.left.element.equals(childNode.element)) {
+            if (childNode.right != null) {
+                childNode.right.parent = parentNode;
+                successor = childNode.right;
+            } else if (childNode.left != null) {
+                childNode.left.parent = parentNode;
+                successor = childNode.left;
+            }
+            parentNode.left = successor;
+
+        } else if (parentNode.right != null && parentNode.right.element.equals(childNode.element)) {
+            if (childNode.left != null) {
+                childNode.left.parent = parentNode;
+                successor = childNode.left;
+            } else if (childNode.right != null) {
+                childNode.right.parent = parentNode;
+                successor = childNode.right;
+            }
+            parentNode.right = successor;
+        }
+        childNode.parent = null;
+    }
+
+    /**
      * Returns parent Node for specified value
      */
-    private TNode<E> getParentNodeForValue(TNode<E> node, E value) {
+    private TNode<E> findNodeByValue(TNode<E> node, E value) {
         while (node.left != null || node.right != null) {
             if (node.element.compareTo(value) > 0 && node.left != null) node = node.left;
             else if (node.element.compareTo(value) < 0 && node.right != null) node = node.right;
@@ -163,31 +202,31 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
      * @param node new inserted node
      */
     private void rebalance(TNode<E> node) {
-        TNode<E> uncle = node.parent.getUncle();
         while (node != root && node.parent.color == red) {
+            TNode<E> sibling = node.parent.getSibling();
             if (node.parent.isLeftChild()) {
-                if (uncle != null && uncle.color == red) {
-                    node = repaint(node, uncle);
+                if (sibling != null && sibling.color == red) {
+                    node = repaint(node, sibling);
                 } else {
                     if (node.isRightChild()) {
                         doLeftRotate(node);
                         node = node.left;
                     }
-                    node.getParent().color = black;
+                    node.parent.color = black;
                     node.getGrandParent().color = red;
-                    doRightRotate(node.getParent());
+                    doRightRotate(node.parent);
                 }
             } else {
-                if (uncle != null && uncle.color == red) {
-                    node = repaint(node, uncle);
+                if (sibling != null && sibling.color == red) {
+                    node = repaint(node, sibling);
                 } else {
                     if (node.isLeftChild()) {
                         doRightRotate(node);
                         node = node.right;
                     }
-                    node.getParent().color = black;
+                    node.parent.color = black;
                     node.getGrandParent().color = red;
-                    doLeftRotate(node.getParent());
+                    doLeftRotate(node.parent);
                 }
             }
         }
@@ -197,8 +236,8 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
     /**
      * Repaints nodes which linked to the specified node
      */
-    private TNode<E> repaint(TNode<E> node, TNode<E> uncle) {
-        uncle.color = black;
+    private TNode<E> repaint(TNode<E> node, TNode<E> sibling) {
+        sibling.color = black;
         node.parent.color = black;
         node.parent.parent.color = red;
         return node.parent.parent;
@@ -236,7 +275,13 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
 
     @Override
     public void update(E oldElement, E newElement) {
-        throw new RuntimeException("Method not implemented yet!");
+        if (oldElement == null || newElement == null) {
+            throw new IllegalArgumentException("(oldElement or newElement) must be not null");
+        }
+        TNode<E> node = findNodeByValue(root, oldElement);
+        if (!node.element.equals(oldElement)) return;
+        remove(oldElement);
+        add(newElement);
     }
 
 
@@ -302,8 +347,99 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
     }
 
     @Override
-    public E remove(E element) {
-        throw new RuntimeException("Method not implemented yet!");
+    public boolean remove(E element) {
+        TNode<E> toRemove = findNodeByValue(root, element);
+        if (!toRemove.element.equals(element)) return false;
+        TNode<E> successor = getSuccessor(toRemove);
+        size--;
+        if (toRemove == root && size == 0) {
+            return true;
+        }
+        unlinkNodes(successor.parent, successor);
+        // case 2
+        toRemove.element = successor.element;
+        toRemove.color = successor.color;
+
+        if (toRemove == successor) return true;
+        successor = toRemove;
+        // case 3
+        while (successor != root && successor.color == black) {
+            // case 3.1
+            TNode<E> sibling = successor.getSibling();
+            if (sibling == null) break;
+            boolean isLeft = successor.isLeftChild();
+            if (sibling.color == red) {
+                sibling.color = black;
+                if (isLeft) {
+                    doLeftRotate(successor.getSibling());
+                } else {
+                    doRightRotate(successor.getSibling());
+                }
+                successor.parent.color = red;
+                sibling = successor.getSibling();
+                if (sibling == null) break;
+            }
+            //case 3.2
+            if (sibling.countOfBlackChildren() == 2) {
+                sibling.color = red;
+                successor = successor.parent;
+            }
+            //case 3.3 && case 3.4
+            else {
+                // case 3.3
+                if (isLeft && sibling.right != null && sibling.right.color == black) {
+                    // swap colors and do rotate
+                    sibling.color = red;
+                    if (sibling.left != null) {
+                        sibling.left.color = black;
+                        doRightRotate(sibling.left);
+                    }
+                    sibling = successor.parent.right;
+                } else if (!isLeft && sibling.left != null && sibling.left.color == black) {
+                    // swap colors and do rotate
+                    sibling.color = red;
+                    if (sibling.right != null) {
+                        sibling.right.color = black;
+                        doLeftRotate(sibling.right);
+                    }
+                    sibling = successor.parent.left;
+                }
+                // case 3.4
+                sibling.color = successor.parent.color;
+                successor.parent.color = black;
+                if (isLeft) {
+                    if (sibling.right != null) sibling.right.color = black;
+                    doLeftRotate(successor.getSibling());
+                } else {
+                    if (sibling.left != null) sibling.left.color = black;
+                    doRightRotate(successor.getSibling());
+                }
+                break;
+            }
+        }
+        root.color = black;
+        return true;
+    }
+
+    /**
+     * Returns successor of current node
+     *
+     * @param node node to get successor
+     * @return successor of specified node
+     */
+    private TNode<E> getSuccessor(TNode<E> node) {
+        if (node.right != null) {
+            node = node.right;
+            while (node.left != null) {
+                node = node.left;
+            }
+        } else if (node.left != null) {
+            node = node.left;
+            while (node.right != null) {
+                node = node.right;
+            }
+        }
+        return node;
     }
 
     @Override
@@ -313,7 +449,7 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         while (!curr.element.equals(element)) {
             if (element.compareTo(curr.element) < 0) curr = curr.left;
             else curr = curr.right;
-            if (curr == null)  return false;
+            if (curr == null) return false;
         }
         return true;
     }
@@ -413,6 +549,7 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         @Override
         public E next() {
             current = next;
+            if (current == null) throw new NoSuchElementException();
             while (current != null) {
                 stack.push(current);
                 current = current.left;

@@ -12,9 +12,9 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     Data<T>[] queue;
     int size;
     int capacity;
-    int FIRST = 0;
-    final static double LOAD_FACTOR = 0.8;
-    final static int DEFAULT_CAPACITY = 20;
+    int first = 0;
+    static final double LOAD_FACTOR = 0.8;
+    static final int DEFAULT_CAPACITY = 20;
 
     private static class Data<T> {
         private T value;
@@ -45,7 +45,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      */
     @SuppressWarnings("unchecked")
     private void initQueue(int capacity) {
-        queue = (Data<T>[]) new Data[capacity];
+        queue = new Data[capacity];
     }
 
     public PriorityQueue(int capacity) {
@@ -81,7 +81,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     @SuppressWarnings("unchecked")
     private void grow() {
         capacity += capacity >> 1;
-        Data<T>[] newQueue = (Data<T>[]) new Data[capacity];
+        Data<T>[] newQueue = new Data[capacity];
         if (size >= 0) {
             System.arraycopy(queue, 0, newQueue, 0, size);
         }
@@ -98,10 +98,10 @@ public class PriorityQueue<T extends Comparable<? super T>> {
         if (size == 0) {
             throw new ArrayIndexOutOfBoundsException("Queue is empty");
         }
-        T result = queue[FIRST].value;
-        queue[FIRST] = queue[--size];
+        T result = queue[first].value;
+        queue[first] = queue[--size];
         queue[size] = null;
-        sinkDown(FIRST);
+        sinkDown(first);
 
         return result;
     }
@@ -112,7 +112,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      * @return first element of thee priorityQueue if priorityQueue isn't empty else null
      */
     public T peek() {
-        return size > 0 ? queue[FIRST].value : null;
+        return size > 0 ? queue[first].value : null;
     }
 
     /**

@@ -2,9 +2,9 @@ package Tries;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
-import HashSet.AbstractSet;
-import HashSet.Set;
-import HashSet.SortedSet;
+import Sets.AbstractSet;
+import Sets.Set;
+import Sets.SortedSet;
 import HashTables.HashTable;
 
 public class TrieMap {

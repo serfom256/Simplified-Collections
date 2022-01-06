@@ -1,7 +1,7 @@
 package tests.TrieTests;
 
-import HashSet.AbstractSet;
-import HashSet.Set;
+import Sets.AbstractSet;
+import Sets.Set;
 import Lists.impl.ArrayList;
 import Tries.Trie;
 import org.junit.Before;
@@ -248,6 +248,7 @@ public class TrieTests {
         for (String s : trie) {
             assertFalse(prev.contains(s));
             prev.add(s);
+            System.out.println(s);
             assertNotEquals(-1, lst.indexOf(s));
         }
         assertEquals(lst.getSize(), prev.getSize());

@@ -280,5 +280,13 @@ public class ArrayListTest {
         assertEquals(0, list.getSize());
     }
 
+    @Test
+    public void toArray() {
+        list.clear();
+        list.addAll(1, 2, 3, 4);
+        Integer[] testArr = {1, 2, 3, 4};
+        assertArrayEquals(testArr, list.toArray(Integer.class));
+    }
+
 
 }

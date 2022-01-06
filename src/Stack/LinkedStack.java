@@ -1,7 +1,5 @@
 package Stack;
 
-import Additional.DynamicString.AbstractDynamicString;
-import Additional.DynamicString.DynamicLinkedString;
 import Lists.AbstractLinkedList;
 import Lists.impl.LinkedList;
 
@@ -37,11 +35,11 @@ public class LinkedStack<E> implements AbstractStack<E> {
         if (linkedList.getSize() == 0) {
             throw new UnsupportedOperationException("stack is empty");
         }
-        return linkedList.removeFirst();
+        return linkedList.deleteFirst();
     }
 
     /**
-     * Push element to the top of stack
+     * Pushes element to the top of stack
      *
      * @param element element to append
      */
@@ -80,9 +78,6 @@ public class LinkedStack<E> implements AbstractStack<E> {
         return linkedList.indexOf(element);
     }
 
-    /**
-     * @return size of the stack
-     */
     @Override
     public int getSize() {
         return linkedList.getSize();
@@ -90,12 +85,6 @@ public class LinkedStack<E> implements AbstractStack<E> {
 
     @Override
     public String toString() {
-        int stackLength = linkedList.getSize();
-        if (stackLength == 0) return "[]";
-        AbstractDynamicString res = new DynamicLinkedString("[");
-        for (int i = 0; i < stackLength - 1; i++) {
-            res.add(linkedList.get(i)).add(", ");
-        }
-        return res.add(linkedList.get(stackLength - 1)) + "]";
+        return linkedList.toString();
     }
 }

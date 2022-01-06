@@ -1,6 +1,6 @@
 package tests.SetTests;
 
-import HashSet.Set;
+import Sets.Set;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class SetTest {
         }
         assertEquals(1000, set.getSize());
         for (int i = 0; i < 1000; i++) {
-            assertEquals(i + "_element", set.remove(i + "_element"));
+            assertTrue( set.remove(i + "_element"));
         }
         assertEquals(0, set.getSize());
     }

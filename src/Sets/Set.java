@@ -1,4 +1,4 @@
-package HashSet;
+package Sets;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 public class Set<E> implements Iterable<E>, AbstractSet<E> {
 
     private final HashTable<E, Object> hashTable;
-    private final Object VALUE = new Object();
+    private static final Object VALUE = new Object();
 
     public Set() {
         hashTable = new HashTable<>();
@@ -46,11 +46,8 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
      * @return removed element if element present in the set otherwise null
      */
     @Override
-    public E remove(E element) {
-        if (hashTable.delete(element) != null) {
-            return element;
-        }
-        return null;
+    public boolean remove(E element) {
+        return hashTable.delete(element) != null;
     }
 
     /**
@@ -86,7 +83,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
 
     @Override
     public Set<E> left(AbstractSet<E> set) {
-        Set<E> left = new Set<E>((int) (set.getSize() * 1.2));
+        Set<E> left = new Set<>((int) (set.getSize() * 1.2));
         for (E element : set) {
             if (!this.contains(element)) left.add(element);
         }
@@ -95,7 +92,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
 
     @Override
     public Set<E> right(AbstractSet<E> set) {
-        Set<E> right = new Set<E>(hashTable.getCapacity());
+        Set<E> right = new Set<>(hashTable.getCapacity());
         for (E element : this) {
             if (!set.contains(element)) right.add(element);
         }
@@ -104,7 +101,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
 
     @Override
     public Set<E> between(AbstractSet<E> set) {
-        Set<E> mid = new Set<E>(64);
+        Set<E> mid = new Set<>(64);
         for (E element : set) {
             if (this.contains(element)) mid.add(element);
         }
@@ -113,7 +110,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
 
     @Override
     public Set<E> union(AbstractSet<E> set) {
-        Set<E> union = new Set<E>((int) ((hashTable.getSize() + set.getSize()) * 1.4));
+        Set<E> union = new Set<>((int) ((hashTable.getSize() + set.getSize()) * 1.4));
         Iterator<E> foreignIterator = set.iterator();
         Iterator<E> thisIterator = this.iterator();
         while (foreignIterator.hasNext() && iterator().hasNext()) {

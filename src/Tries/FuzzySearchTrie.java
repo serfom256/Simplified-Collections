@@ -2,8 +2,8 @@ package Tries;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
-import HashSet.AbstractSet;
-import HashSet.SortedSetIP;
+import Sets.AbstractSet;
+import Sets.SortedSetIP;
 
 import java.util.Arrays;
 

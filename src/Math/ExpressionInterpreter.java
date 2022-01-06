@@ -2,8 +2,8 @@ package Math;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
-import HashSet.AbstractSet;
-import HashSet.Set;
+import Sets.AbstractSet;
+import Sets.Set;
 import Lists.AbstractLinkedList;
 import Lists.AbstractList;
 import Lists.impl.ArrayList;
@@ -33,7 +33,7 @@ public class ExpressionInterpreter {
 
 
     public String calculate(String s) {
-        return parse(new DynamicLinkedString(s.replaceAll(" ", ""))).toString();
+        return parse(new DynamicLinkedString(s.replace(" ", ""))).toString();
     }
 
     private AbstractDynamicString parse(DynamicLinkedString exp) {
@@ -55,7 +55,7 @@ public class ExpressionInterpreter {
                 currentNum.clear();
                 if (i < -1) i = -1;
                 while (primaryOperationsPos.getSize() != 0 && primaryOperationsPos.getLast() > i)
-                    primaryOperationsPos.removeLast();
+                    primaryOperationsPos.deleteLast();
             } else if (charSet.containsKey(ch) && i != 0) {
                 if (currentNum.getSize() != 0) lst.add(currentNum.toString());
                 if (primaryOperations.contains(ch)) {
@@ -110,7 +110,7 @@ public class ExpressionInterpreter {
         if (c1 == '-' && c2 == '-') return '+';
         if (c1 == '-' || c2 == '-') return '-';
         if (c1 == '+' || c2 == '+') return '+';
-        throw new RuntimeException();
+        throw new IllegalArgumentException();
     }
 
     private String calculateExp(String v1, char sym, String v2) {

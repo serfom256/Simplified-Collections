@@ -1,4 +1,4 @@
-package HashSet;
+package Sets;
 
 public interface AbstractSortedSet<E> extends AbstractSet<E>{
 

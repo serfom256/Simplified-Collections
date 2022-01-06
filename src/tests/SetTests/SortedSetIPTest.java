@@ -1,7 +1,6 @@
 package tests.SetTests;
 
-import HashSet.SortedSet;
-import HashSet.SortedSetIP;
+import Sets.SortedSetIP;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,6 +42,7 @@ public class SortedSetIPTest {
         }
         for (int i = 0; i < 10; i++) {
             assertTrue(set.contains(i + "_data"));
+            assertFalse(set.contains(i + "_element"));
         }
         assertFalse(set.contains(11 + "_data"));
 
@@ -69,7 +69,7 @@ public class SortedSetIPTest {
         for (int i = 0; i < 1000; i++) {
             set.remove(i + "_element");
         }
-        assertNull(set.remove("some_element"));
+        assertFalse(set.remove("some_element"));
         assertEquals(0,set.getSize());
     }
 
@@ -134,7 +134,7 @@ public class SortedSetIPTest {
 
     @Test
     public void speedTest() {
-        SortedSet<Integer> testSet = new SortedSet<>();
+        SortedSetIP<Integer> testSet = new SortedSetIP<>();
         testSet.clear();
         for (int i = 0; i < 1_000_000; i++) {
             testSet.add(i);

@@ -4,6 +4,7 @@ import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
 import Lists.AbstractList;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -15,7 +16,6 @@ public class ArrayList<E> implements AbstractList<E> {
     private int size;
     private E[] data;
 
-
     public ArrayList() {
         this(DEFAULT_CAPACITY);
     }
@@ -25,22 +25,22 @@ public class ArrayList<E> implements AbstractList<E> {
         this.size = 0;
     }
 
-    @SuppressWarnings("unchecked")
-    private void init(int capacity) {
-        data = (E[]) new Object[capacity];
-    }
-
-    @SuppressWarnings("unchecked")
-    private void resize(int capacity) {
-        E[] newData = (E[]) new Object[capacity];
-        System.arraycopy(data, 0, newData, 0, size);
-        data = newData;
-    }
-
     @SafeVarargs
     public final void addAll(E... data) {
         for (E element : data) {
             add(element);
+        }
+    }
+
+    /**
+     * Add all data from Iterable objects in the end of list
+     *
+     * @param data it is all iterable object of elements to add
+     */
+    @Override
+    public <T extends Iterable<E>> void add(T data) {
+        for (E obj : data) {
+            add(obj);
         }
     }
 
@@ -79,7 +79,23 @@ public class ArrayList<E> implements AbstractList<E> {
     }
 
     /**
-     * Remove element by position
+     * Removes specified element form the list
+     *
+     * @param element element to remove
+     * @return removed element if element present in the list otherwise null
+     */
+    @Override
+    public E delete(E element) {
+        for (int i = 0; i < size; i++) {
+            if (data[i].equals(element)) {
+                return deleteAtPosition(i);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes element by position
      *
      * @param pos position of element to remove
      * @return removed element from position
@@ -98,37 +114,6 @@ public class ArrayList<E> implements AbstractList<E> {
             resize(capacity);
         }
         return toRemove;
-    }
-
-    /**
-     * Removes specified element form the list
-     *
-     * @param element element to remove
-     * @return removed element if element present in the list otherwise null
-     */
-    @Override
-    public E delete(E element) {
-        for (int i = 0; i < size; i++) {
-            if (data[i].equals(element)) {
-                return deleteAtPosition(i);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Replace element in the list if element present in the list
-     *
-     * @param position position of element to replace
-     * @param element  element to replace
-     * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
-     */
-    @Override
-    public void update(int position, E element) {
-        if (position < 0 || position >= size) {
-            throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
-        }
-        data[position] = element;
     }
 
     /**
@@ -154,108 +139,6 @@ public class ArrayList<E> implements AbstractList<E> {
             resize(capacity);
         }
     }
-
-    /**
-     * Returns slice from the list all of the elements in specified range between start and end
-     *
-     * @param start start of range
-     * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
-     */
-    @Override
-    public AbstractList<E> slice(int start, int end) {
-        if (start < 0 || end > size || start >= end) {
-            throw new IllegalArgumentException("Invalid method parameters");
-        }
-        AbstractList<E> sublist = new ArrayList<>();
-        for (int i = start; i < end; i++) {
-            sublist.add(data[i]);
-        }
-        return sublist;
-    }
-
-    /**
-     * Provides to get the element from list by position
-     *
-     * @param position position of element
-     * @return element from the specified position
-     * @throws ArrayIndexOutOfBoundsException if position out of list bounds
-     */
-    @Override
-    public E get(int position) {
-        if (position < 0 || position >= size) {
-            throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
-        }
-        return data[position];
-    }
-
-    /**
-     * return first element of list if list isn't empty otherwise null
-     *
-     * @return fist element of the list
-     */
-    @Override
-    public E getFirst() {
-        return size != 0 ? data[0] : null;
-    }
-
-    /**
-     * return last element of list if list isn't empty otherwise null
-     *
-     * @return last element of the list
-     */
-    @Override
-    public E getLast() {
-        return size != 0 ? data[size - 1] : null;
-    }
-
-    /**
-     * Provides to get first index of specified element in the current list
-     *
-     * @param element some element in the list
-     * @return index of element in list, if list doesn't contains the element return value will be -1
-     */
-    @Override
-    public int indexOf(E element) {
-        for (int i = 0; i < size; i++) {
-            if (data[i].equals(element)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Provides to get last index of specified element in the current list
-     *
-     * @param element some element in the list
-     * @return index of element in list, if list doesn't contains the element return value will be -1
-     */
-    @Override
-    public int lastIndexOf(E element) {
-        for (int i = size - 1; i >= 0; i--) {
-            if (data[i].equals(element)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Sort list in ascending order
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void sort() {
-        if (size > 1) {
-            E[] temp = (E[]) new Object[size];
-            System.arraycopy(data, 0, temp, 0, size);
-            Arrays.sort(temp);
-            System.arraycopy(temp, 0, data, 0, size);
-        }
-    }
-
 
     /**
      * Replaces all values in range from the specified start to the specified end with specified value
@@ -320,6 +203,126 @@ public class ArrayList<E> implements AbstractList<E> {
     }
 
     /**
+     * Replace element in the list if element present in the list
+     *
+     * @param position position of element to replace
+     * @param element  element to replace
+     * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
+     */
+    @Override
+    public void update(int position, E element) {
+        if (position < 0 || position >= size) {
+            throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
+        }
+        data[position] = element;
+    }
+
+    /**
+     * Returns first element of list if list isn't empty otherwise null
+     */
+    @Override
+    public E getFirst() {
+        return size != 0 ? data[0] : null;
+    }
+
+    /**
+     * Returns last element of list if list isn't empty otherwise null
+     */
+    @Override
+    public E getLast() {
+        return size != 0 ? data[size - 1] : null;
+    }
+
+    /**
+     * Provides to get the element from list by position
+     *
+     * @param position position of element
+     * @return element from the specified position
+     * @throws ArrayIndexOutOfBoundsException if position out of list bounds
+     */
+    @Override
+    public E get(int position) {
+        if (position < 0 || position >= size) {
+            throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
+        }
+        return data[position];
+    }
+
+    /**
+     * Returns slice from the list all of the elements in specified range between start and end
+     *
+     * @param start start of range
+     * @param end   end of range
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    @Override
+    public AbstractList<E> slice(int start, int end) {
+        if (start < 0 || end > size || start >= end) {
+            throw new IllegalArgumentException("Invalid method parameters");
+        }
+        AbstractList<E> sublist = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            sublist.add(data[i]);
+        }
+        return sublist;
+    }
+
+    /**
+     * Provides to get first index of specified element in the current list
+     *
+     * @param element some element in the list
+     * @return index of element in list, if list doesn't contains the element return value will be -1
+     */
+    @Override
+    public int indexOf(E element) {
+        for (int i = 0; i < size; i++) {
+            if (data[i].equals(element)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Provides to get last index of specified element in the current list
+     *
+     * @param element some element in the list
+     * @return index of element in list, if list doesn't contains the element return value will be -1
+     */
+    @Override
+    public int lastIndexOf(E element) {
+        for (int i = size - 1; i >= 0; i--) {
+            if (data[i].equals(element)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Sort list in ascending order
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void sort() {
+        if (size > 1) {
+            E[] temp = (E[]) new Object[size];
+            System.arraycopy(data, 0, temp, 0, size);
+            Arrays.sort(temp);
+            System.arraycopy(temp, 0, data, 0, size);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> E[] toArray(Class<T> type) {
+        E[] temp = (E[]) Array.newInstance(type, size);
+        if (size >= 0) System.arraycopy(data, 0, temp, 0, size);
+        return temp;
+    }
+
+    /**
      * Returns all data from current list as array of objects
      */
     @Override
@@ -358,6 +361,18 @@ public class ArrayList<E> implements AbstractList<E> {
     public void clear() {
         init(capacity);
         size = 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void init(int capacity) {
+        data = (E[]) new Object[capacity];
+    }
+
+    @SuppressWarnings("unchecked")
+    private void resize(int capacity) {
+        E[] newData = (E[]) new Object[capacity];
+        System.arraycopy(data, 0, newData, 0, size);
+        data = newData;
     }
 
     @Override

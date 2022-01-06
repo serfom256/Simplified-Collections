@@ -32,7 +32,7 @@ public class LinkedListTest {
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeLast());
+            assertEquals(testArr[i], list.deleteLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -43,7 +43,7 @@ public class LinkedListTest {
         list.addAll(99, 999, 9999);
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeLast());
+            assertEquals(testArr[i], list.deleteLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -56,7 +56,7 @@ public class LinkedListTest {
         }
         assertEquals(12, list.getSize());
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeLast());
+            assertEquals(testArr[i], list.deleteLast());
         }
         assertEquals(9, list.getSize());
     }
@@ -68,7 +68,7 @@ public class LinkedListTest {
             list.addFirst(integer);
         }
         for (int i = testArr.length - 1; i >= 0; i--) {
-            assertEquals(testArr[i], list.removeFirst());
+            assertEquals(testArr[i], list.deleteFirst());
         }
     }
 
@@ -85,14 +85,14 @@ public class LinkedListTest {
     }
 
     @Test
-    public void removeFirst() {
-        assertEquals((Integer) 9, list.removeFirst());
+    public void deleteFirst() {
+        assertEquals((Integer) 9, list.deleteFirst());
         assertEquals(8, list.getSize());
     }
 
     @Test
-    public void removeLast() {
-        assertEquals((Integer) 3, list.removeLast());
+    public void deleteLast() {
+        assertEquals((Integer) 3, list.deleteLast());
         assertEquals(8, list.getSize());
     }
 
@@ -109,6 +109,22 @@ public class LinkedListTest {
         list.delete(7);
         assertSame(-1, list.indexOf(7));
         assertEquals(8, list.getSize());
+
+        list.delete(9);
+
+        assertSame(2, list.getFirst());
+        assertEquals(7, list.getSize());
+
+
+        list.delete(9);
+
+        while (list.getSize() != 1) {
+            Integer last = list.getLast();
+            assertEquals(last, list.delete(last));
+        }
+        assertEquals(1, list.getSize());
+
+        assertNull(list.delete(999));
     }
 
     @Test
@@ -125,7 +141,7 @@ public class LinkedListTest {
         Integer[] testArr = new Integer[]{0, 1, 2, 3, 4, 5, 7, 8, 9};
         Arrays.sort(testArr);
         for (Integer integer : testArr) {
-            assertEquals(integer, list.removeFirst());
+            assertEquals(integer, list.deleteFirst());
         }
         assertEquals(0, list.getSize());
     }
@@ -202,5 +218,84 @@ public class LinkedListTest {
         list.addAll(1, 2, 3, 4);
         Integer[] testArr = {1, 2, 3, 4};
         assertArrayEquals(testArr, list.toObjectArray());
+    }
+
+    @Test
+    public void toArray() {
+        list.clear();
+        list.addAll(1, 2, 3, 4);
+        Integer[] testArr = {1, 2, 3, 4};
+        assertArrayEquals(testArr, list.toArray(Integer.class));
+    }
+
+    @Test
+    public void replaceFromTo() {
+        list.clear();
+        for (int i = 1; i <= 30; i++) {
+            list.add(i);
+        }
+        assertEquals(30, list.getSize());
+        list.replace(0, 10, 99);
+        assertEquals((Integer) 99, list.get(0));
+
+        assertEquals(21, list.getSize());
+        list.replace(20, 21, 100);
+        assertEquals((Integer) 100, list.get(list.getSize() - 1));
+
+        assertEquals(21, list.getSize());
+        list.replace(0, list.getSize(), 999);
+
+        assertEquals((Integer) 999, list.get(0));
+        assertEquals(1, list.getSize());
+    }
+
+    @Test
+    public void replaceFrom() {
+        list.clear();
+        for (int i = 1; i <= 30; i++) {
+            list.add(i);
+        }
+        assertEquals(30, list.getSize());
+        list.replace(29, 99);
+        assertEquals((Integer) 99, list.get(list.getSize() - 1));
+        assertEquals(30, list.getSize());
+
+        list.replace(20, 100);
+        assertEquals((Integer) 100, list.get(list.getSize() - 1));
+        assertEquals(21, list.getSize());
+
+        list.replace(0, 999);
+        assertEquals((Integer) 999, list.get(0));
+        assertEquals(1, list.getSize());
+    }
+
+    @Test
+    public void removeRange() {
+        list.clear();
+        for (int i = 1; i <= 30; i++) {
+            list.add(i);
+        }
+        list.delete(5, 10);
+        for (int i = 6; i <= 10; i++) {
+            assertEquals(-1, list.indexOf(i));
+        }
+        assertEquals(25, list.getSize());
+        list.delete(5, 10);
+        for (int i = 6; i <= 15; i++) {
+            assertEquals(-1, list.indexOf(i));
+        }
+        assertEquals(20, list.getSize());
+        list.delete(18, 20);
+        assertEquals(18, list.getSize());
+    }
+
+    @Test
+    public void update() {
+        for (int i = 0; i < list.getSize(); i++) {
+            list.update(i, 0);
+        }
+        for (int i = 0; i < list.getSize(); i++) {
+            assertEquals((Integer) 0, list.get(i));
+        }
     }
 }

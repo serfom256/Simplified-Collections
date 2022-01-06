@@ -1,4 +1,4 @@
-package HashSet;
+package Sets;
 
 public interface AbstractSet<E> extends Iterable<E> {
 
@@ -8,7 +8,7 @@ public interface AbstractSet<E> extends Iterable<E> {
 
     void clear();
 
-    E remove(E element);
+    boolean remove(E element);
 
     boolean contains(E element);
 

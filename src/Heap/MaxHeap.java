@@ -12,9 +12,9 @@ public class MaxHeap<T extends Comparable<? super T>> {
     Data<T>[] heap;
     int size;
     int capacity;
-    int FIRST = 0;
-    final static double LOAD_FACTOR = 0.8;
-    final static int DEFAULT_CAPACITY = 20;
+    int first = 0;
+    static final double LOAD_FACTOR = 0.8;
+    static final int DEFAULT_CAPACITY = 20;
 
     private static class Data<T> {
         private T value;
@@ -79,7 +79,7 @@ public class MaxHeap<T extends Comparable<? super T>> {
     @SuppressWarnings("unchecked")
     private void grow() {
         capacity += capacity >> 1;
-        Data<T>[] newHeap = (Data<T>[]) new Data[capacity];
+        Data<T>[] newHeap = new Data[capacity];
         if (size >= 0) {
             System.arraycopy(heap, 0, newHeap, 0, size);
         }
@@ -96,9 +96,9 @@ public class MaxHeap<T extends Comparable<? super T>> {
         if (size == 0) {
             throw new ArrayIndexOutOfBoundsException("Heap is empty");
         }
-        T result = heap[FIRST].value;
-        heap[FIRST] = heap[--size];
-        sinkDown(FIRST);
+        T result = heap[first].value;
+        heap[first] = heap[--size];
+        sinkDown(first);
         heap[size] = null;
         return result;
     }
@@ -109,7 +109,7 @@ public class MaxHeap<T extends Comparable<? super T>> {
      * @return first element of thee heap if heap isn't empty else null
      */
     public T peek() {
-        return size > 0 ? heap[FIRST].value : null;
+        return size > 0 ? heap[first].value : null;
     }
 
     /**

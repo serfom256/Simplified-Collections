@@ -27,8 +27,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
     private int length;
 
     public DoubleLinkedList() {
-        this.head = null;
-        this.last = null;
+        this.head = this.last = null;
         this.length = 0;
     }
 
@@ -53,8 +52,8 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param data it is all iterable object of elements to add
      */
-    // TODO move to AbstractList interface
-    public <T extends Iterable<E>> void addFrom(T data) {
+    @Override
+    public <T extends Iterable<E>> void add(T data) {
         for (E obj : data) {
             addLast(obj);
         }
@@ -128,7 +127,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * Links new node with specified element before the specified node
      */
     private Node<E> insertBefore(Node<E> node, E toInsert) {
-        Node<E> newNode = new Node<E>(toInsert);
+        Node<E> newNode = new Node<>(toInsert);
         newNode.prev = node.prev;
         node.prev = newNode;
         newNode.next = node;
@@ -174,24 +173,16 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param data element to remove of list
      * @return removed element
      */
-    // TODO rewrite
     @Override
     public E delete(E data) {
-        if (head != null && head.val.equals(data)) {
-            return removeFirst();
-        }
-        Node<E> first = head;
-        while (first != null) {
-            if (first.val.equals(data)) {
-                if (first.next == null) {
-                    return removeLast();
-                }
+        if (head == null) return null;
+        if (head.val.equals(data)) return deleteFirst();
+        for (Node<E> curr = head; curr != null; curr = curr.next) {
+            if (curr.val.equals(data)) {
+                deleteAfter(curr.prev);
                 length--;
-                first.prev.next = first.next;
-                first.next.prev = first.prev;
-                return first.val;
+                return data;
             }
-            first = first.next;
         }
         return null;
     }
@@ -209,29 +200,10 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
             throw new ArrayIndexOutOfBoundsException("Specified position out of list bounds");
         }
         Node<E> node = getNode(position);
-        if (node.prev == null) return removeFirst();
-        if (node.next == null) return removeLast();
+        if (node.prev == null) return deleteFirst();
+        if (node.next == null) return deleteLast();
         if (deleteAfter(node.prev) != null) length--;
         return node.val;
-    }
-
-    /**
-     * Remove last element
-     *
-     * @return last element of list if list isn't empty otherwise null
-     * @throws ArrayIndexOutOfBoundsException if list is empty
-     */
-    @Override
-    public E removeLast() {
-        if (head == null) {
-            throw new ArrayIndexOutOfBoundsException("List is empty");
-        }
-        E toRemove = last.val;
-        length--;
-        last = last.prev;
-        if (last != null) last.next = null;
-        else head = null;
-        return toRemove;
     }
 
     /**
@@ -241,7 +213,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @throws ArrayIndexOutOfBoundsException if list is empty
      */
     @Override
-    public E removeFirst() {
+    public E deleteFirst() {
         if (head == null) {
             throw new ArrayIndexOutOfBoundsException("List is empty");
         }
@@ -254,205 +226,49 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * return first element of list if list isn't empty otherwise null
+     * Remove last element
      *
-     * @return fist element of the list
+     * @return last element of list if list isn't empty otherwise null
+     * @throws ArrayIndexOutOfBoundsException if list is empty
      */
     @Override
-    public E getFirst() {
-        return head != null ? head.val : null;
-    }
-
-    /**
-     * return last element of list if list isn't empty otherwise null
-     *
-     * @return last element of the list
-     */
-    @Override
-    public E getLast() {
-        return last != null ? last.val : null;
-    }
-
-    /**
-     * Provides to get the element from list by position
-     *
-     * @param position position of element
-     * @return element from the specified position
-     * @throws ArrayIndexOutOfBoundsException if specified position out of list bounds
-     */
-    @Override
-    public E get(int position) {
-        if (position < 0 || position >= length) {
-            throw new ArrayIndexOutOfBoundsException("Specified position out of list bounds");
+    public E deleteLast() {
+        if (head == null) {
+            throw new ArrayIndexOutOfBoundsException("List is empty");
         }
-        return getNode(position).val;
+        E toRemove = last.val;
+        length--;
+        last = last.prev;
+        if (last != null) last.next = null;
+        else head = null;
+        return toRemove;
     }
 
     /**
-     * Returns node from dynamicLinkedString by the specified position
-     */
-    private Node<E> getNode(int pos) {
-        int mid = length / 2;
-        boolean h = pos >= mid;
-        pos = pos >= mid ? length - pos - 1 : pos;
-        Node<E> curr;
-        if (h) {
-            for (curr = last; pos > 0; pos--) {
-                curr = curr.prev;
-            }
-        } else {
-            for (curr = head; pos > 0; pos--) {
-                curr = curr.next;
-            }
-        }
-        return curr;
-    }
-
-    /**
-     * Returns slice from the list all of the elements in specified range between start and end
+     * Removes from the list all of the elements in specified range between start and end
      *
      * @param start start of range
      * @param end   end of range
      * @throws IllegalArgumentException if start < 0 or end > list size
      *                                  or if start index larger then end index
      */
-    // todo rewrite
     @Override
-    public DoubleLinkedList<E> slice(int start, int end) {
+    public void delete(int start, int end) {
         if (start < 0 || end > length || start >= end) {
             throw new IllegalArgumentException("Invalid method parameters");
         }
-        Node<E> curr = head;
-        for (int i = start; i > 0; i--) {
-            curr = curr.next;
+        Node<E> node = getNode(start);
+        if (node == head) {
+            end--;
+        } else {
+            node = node.prev;
         }
-        DoubleLinkedList<E> result = new DoubleLinkedList<>();
-        for (int i = start; i < end; curr = curr.next, i++) {
-            result.add(curr.val);
+        while (start < end && node != null) {
+            node = deleteAfter(node);
+            end--;
+            length--;
         }
-        return result;
-    }
-
-    /**
-     * Set bounds by length to this list
-     *
-     * @param start start of bounds
-     * @param end   end of bounds
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
-     */
-    // todo rewrite
-    public void setLength(int start, int end) {
-        if (start < 0 || end > length || start >= end) {
-            throw new IllegalArgumentException("Invalid method arguments");
-        }
-        length = end - start;
-        Node<E> curr = head;
-        for (int i = start; i > 0; i--) {
-            curr = curr.next;
-        }
-        head = curr;
-        for (int i = 0; i < length - 1; i++) {
-            curr = curr.next;
-        }
-        if (curr.next != null) {
-            curr.next.prev = null;
-            curr.next = null;
-        }
-        last = curr;
-    }
-
-    /**
-     * Slices list after position
-     *
-     * @param start initial position to slicing
-     * @return slice of current list from specified position to list length
-     * @throws IllegalArgumentException if start < 0
-     */
-    public DoubleLinkedList<E> sliceFrom(int start) {
-        return slice(start, length);
-    }
-
-    /**
-     * Slices list before position
-     *
-     * @param end end of slice from 0
-     * @return slice of current list from 0 to specified position
-     * @throws IllegalArgumentException if end > list size
-     */
-    public DoubleLinkedList<E> sliceBefore(int end) {
-        return slice(0, end);
-    }
-
-    /**
-     * Sort list in in ascending order
-     */
-    // TODO move to interface
-    @SuppressWarnings("unchecked")
-    public void sort() {
-        Object[] temp = toArray(Object.class);
-        Arrays.sort(temp);
-        int pos = 0;
-        for (Node<E> first = head; first != null; first = first.next, pos++) {
-            first.val = (E) temp[pos];
-        }
-    }
-
-    // TODO move to interface
-    @SuppressWarnings("unchecked")
-    public <T> E[] toArray(Class<T> type) {
-        E[] temp = (E[]) Array.newInstance(type, length);
-        int pos = 0;
-        for (Node<E> first = head; first != null; first = first.next, pos++) {
-            temp[pos] = first.val;
-        }
-        return temp;
-    }
-
-    /**
-     * Returns all data from current list as array of objects
-     */
-    @Override
-    public Object[] toObjectArray() {
-        Object[] array = new Object[length];
-        int pos = 0;
-        for (Node<E> first = head; first != null; first = first.next, pos++) {
-            array[pos] = first.val;
-        }
-        return array;
-    }
-
-    /**
-     * Provides to get first index of specified element in the current list
-     *
-     * @param element some element in the list
-     * @return index of element in list, if list doesn't contains the element return value will be -1
-     */
-    public int indexOf(E element) {
-        int pos = 0;
-        for (Node<E> first = head; first != null; first = first.next, pos++) {
-            if (first.val.equals(element)) {
-                return pos;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Provides to get last index of specified element in the current list
-     *
-     * @param element some element in the list
-     * @return index of element in list, if list doesn't contains the element return value will be -1
-     */
-    @Override
-    public int lastIndexOf(E element) {
-        int pos = length - 1;
-        for (Node<E> first = last; first != null; first = first.prev, pos--) {
-            if (first.val.equals(element)) {
-                return pos;
-            }
-        }
-        return -1;
+        if (start == 0) deleteFirst();
     }
 
     /**
@@ -535,7 +351,60 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * Removes from the list all of the elements in specified range between start and end
+     * Returns first element of list if list isn't empty otherwise null
+     */
+    @Override
+    public E getFirst() {
+        return head != null ? head.val : null;
+    }
+
+    /**
+     * Returns last element of list if list isn't empty otherwise null
+     *
+     * @return last element of the list
+     */
+    @Override
+    public E getLast() {
+        return last != null ? last.val : null;
+    }
+
+    /**
+     * Provides to get the element from list by position
+     *
+     * @param position position of element
+     * @return element from the specified position
+     * @throws ArrayIndexOutOfBoundsException if specified position out of list bounds
+     */
+    @Override
+    public E get(int position) {
+        if (position < 0 || position >= length) {
+            throw new ArrayIndexOutOfBoundsException("Specified position out of list bounds");
+        }
+        return getNode(position).val;
+    }
+
+    /**
+     * Returns node by the specified position
+     */
+    private Node<E> getNode(int pos) {
+        int mid = length / 2;
+        boolean h = pos >= mid;
+        pos = pos >= mid ? length - pos - 1 : pos;
+        Node<E> curr;
+        if (h) {
+            for (curr = last; pos > 0; pos--) {
+                curr = curr.prev;
+            }
+        } else {
+            for (curr = head; pos > 0; pos--) {
+                curr = curr.next;
+            }
+        }
+        return curr;
+    }
+
+    /**
+     * Returns slice from the list in specified range between the specified start and the specified end
      *
      * @param start start of range
      * @param end   end of range
@@ -543,22 +412,109 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *                                  or if start index larger then end index
      */
     @Override
-    public void delete(int start, int end) {
+    public DoubleLinkedList<E> slice(int start, int end) {
         if (start < 0 || end > length || start >= end) {
             throw new IllegalArgumentException("Invalid method parameters");
         }
-        Node<E> node = getNode(start);
-        if (node == head) {
-            end--;
-        } else {
-            node = node.prev;
+        Node<E> curr = getNode(start);
+        DoubleLinkedList<E> result = new DoubleLinkedList<>();
+        for (int i = start; i < end; curr = curr.next, i++) {
+            result.add(curr.val);
         }
-        while (start < end && node != null) {
-            node = deleteAfter(node);
-            end--;
-            length--;
+        return result;
+    }
+
+    /**
+     * Slices list after position
+     *
+     * @param start initial position to slicing
+     * @return slice of current list from specified position to list length
+     * @throws IllegalArgumentException if start < 0
+     */
+    public DoubleLinkedList<E> sliceFrom(int start) {
+        return slice(start, length);
+    }
+
+    /**
+     * Slices list before position
+     *
+     * @param end end of slice from 0
+     * @return slice of current list from 0 to specified position
+     * @throws IllegalArgumentException if end > list size
+     */
+    public DoubleLinkedList<E> sliceBefore(int end) {
+        return slice(0, end);
+    }
+
+    /**
+     * Provides to get first index of specified element in the current list
+     *
+     * @param element some element in the list
+     * @return index of element in list, if list doesn't contains the element return value will be -1
+     */
+    public int indexOf(E element) {
+        int pos = 0;
+        for (Node<E> first = head; first != null; first = first.next, pos++) {
+            if (first.val.equals(element)) {
+                return pos;
+            }
         }
-        if (start == 0) removeFirst();
+        return -1;
+    }
+
+    /**
+     * Provides to get last index of specified element in the current list
+     *
+     * @param element some element in the list
+     * @return index of element in list, if list doesn't contains the element return value will be -1
+     */
+    @Override
+    public int lastIndexOf(E element) {
+        int pos = length - 1;
+        for (Node<E> first = last; first != null; first = first.prev, pos--) {
+            if (first.val.equals(element)) {
+                return pos;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Sort list in in ascending order
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void sort() {
+        Object[] temp = toArray(Object.class);
+        Arrays.sort(temp);
+        int pos = 0;
+        for (Node<E> first = head; first != null; first = first.next, pos++) {
+            first.val = (E) temp[pos];
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> E[] toArray(Class<T> type) {
+        E[] temp = (E[]) Array.newInstance(type, length);
+        int pos = 0;
+        for (Node<E> first = head; first != null; first = first.next, pos++) {
+            temp[pos] = first.val;
+        }
+        return temp;
+    }
+
+    /**
+     * Returns all data from current list as array of objects
+     */
+    @Override
+    public Object[] toObjectArray() {
+        Object[] array = new Object[length];
+        int pos = 0;
+        for (Node<E> first = head; first != null; first = first.next, pos++) {
+            array[pos] = first.val;
+        }
+        return array;
     }
 
     /**
@@ -583,10 +539,34 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
     }
 
     public void clear() {
-        head = null;
-        last = null;
+        head = last = null;
         length = 0;
     }
+
+    /**
+     * Set bounds by length to this list
+     *
+     * @param start start of bounds
+     * @param end   end of bounds
+     * @throws IllegalArgumentException if start < 0 or end > list size
+     *                                  or if start index larger then end index
+     */
+    public void setLength(int start, int end) {
+        if (start < 0 || end > length || start >= end) {
+            throw new IllegalArgumentException("Invalid method arguments");
+        }
+        Node<E> beginNode = getNode(start);
+        Node<E> endNode = beginNode;
+        length = end - start;
+        while (++start < end) {
+            endNode = endNode.next;
+        }
+        beginNode.prev = null;
+        head = beginNode;
+        endNode.next = null;
+        last = endNode;
+    }
+
 
     @Override
     public Iterator<E> iterator() {

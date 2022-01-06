@@ -1,4 +1,4 @@
-package HashSet;
+package Sets;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
@@ -9,6 +9,7 @@ import Stack.AbstractStack;
 import Stack.LinkedStack;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 
 public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
@@ -50,10 +51,10 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
     private int size;
     private int balanceCount;
     private final int maxBalanceThreshold;
-    private static final int defaultBalanceThreshold = 1024;
+    private static final int DEFAULT_BALANCE_THRESHOLD = 1024;
 
     public SortedSet() {
-        this(defaultBalanceThreshold);
+        this(DEFAULT_BALANCE_THRESHOLD);
     }
 
     public SortedSet(int threshold) {
@@ -118,9 +119,8 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
             throw new IllegalArgumentException("(oldElement or newElement) must be not null");
         }
         TNode<E> node = getNode(oldElement);
-        if (node == null || contains(newElement)) return;
-        deleteNode(node, oldElement);
-        root = insert(root, newElement);
+        if (node == null || !contains(oldElement)) return;
+        root = insert(deleteNode(root, oldElement), newElement);
         size--;
     }
 
@@ -264,7 +264,7 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      * @throws IllegalArgumentException if element is null
      */
     @Override
-    public E remove(E element) {
+    public boolean remove(E element) {
         if (element == null) {
             throw new IllegalArgumentException("element must be not null");
         }
@@ -275,9 +275,9 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
                 balanceCount = 0;
                 reBalance();
             }
-            return element;
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -285,10 +285,9 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      */
     private TNode<E> getNode(E value) {
         TNode<E> curr = root;
-        while (!curr.element.equals(value)) {
+        while (curr != null && !curr.element.equals(value)) {
             if (value.compareTo(curr.element) < 0) curr = curr.left;
             else curr = curr.right;
-            if (curr == null) return null;
         }
         return curr;
     }
@@ -318,7 +317,7 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
     }
 
     /**
-     * Returns successor of current node
+     * Returns successor of the current node
      *
      * @param node node to get successor
      * @return successor of specified node
@@ -371,6 +370,7 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
         return result.toObjectArray();
     }
 
+    //todo implement it!!!
     @Override
     public AbstractSet<E> left(AbstractSet<E> set) {
         return null;
@@ -430,6 +430,7 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
         @Override
         public E next() {
             current = next;
+            if (current == null) throw new NoSuchElementException();
             while (current != null) {
                 stack.push(current);
                 current = current.left;

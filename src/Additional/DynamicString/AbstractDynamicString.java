@@ -90,6 +90,14 @@ public interface AbstractDynamicString extends Iterable<Character> {
 
     int indexOf(AbstractDynamicString s);
 
+    int lastIndexOf(char c);
+
+    int lastIndexOf(char[] c);
+
+    int lastIndexOf(String s);
+
+    int lastIndexOf(AbstractDynamicString s);
+
     char getLast();
 
     char get(int pos);

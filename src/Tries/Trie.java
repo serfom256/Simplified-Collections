@@ -2,14 +2,15 @@ package Tries;
 
 import Additional.DynamicString.AbstractDynamicString;
 import Additional.DynamicString.DynamicLinkedString;
-import HashSet.AbstractSet;
-import HashSet.SortedSetIP;
+import Sets.AbstractSet;
+import Sets.SortedSetIP;
 import HashTables.HashTable;
 import Stack.AbstractStack;
 import Stack.LinkedStack;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Trie implements Iterable<String> {
 
@@ -373,7 +374,7 @@ public class Trie implements Iterable<String> {
             }
         }
 
-
+        //FIXME fix foreach
         private boolean getNextNode(DynamicLinkedString prefix) {
             if (prevNodes.getSize() == 0) return false;
             Pair last = prevNodes.peek();
@@ -423,7 +424,10 @@ public class Trie implements Iterable<String> {
 
         @Override
         public String next() {
-            return lastString.toString();
+            if(lastString == null) throw new NoSuchElementException();
+            String result = lastString.toString();
+            lastString = null;
+            return result;
         }
     }
 }
