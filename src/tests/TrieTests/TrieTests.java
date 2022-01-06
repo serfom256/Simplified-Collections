@@ -248,7 +248,6 @@ public class TrieTests {
         for (String s : trie) {
             assertFalse(prev.contains(s));
             prev.add(s);
-            System.out.println(s);
             assertNotEquals(-1, lst.indexOf(s));
         }
         assertEquals(lst.getSize(), prev.getSize());

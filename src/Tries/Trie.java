@@ -350,84 +350,63 @@ public class Trie implements Iterable<String> {
     }
 
     private class SelfIterator implements Iterator<String> {
-        DynamicLinkedString lastString;
+        private int position = 0;
         DynamicLinkedString tempString = new DynamicLinkedString();
         AbstractStack<Pair> prevNodes = new LinkedStack<>();
 
 
         public SelfIterator() {
-            prevNodes.push(new Pair(root, root.nodes.iterator()));
-        }
-
-        private TNode getNext(HashTable<Character, TNode> table, Iterator<Character> iterator) {
-            if (iterator.hasNext()) return table.get(iterator.next());
-            return null;
+            TNode rt = root;
+            prevNodes.push(new Pair(rt, rt.nodes.iterator(), new DynamicLinkedString()));
         }
 
         class Pair {
-            private final TNode table;
+            private final TNode node;
             private final Iterator<Character> iterator;
+            private final DynamicLinkedString prefix;
 
-            public Pair(TNode node, Iterator<Character> iterator) {
-                this.table = node;
+            public Pair(TNode node, Iterator<Character> iterator, DynamicLinkedString prefix) {
+                this.node = node;
                 this.iterator = iterator;
+                this.prefix = prefix;
             }
         }
 
-        //FIXME fix foreach
-        private boolean getNextNode(DynamicLinkedString prefix) {
-            if (prevNodes.getSize() == 0) return false;
-            Pair last = prevNodes.peek();
-            if (last == null) return false;
-            HashTable<Character, TNode> table = last.table.nodes;
-            Iterator<Character> iterator = last.iterator;
-            TNode newNode = getNext(table, iterator);
-            Character newChar;
-            if (newNode == null) {
-                Pair prev = prevNodes.peek();
-                while (!prev.iterator.hasNext() && prevNodes.getSize() > 0) {
-                    prev = prevNodes.poll();
-                    if (prev == null) return false;
-                    if (prevNodes.getSize() == 0 || prev.iterator.hasNext()) break;
-                    prefix.deleteLast();
-                }
-                newNode = prev.table;
-                iterator = prev.iterator;
-                if (!iterator.hasNext()) return false;
-                newChar = iterator.next();
-                table = newNode.nodes;
-                if (prevNodes.getSize() == 0) {
-                    prevNodes.push(new Pair(newNode, iterator));
-                    prefix.deleteLast();
-                } else if (iterator.hasNext()) {
-                    prevNodes.push(new Pair(newNode, iterator));
-                }
-
-            } else {
-                newChar = newNode.element;
+        private void prepareNextNode(Pair pair) {
+            DynamicLinkedString prefix = pair.prefix;
+            HashTable<Character, TNode> table = pair.node.nodes;
+            Character nextChar = null;
+            if (pair.iterator.hasNext()) {
+                nextChar = pair.iterator.next();
+                prevNodes.push(pair);
             }
-            prefix.add(newChar);
-            newNode = table.get(newChar);
-            prevNodes.push(new Pair(newNode, newNode.nodes.iterator()));
-            if (newNode.isEnd) {
-                lastString = new DynamicLinkedString(prefix);
-                return true;
+            if (nextChar == null) {
+                prepareNextNode(prevNodes.poll());
+                return;
             }
-            return getNextNode(prefix);
+            TNode nextNode = table.get(nextChar);
+            Iterator<Character> nextIterator = nextNode.nodes.iterator();
+            Pair newPair = new Pair(nextNode, nextIterator, new DynamicLinkedString(prefix));
+            newPair.prefix.add(nextChar);
+            if (table.get(nextChar).isEnd) {
+                tempString = newPair.prefix;
+                prevNodes.push(newPair);
+                return;
+            }
+            prevNodes.push(newPair);
+            prepareNextNode(prevNodes.poll());
         }
-
 
         @Override
         public boolean hasNext() {
-            return getNextNode(tempString);
+            return position  < entriesCount;
         }
 
         @Override
         public String next() {
-            if(lastString == null) throw new NoSuchElementException();
-            String result = lastString.toString();
-            lastString = null;
-            return result;
+            if (++position > entriesCount) throw new NoSuchElementException();
+            prepareNextNode(prevNodes.poll());
+            return tempString.toString();
         }
     }
 }

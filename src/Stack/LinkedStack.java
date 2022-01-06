@@ -45,7 +45,7 @@ public class LinkedStack<E> implements AbstractStack<E> {
      */
     @Override
     public void push(E element) {
-        linkedList.addLast(element);
+        linkedList.addFirst(element);
     }
 
     /**

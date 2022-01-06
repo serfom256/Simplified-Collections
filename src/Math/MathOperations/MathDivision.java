@@ -1,9 +1,10 @@
 package Math.MathOperations;
 
-public class MathDivision implements AbstractOperation{
+public class MathDivision implements AbstractOperation {
 
     @Override
     public String calculate(String s1, String s2) {
-        return null;
+        // TODO implement
+        throw new UnsupportedOperationException();
     }
 }
