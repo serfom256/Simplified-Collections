@@ -19,8 +19,7 @@
 - Skip List
 
 ### Will be released later
-
-- [ ] SortedHashTable
+- [ ] Binary tree printer
 - [ ] MaxBinaryHeap (Based at Binary Tree)
 - [ ] BK Tree
 
