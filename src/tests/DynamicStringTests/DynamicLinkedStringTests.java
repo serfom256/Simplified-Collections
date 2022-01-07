@@ -5,8 +5,7 @@ import Additional.DynamicString.DynamicLinkedString;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class DynamicLinkedStringTests {
 
@@ -208,7 +207,6 @@ public class DynamicLinkedStringTests {
         assertEquals(4, string.getSize());
 
         assertEquals("", string.delete(0, 4).toString());
-
     }
 
     @Test
@@ -392,6 +390,42 @@ public class DynamicLinkedStringTests {
         assertEquals(3, string.lastIndexOf("434"));
         assertEquals(string.getSize() - 1, string.lastIndexOf("9"));
     }
+
+    @Test
+    public void startsWith(){
+        assertFalse(string.startsWith('0'));
+        assertFalse(string.startsWith(" "));
+        assertFalse(string.startsWith(new DynamicLinkedString(" ")));
+        string.add("98765");
+        assertTrue(string.startsWith('9'));
+        assertFalse(string.startsWith('0'));
+        assertTrue(string.startsWith("98"));
+        assertFalse(string.startsWith("00"));
+        assertTrue(string.startsWith("98765"));
+        assertFalse(string.startsWith("987651"));
+
+        assertTrue(string.startsWith(new DynamicLinkedString("98765")));
+        assertFalse(string.startsWith(new DynamicLinkedString("987650")));
+    }
+
+    @Test
+    public void endsWith(){
+        assertFalse(string.endsWith('1'));
+        assertFalse(string.endsWith(" "));
+        assertFalse(string.endsWith(new DynamicLinkedString(" ")));
+        string.add("98765");
+        assertTrue(string.endsWith('5'));
+        assertFalse(string.endsWith('9'));
+        assertTrue(string.endsWith("65"));
+        assertFalse(string.endsWith("56"));
+        assertTrue(string.endsWith("98765"));
+        assertFalse(string.endsWith("567891"));
+
+        assertTrue(string.endsWith(new DynamicLinkedString("98765")));
+        assertTrue(string.endsWith(new DynamicLinkedString("765")));
+        assertFalse(string.endsWith(new DynamicLinkedString("987650")));
+    }
+
 
     @Test
     public void equals() {

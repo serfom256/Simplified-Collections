@@ -672,10 +672,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
     /**
      * Returns true if this dynamicLinkedString starts with specified string otherwise false
      */
-    // todo cover with tests
     @Override
     public boolean startsWith(String s) {
-        if (s.length() >= size) return false;
+        if (s.length() > size) return false;
         Node first = head;
         for (int i = 0; i < s.length(); i++, first = first.next) {
             if (first.val != s.charAt(i)) return false;
@@ -696,13 +695,13 @@ public class DynamicLinkedString implements AbstractDynamicString {
      */
     @Override
     public boolean startsWith(AbstractDynamicString s) {
-        if (s.getSize() >= size) return false;
+        if (s.getSize() > size) return false;
         Node first = head;
         for (Character c : s) {
             if (first.val != c) return false;
             first = first.next;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -710,10 +709,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
      */
     @Override
     public boolean endsWith(String s) {
-        if (s.length() >= size) return false;
+        if (s.length() > size) return false;
         Node first = last;
+        int len = s.length() - 1;
         for (int i = 0; i < s.length(); i++, first = first.prev) {
-            if (first.val != s.charAt(i)) return false;
+            if (first.val != s.charAt(len - i)) return false;
         }
         return true;
     }
@@ -731,11 +731,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
      */
     @Override
     public boolean endsWith(AbstractDynamicString s) {
-        if (s.getSize() >= size) return false;
-        Node first = last;
+        if (s.getSize() > size) return false;
+        Node first = getNodeByPos(size - s.getSize());
         for (Character c : s) {
             if (first.val != c) return false;
-            first = first.prev;
+            first = first.next;
         }
         return true;
     }

@@ -459,6 +459,10 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         return size;
     }
 
+    /**
+     * Returns set of elements from the specified set which isn't presents in the specified set
+     * {1, 2, 3}.left({3, 4, 5, 6}) => {1, 2}
+     */
     @Override
     public SortedSetIP<E> left(AbstractSet<E> set) {
         SortedSetIP<E> left = new SortedSetIP<>();
@@ -468,6 +472,10 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         return left;
     }
 
+    /**
+     * Returns set of elements from the specified set which isn't presents in this set
+     * {1, 2, 3}.right({3, 4, 5, 6}) => {4, 5, 6}
+     */
     @Override
     public SortedSetIP<E> right(AbstractSet<E> set) {
         SortedSetIP<E> right = new SortedSetIP<>();
@@ -477,6 +485,10 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         return right;
     }
 
+    /**
+     * Returns set with crossing elements from this set and specified set
+     * {1, 2, 3, 4}.between({1, 3, 4, 5, 6}) => {1, 3, 4}
+     */
     @Override
     public SortedSetIP<E> between(AbstractSet<E> set) {
         SortedSetIP<E> mid = new SortedSetIP<>();
@@ -486,20 +498,26 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
         return mid;
     }
 
+    /**
+     * Returns union of this set and specified set
+     * {1, 2, 3, 4}.union({4, 5, 6}) => {1, 2, 3, 4, 5, 6}
+     *
+     * @return union of this and specified set
+     */
     @Override
     public SortedSetIP<E> union(AbstractSet<E> set) {
         SortedSetIP<E> union = new SortedSetIP<>();
         Iterator<E> foreignIterator = set.iterator();
-        Iterator<E> thisIterator = this.iterator();
-        while (foreignIterator.hasNext() && iterator().hasNext()) {
+        Iterator<E> selfIterator = this.iterator();
+        while (foreignIterator.hasNext() && selfIterator.hasNext()) {
             union.add(foreignIterator.next());
-            union.add(thisIterator.next());
+            union.add(selfIterator.next());
         }
         while (foreignIterator.hasNext()) {
             union.add(foreignIterator.next());
         }
-        while (thisIterator.hasNext()) {
-            union.add(thisIterator.next());
+        while (selfIterator.hasNext()) {
+            union.add(selfIterator.next());
         }
         return union;
     }
@@ -534,11 +552,11 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
 
         private final AbstractStack<TNode<E>> stack;
 
-        private TNode<E> current, next;
+        private TNode<E> next;
 
         public SelfIterator() {
             this.stack = new LinkedStack<>();
-            current = next = root;
+            next = root;
         }
 
         @Override
@@ -548,8 +566,8 @@ public class SortedSetIP<E extends Comparable<E>> implements AbstractSortedSet<E
 
         @Override
         public E next() {
-            current = next;
-            if (current == null) throw new NoSuchElementException();
+            if (next == null && stack.isEmpty()) throw new NoSuchElementException();
+            TNode<E> current = next;
             while (current != null) {
                 stack.push(current);
                 current = current.left;

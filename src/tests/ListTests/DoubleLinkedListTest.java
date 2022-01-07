@@ -79,10 +79,10 @@ public class DoubleLinkedListTest {
     public void addFrom() {
         ArrayList<Integer> testList = new ArrayList<>();
         testList.addAll(10, 11, 12, 13, 14, 15);
-        list.add(testList);
+        list.addFrom(testList);
         assertEquals(15, list.getSize());
         list.clear();
-        list.add(testList);
+        list.addFrom(testList);
         assertEquals(6, list.getSize());
     }
 
@@ -351,7 +351,7 @@ public class DoubleLinkedListTest {
         linkedList.addAll(1, 2, 3, 4, 5, 6);
 
         DoubleLinkedList<Integer> doubleLinkedList = new DoubleLinkedList<>();
-        doubleLinkedList.add(linkedList);
+        doubleLinkedList.addFrom(linkedList);
         assertEquals(linkedList.getSize(), doubleLinkedList.getSize());
         for (int i = 0; i < doubleLinkedList.getSize(); i++) {
             assertEquals(linkedList.get(i), doubleLinkedList.get(i));

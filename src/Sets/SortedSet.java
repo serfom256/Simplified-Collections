@@ -370,25 +370,67 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
         return result.toObjectArray();
     }
 
-    //todo implement it!!!
+    /**
+     * Returns set of elements from the specified set which isn't presents in the specified set
+     * {1, 2, 3}.left({3, 4, 5, 6}) => {1, 2}
+     */
     @Override
     public AbstractSet<E> left(AbstractSet<E> set) {
-        return null;
+        SortedSet<E> left = new SortedSet<>();
+        for (E element : set) {
+            if (!this.contains(element)) left.add(element);
+        }
+        return left;
     }
 
+    /**
+     * Returns set of elements from the specified set which isn't presents in this set
+     * {1, 2, 3}.right({3, 4, 5, 6}) => {4, 5, 6}
+     */
     @Override
     public AbstractSet<E> right(AbstractSet<E> set) {
-        return null;
+        SortedSet<E> right = new SortedSet<>();
+        for (E element : this) {
+            if (!set.contains(element)) right.add(element);
+        }
+        return right;
     }
 
+    /**
+     * Returns set with crossing elements from this set and specified set
+     * {1, 2, 3, 4}.between({1, 3, 4, 5, 6}) => {1, 3, 4}
+     */
     @Override
     public AbstractSet<E> between(AbstractSet<E> set) {
-        return null;
+        SortedSet<E> mid = new SortedSet<>();
+        for (E element : set) {
+            if (this.contains(element)) mid.add(element);
+        }
+        return mid;
     }
 
+    /**
+     * Returns union of this set and specified set
+     * {1, 2, 3, 4}.union({4, 5, 6}) => {1, 2, 3, 4, 5, 6}
+     *
+     * @return union of this and specified set
+     */
     @Override
     public AbstractSet<E> union(AbstractSet<E> set) {
-        return null;
+        SortedSet<E> union = new SortedSet<>();
+        Iterator<E> foreignIterator = set.iterator();
+        Iterator<E> selfIterator = this.iterator();
+        while (foreignIterator.hasNext() && selfIterator.hasNext()) {
+            union.add(foreignIterator.next());
+            union.add(selfIterator.next());
+        }
+        while (foreignIterator.hasNext()) {
+            union.add(foreignIterator.next());
+        }
+        while (selfIterator.hasNext()) {
+            union.add(selfIterator.next());
+        }
+        return union;
     }
 
     /**
@@ -410,16 +452,15 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
         return new SelfIterator();
     }
 
-    //FIXME
     private class SelfIterator implements Iterator<E> {
 
         private final AbstractStack<TNode<E>> stack;
 
-        private TNode<E> current, next;
+        private TNode<E> next;
 
         public SelfIterator() {
             this.stack = new LinkedStack<>();
-            current = next = root;
+            next = root;
         }
 
         @Override
@@ -429,8 +470,8 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
 
         @Override
         public E next() {
-            current = next;
-            if (current == null) throw new NoSuchElementException();
+            if (next == null && stack.isEmpty()) throw new NoSuchElementException();
+            TNode<E> current = next;
             while (current != null) {
                 stack.push(current);
                 current = current.left;

@@ -38,7 +38,7 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param data it is all iterable object of elements to add
      */
     @Override
-    public <T extends Iterable<E>> void add(T data) {
+    public <T extends Iterable<E>> void addFrom(T data) {
         for (E obj : data) {
             add(obj);
         }

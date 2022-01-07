@@ -1,5 +1,6 @@
 package tests.SetTests;
 
+import Sets.Set;
 import Sets.SortedSetIP;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,6 +122,86 @@ public class SortedSetIPTest {
             }
         }
         assertEquals(elements.length, count);
+    }
+
+    @Test
+    public void left() {
+        Set<Integer> testSet = new Set<>();
+        Set<Integer> fSet = new Set<>();
+        for (int i = 0; i < 10; i++) {
+            fSet.add(i);
+        }
+        testSet.add(1);
+        testSet.add(2);
+        testSet.add(11);
+        testSet.add(12);
+        Set<Integer> newSet = fSet.left(testSet);
+        assertEquals(2, newSet.getSize());
+        assertTrue(newSet.contains(11));
+        assertTrue(newSet.contains(11));
+        for (int i = 0; i < 10; i++) {
+            assertFalse(newSet.contains(i));
+        }
+    }
+
+    @Test
+    public void right() {
+        Set<Integer> testSet = new Set<>();
+        Set<Integer> fSet = new Set<>();
+        for (int i = 0; i < 10; i++) {
+            fSet.add(i);
+        }
+        testSet.add(1);
+        testSet.add(2);
+        testSet.add(11);
+        testSet.add(12);
+        Set<Integer> newSet = testSet.right(fSet);
+        assertEquals(2, newSet.getSize());
+        assertTrue(newSet.contains(11));
+        assertTrue(newSet.contains(11));
+        for (int i = 0; i < 10; i++) {
+            assertFalse(newSet.contains(i));
+        }
+    }
+
+    @Test
+    public void between() {
+        Set<Integer> testSet = new Set<>();
+        Set<Integer> fSet = new Set<>();
+        for (int i = 0; i <= 5; i++) {
+            testSet.add(i);
+        }
+        for (int i = 3; i < 10; i++) {
+            fSet.add(i);
+        }
+        Set<Integer> newSet = testSet.between(fSet);
+        assertEquals(3, newSet.getSize());
+        assertTrue(newSet.contains(3));
+        assertTrue(newSet.contains(4));
+        assertTrue(newSet.contains(5));
+
+        newSet = fSet.between(testSet);
+        assertEquals(3, newSet.getSize());
+        assertTrue(newSet.contains(3));
+        assertTrue(newSet.contains(4));
+        assertTrue(newSet.contains(5));
+    }
+
+    @Test
+    public void union() {
+        Set<Integer> testSet = new Set<>();
+        Set<Integer> fSet = new Set<>();
+        for (int i = 0; i <= 5; i++) {
+            testSet.add(i);
+        }
+        for (int i = 3; i < 100; i++) {
+            fSet.add(i);
+        }
+        Set<Integer> newSet = testSet.union(fSet);
+        assertEquals(100, newSet.getSize());
+        for (int i = 0; i < 100; i++) {
+            assertTrue(newSet.contains(i));
+        }
     }
 
     @Test

@@ -448,11 +448,11 @@ public class HashTable<K, V> implements Iterable<K> {
      * @param node node to convert to String
      * @return string of all node keys and node values
      */
-    private String toStringBucket(Node<K, V> node) {
+    private String bucketToString(Node<K, V> node) {
         AbstractDynamicString res = new DynamicLinkedString("[").add(node.key).add(":").add(node.value);
         Node<K, V> prev = node;
         for (Node<K, V> current = node.next; current != null; current = current.next) {
-            if (!(prev.hash == current.hash)) {
+            if (prev.hash != current.hash) {
                 res.add("], [").add(current.key).add(":").add(current.value);
             }
             prev = current;
@@ -468,7 +468,7 @@ public class HashTable<K, V> implements Iterable<K> {
         AbstractDynamicString res = new DynamicLinkedString("{");
         for (int i = 0; i < CAPACITY; i++) {
             if (Table[i] != null) {
-                res.add(toStringBucket(Table[i]));
+                res.add(bucketToString(Table[i]));
             }
         }
         return res.replace(res.getSize() - 2, "}").toString();

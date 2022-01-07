@@ -81,15 +81,23 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
         hashTable.replace(oldElement, newElement);
     }
 
+    /**
+     * Returns set of elements from the specified set which isn't presents in the specified set
+     * {1, 2, 3}.left({3, 4, 5, 6}) => {1, 2}
+     */
     @Override
     public Set<E> left(AbstractSet<E> set) {
-        Set<E> left = new Set<>((int) (set.getSize() * 1.2));
+        Set<E> left = new Set<>(hashTable.getCapacity());
         for (E element : set) {
             if (!this.contains(element)) left.add(element);
         }
         return left;
     }
 
+    /**
+     * Returns set of elements from the specified set which isn't presents in this set
+     * {1, 2, 3}.right({3, 4, 5, 6}) => {4, 5, 6}
+     */
     @Override
     public Set<E> right(AbstractSet<E> set) {
         Set<E> right = new Set<>(hashTable.getCapacity());
@@ -99,29 +107,39 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
         return right;
     }
 
+    /**
+     * Returns set of crossing elements from this set and specified set
+     * {1, 2, 3, 4}.between({1, 3, 4, 5, 6}) => {1, 3, 4}
+     */
     @Override
     public Set<E> between(AbstractSet<E> set) {
-        Set<E> mid = new Set<>(64);
+        Set<E> mid = new Set<>();
         for (E element : set) {
             if (this.contains(element)) mid.add(element);
         }
         return mid;
     }
 
+    /**
+     * Returns union of this set and specified set
+     * {1, 2, 3, 4}.union({4, 5, 6}) => {1, 2, 3, 4, 5, 6}
+     *
+     * @return union of this and specified set
+     */
     @Override
     public Set<E> union(AbstractSet<E> set) {
         Set<E> union = new Set<>((int) ((hashTable.getSize() + set.getSize()) * 1.4));
         Iterator<E> foreignIterator = set.iterator();
-        Iterator<E> thisIterator = this.iterator();
-        while (foreignIterator.hasNext() && iterator().hasNext()) {
+        Iterator<E> selfIterator = this.iterator();
+        while (foreignIterator.hasNext() && selfIterator.hasNext()) {
             union.add(foreignIterator.next());
-            union.add(thisIterator.next());
+            union.add(selfIterator.next());
         }
         while (foreignIterator.hasNext()) {
             union.add(foreignIterator.next());
         }
-        while (thisIterator.hasNext()) {
-            union.add(thisIterator.next());
+        while (selfIterator.hasNext()) {
+            union.add(selfIterator.next());
         }
         return union;
     }
