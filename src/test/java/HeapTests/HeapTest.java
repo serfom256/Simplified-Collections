@@ -1,6 +1,6 @@
 package HeapTests;
 
-import Heap.MaxHeap;
+import heap.MaxHeap;
 import org.junit.Before;
 import org.junit.Test;
 

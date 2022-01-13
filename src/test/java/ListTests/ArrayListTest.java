@@ -1,7 +1,7 @@
 package ListTests;
 
-import Lists.AbstractList;
-import Lists.impl.ArrayList;
+import lists.AbstractList;
+import lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class ArrayListTest {
         for (int i = len - 1, pos = testArr.length - 1; pos >= 0; i--, pos--) {
             assertEquals(testArr[pos], list.get(i));
         }
-        assertEquals(list.getSize(), 34);
+        assertEquals(34, list.getSize());
     }
 
     @Test
@@ -96,7 +96,6 @@ public class ArrayListTest {
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void pop_value_at_empty_list_should_throw_exception() {
         list.clear();
-        assertEquals(0, list.getSize());
         list.deleteAtPosition(0);
     }
 
@@ -110,9 +109,9 @@ public class ArrayListTest {
     @Test
     public void delete() {
         for (int i = 1; i <= 30; i++) {
-            assertEquals((Integer) i, list.delete(i));
+            assertTrue(list.delete(i));
         }
-        assertNull(list.delete(0));
+        assertFalse(list.delete(0));
         assertEquals(0, list.getSize());
     }
 

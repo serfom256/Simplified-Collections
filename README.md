@@ -1,4 +1,4 @@
-# This is simple collections 
+# This is the simplified version of the java collections with some additions
 
 ### Released Collections
 
@@ -8,20 +8,21 @@
 - [x] Doubly Linked List
 - [x] Array List
 - [x] HashTable
-- [x] Set (Based at HashTable)
-- [x] Set (Based at BST tree)
+- [x] Set (Based on HashTable)
+- [x] Set (Based on BST tree)
 - [x] Set (Based on RBT tree)
-- [x] Stack(Based at Array)
+- [x] Stack(Based on Array)
+- [x] Sorted List(Based on Skip List)
 
 ### In developing
 - TrieMap
 - Expression interpreter
-- Skip List
+- BK Tree
 
-### Will be released later
+### Will be implemented later
 - [ ] Binary tree printer
-- [ ] MaxBinaryHeap (Based at Binary Tree)
-- [ ] BK Tree
+- [ ] MaxBinaryHeap (Based on Binary Tree)
+- [ ] Phonetic Algorithm
 
 
 

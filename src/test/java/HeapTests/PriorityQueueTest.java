@@ -1,6 +1,6 @@
 package HeapTests;
 
-import Heap.PriorityQueue;
+import heap.PriorityQueue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -83,7 +83,7 @@ public class PriorityQueueTest {
     @Test
     public void countOf() {
         for (int i = 0; i < queue.getSize(); i++) {
-            assertSame(1, queue.countOf(testArr[i]));
+            assertSame(1, queue.count(testArr[i]));
         }
     }
 

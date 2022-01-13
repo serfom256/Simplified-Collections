@@ -1,7 +1,7 @@
 package SetTests;
 
-import Sets.Set;
-import Sets.RBTSet;
+import sets.Set;
+import sets.RBTSet;
 import org.junit.Before;
 import org.junit.Test;
 

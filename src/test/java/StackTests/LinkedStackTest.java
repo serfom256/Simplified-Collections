@@ -1,6 +1,6 @@
 package StackTests;
 
-import Stack.LinkedStack;
+import stack.LinkedStack;
 import org.junit.Before;
 import org.junit.Test;
 

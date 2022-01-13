@@ -1,6 +1,6 @@
 package StackTests;
 
-import Stack.ArrayStack;
+import stack.ArrayStack;
 import org.junit.Before;
 import org.junit.Test;
 

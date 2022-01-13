@@ -1,8 +1,8 @@
 package ListTests;
 
-import Lists.impl.ArrayList;
-import Lists.impl.DoubleLinkedList;
-import Lists.impl.LinkedList;
+import lists.impl.ArrayList;
+import lists.impl.DoubleLinkedList;
+import lists.impl.LinkedList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -110,13 +110,11 @@ public class DoubleLinkedListTest {
         list.delete(9);
 
         while (list.getSize() != 1) {
-            Integer last = list.getLast();
-            assertEquals(last, list.delete(last));
+            assertTrue(list.delete(list.getLast()));
         }
         assertEquals(1, list.getSize());
 
-        assertNull(list.delete(999));
-
+        assertFalse(list.delete(999));
     }
 
     @Test
@@ -322,7 +320,6 @@ public class DoubleLinkedListTest {
         assertSame(7, list.lastIndexOf(999));
         list.deleteAtPosition(7);
         assertSame(1, list.lastIndexOf(999));
-
     }
 
     @Test

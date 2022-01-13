@@ -1,8 +1,8 @@
 package HashTableTests;
 
 
-import Additional.Nodes.HashNode;
-import HashTables.HashTable;
+import additional.nodes.HashNode;
+import hashtables.HashTable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,13 +77,13 @@ public class HashTableTest {
             hashTable.add(s, i);
         }
         for (String value : testArr) {
-            assertEquals(value, hashTable.removeValue(s, value));
+            assertEquals(value, hashTable.deleteValue(s, value));
         }
-        assertNull(testArr[0], hashTable.removeValue(s, testArr[0]));
+        assertNull(testArr[0], hashTable.deleteValue(s, testArr[0]));
 
 
         for (int i = 0; i < 10; i++) {
-            assertEquals(i + "_value", hashTable.removeValue(i + "_key", i + "_value"));
+            assertEquals(i + "_value", hashTable.deleteValue(i + "_key", i + "_value"));
         }
         assertEquals(0, hashTable.getSize());
     }

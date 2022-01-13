@@ -1,7 +1,7 @@
 package SetTests;
 
-import Sets.Set;
-import Sets.SortedSet;
+import sets.Set;
+import sets.SortedSet;
 import org.junit.Before;
 import org.junit.Test;
 

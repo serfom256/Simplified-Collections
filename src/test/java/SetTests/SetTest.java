@@ -1,6 +1,6 @@
 package SetTests;
 
-import Sets.Set;
+import sets.Set;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,9 +1,8 @@
 package TrieTests;
 
-import Sets.AbstractSet;
-import Sets.Set;
-import Lists.impl.ArrayList;
-import Tries.Trie;
+import sets.*;
+import lists.impl.ArrayList;
+import tries.Trie;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -101,11 +100,11 @@ public class TrieTests {
         list.addAll("tes", "132", "1325a", "000", "000qw", "data", "new", "te");
         for (String s : list) assertNotEquals(trie.getByPrefix(s), "");
 
-        assertEquals(trie.getByPrefix("1001"), "1001212454");
-        assertEquals(trie.getByPrefix("00"), "0000");
-        assertEquals(trie.getByPrefix("qwe"), "qwebcd");
-        assertEquals(trie.getByPrefix("abcde"), "abcde");
-        assertEquals(trie.getByPrefix(""), "");
+        assertEquals("1001212454", trie.getByPrefix("1001"));
+        assertEquals("0000", trie.getByPrefix("00"));
+        assertEquals("qwebcd", trie.getByPrefix("qwe"));
+        assertEquals("abcde", trie.getByPrefix("abcde"));
+        assertEquals("", trie.getByPrefix(""));
     }
 
     @Test
@@ -238,8 +237,8 @@ public class TrieTests {
         for (String s : lst) {
             if (trie.contains(s)) assertTrue(trie.remove(s));
         }
-        assertEquals(trie.getSize(), 0);
-        assertEquals(trie.getEntriesCount(), 0);
+        assertEquals(0, trie.getSize());
+        assertEquals(0, trie.getEntriesCount());
     }
 
     @Test
