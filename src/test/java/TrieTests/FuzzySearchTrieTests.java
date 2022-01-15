@@ -54,7 +54,7 @@ public class FuzzySearchTrieTests {
                     break;
             }
             if (!trie.presents(mutableString.toString())) {
-                String[] founded = trie.getByPrefix(mutableString.toString(), 1000, 1);
+                String[] founded = trie.getByPrefixFuzzy(mutableString.toString(), 100, 1);
                 ArrayList<String> list = new ArrayList<>();
                 list.addAll(founded);
                 assertNotEquals(list.indexOf(s), -1);

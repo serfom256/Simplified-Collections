@@ -742,7 +742,6 @@ public class DynamicLinkedString implements AbstractDynamicString {
 
     /**
      * Returns first occurrence of the specified char in this dynamicLinkedString
-     *
      */
     @Override
     public int indexOf(char c) {
@@ -897,6 +896,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
         head = last = null;
         size = 0;
         return this;
+    }
+
+    @Override
+    public DynamicLinkedString copy() {
+        return new DynamicLinkedString(this);
     }
 
     @Override

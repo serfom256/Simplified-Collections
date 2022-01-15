@@ -66,6 +66,8 @@ public interface AbstractDynamicString extends Iterable<Character> {
 
     AbstractDynamicString clear();
 
+    AbstractDynamicString copy();
+
     String subString(int start, int end);
 
     String subString(int start);
