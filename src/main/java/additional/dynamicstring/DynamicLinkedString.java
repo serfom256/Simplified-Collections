@@ -1,4 +1,6 @@
-package additional.DynamicString;
+package additional.dynamicstring;
+
+import additional.exceptions.IndexOutOfCollectionBoundsException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -86,6 +88,24 @@ public class DynamicLinkedString implements AbstractDynamicString {
     @Override
     public DynamicLinkedString add(String s) {
         insertSequenceAfter(last, s, 0);
+        return this;
+    }
+
+    /**
+     * Appends all characters from the specified position of the string to end of dynamicLinkedString
+     */
+    @Override
+    public DynamicLinkedString add(String s, int pos) {
+        insertSequenceAfter(last, s, pos);
+        return this;
+    }
+
+    /**
+     * Appends all characters from the specified position of the string to end of dynamicLinkedString
+     */
+    @Override
+    public DynamicLinkedString add(AbstractDynamicString s, int pos) {
+        insertSequenceAfter(last, s.toString(), pos);
         return this;
     }
 
@@ -191,6 +211,17 @@ public class DynamicLinkedString implements AbstractDynamicString {
     @Override
     public DynamicLinkedString addFirst(int num) {
         return addFirst(String.valueOf(num));
+    }
+
+    /**
+     * Appends unicode number as character
+     *
+     * @param code unicode character point
+     */
+    @Override
+    public DynamicLinkedString addUnicodeChar(int code) {
+        add((char) code);
+        return this;
     }
 
     /**
@@ -302,12 +333,12 @@ public class DynamicLinkedString implements AbstractDynamicString {
      *
      * @param start start position of removed range
      * @param end   end position of removed range
-     * @throws IllegalArgumentException if startPos > end or specified positions out of string range
+     * @throws IndexOutOfCollectionBoundsException if startPos > end or specified positions out of string range
      */
     @Override
     public DynamicLinkedString delete(int start, int end) {
         if (start < 0 || start >= end) {
-            throw new IllegalArgumentException("Specified position is invalid");
+            throw new IndexOutOfCollectionBoundsException();
         }
         if (end >= size) end = size;
         Node node = getNodeByPos(start);
@@ -327,12 +358,12 @@ public class DynamicLinkedString implements AbstractDynamicString {
     /**
      * Provides to all characters from the specified position
      *
-     * @throws IllegalArgumentException if the specified start position out of string bounds
+     * @throws IndexOutOfCollectionBoundsException if the specified start position out of string bounds
      */
     @Override
     public DynamicLinkedString delete(int start) {
         if (start < 0) {
-            throw new IllegalArgumentException("Specified position out of String bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         if (start == 0) return clear();
         if (start >= size) start = size;
@@ -347,11 +378,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
     /**
      * Provides to remove character on the specified position
      *
-     * @throws IllegalArgumentException if the specified position out of string bounds
+     * @throws IndexOutOfCollectionBoundsException if the specified position out of string bounds
      */
     @Override
     public DynamicLinkedString deleteAtPosition(int pos) {
-        if (pos < 0 || pos > size) throw new IllegalArgumentException("Specified position out of String bounds");
+        if (pos < 0 || pos > size) throw new IndexOutOfCollectionBoundsException();
         Node node = getNodeByPos(pos);
         if (node.prev == null) return deleteFirst();
         if (node.next == null) return deleteLast();
@@ -422,12 +453,12 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @param start start of range
      * @param end   end of range
      * @param s     string to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, int end, String s) {
         if (start < 0 || start >= end || start >= size) {
-            throw new IllegalArgumentException("Specified position is illegal to replace");
+            throw new IndexOutOfCollectionBoundsException();
         }
         if (end >= size) end = size;
         Node curr = getNodeByPos(start);
@@ -450,7 +481,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      *
      * @param start start of range
      * @param s     string to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, String s) {
@@ -463,7 +494,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @param start start of range
      * @param end   end of range
      * @param s     string to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, int end, DynamicLinkedString s) {
@@ -475,7 +506,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      *
      * @param start start of range
      * @param s     string to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, DynamicLinkedString s) {
@@ -488,7 +519,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @param start start of range
      * @param end   end of range
      * @param c     char array to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, int end, char[] c) {
@@ -500,7 +531,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      *
      * @param start start of range
      * @param c     char array to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, char[] c) {
@@ -513,7 +544,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @param start start of range
      * @param end   end of range
      * @param c     char to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, int end, char c) {
@@ -525,7 +556,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      *
      * @param start start of range
      * @param c     char to replace
-     * @throws IllegalArgumentException if specified position is specified start or end position is illegal
+     * @throws IndexOutOfCollectionBoundsException if specified position is specified start or end position is illegal
      */
     @Override
     public DynamicLinkedString replace(int start, char c) {
@@ -535,7 +566,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     @Override
     public DynamicLinkedString update(int pos, char c) {
         if (pos < 0 || pos >= size) {
-            throw new ArrayIndexOutOfBoundsException("Specified position out of string bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         getNodeByPos(pos).val = c;
         return this;
@@ -615,7 +646,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      */
     private char[] subStr(int start, int end) {
         if (start > end || start < 0) {
-            throw new IllegalArgumentException("Start or end position out of string bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node first = head;
         for (int pos = 0; pos < start; pos++) first = first.next;

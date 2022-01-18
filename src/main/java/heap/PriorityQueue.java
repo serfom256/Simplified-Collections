@@ -1,7 +1,8 @@
 package heap;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.NullableArgumentException;
 
 /**
  * This is simple PriorityQueue
@@ -61,11 +62,11 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      * Add element to the priorityQueue
      *
      * @param element element to add into the priorityQueue
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if element is null
      */
     public void push(T element, int priority) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         if (queue == null) initQueue(this.capacity);
         if (isOverFlow()) {
@@ -185,11 +186,11 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      *
      * @param element  the element for which you want to change priority in the queue
      * @param priority priority of element
-     * @throws IllegalArgumentException if (element) is null
+     * @throws NullableArgumentException if (element) is null
      */
     public void setPriority(T element, int priority) {
         if (element == null) {
-            throw new IllegalArgumentException("Elements must be not null");
+            throw new NullableArgumentException();
         }
         for (int i = 0; i < size; i++) {
             if (queue[i].value.equals(element)) {
@@ -210,11 +211,11 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      *
      * @param newElement the element which replaces old element if old element in priorityQueue
      * @param oldElement replacement element
-     * @throws IllegalArgumentException if (newElement or oldElement) is null
+     * @throws NullableArgumentException if (newElement or oldElement) is null
      */
     public void update(T oldElement, T newElement) {
         if (newElement == null || oldElement == null) {
-            throw new IllegalArgumentException("Elements must be not null");
+            throw new NullableArgumentException();
         }
         for (int i = 0; i < size; i++) {
             if (queue[i].value.equals(oldElement)) {
@@ -230,11 +231,11 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      *
      * @param newElement the element which replaces old element if old element in priorityQueue
      * @param oldElement replacement element
-     * @throws IllegalArgumentException if (newElement or oldElement) is null
+     * @throws NullableArgumentException if (newElement or oldElement) is null
      */
     public void updateEquals(T oldElement, T newElement) {
         if (newElement == null || oldElement == null) {
-            throw new IllegalArgumentException("Elements must be not null");
+            throw new NullableArgumentException();
         }
         for (int i = 0; i < size; i++) {
             if (queue[i].value.equals(oldElement)) {
@@ -257,11 +258,11 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      * Removes element in the priorityQueue
      *
      * @param element element to remove
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if element is null
      */
     public void remove(T element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         if (size == 0) {
             return;
@@ -281,11 +282,11 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      *
      * @param element element in priorityQueue
      * @return position of element if element in the Queue else -1
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if element is null
      */
     public boolean contains(T element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         return contains(element, 0);
     }
@@ -304,7 +305,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      */
     public int count(T element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         int count = 0;
         for (int i = 0; i < size; i++) {

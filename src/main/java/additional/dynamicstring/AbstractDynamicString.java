@@ -1,4 +1,4 @@
-package additional.DynamicString;
+package additional.dynamicstring;
 
 public interface AbstractDynamicString extends Iterable<Character> {
 
@@ -7,6 +7,10 @@ public interface AbstractDynamicString extends Iterable<Character> {
     AbstractDynamicString add(Object o);
 
     AbstractDynamicString add(String s);
+
+    AbstractDynamicString add(AbstractDynamicString s, int pos);
+
+    AbstractDynamicString add(String s, int pos);
 
     AbstractDynamicString add(char c);
 
@@ -21,6 +25,8 @@ public interface AbstractDynamicString extends Iterable<Character> {
     AbstractDynamicString addFirst(char c);
 
     AbstractDynamicString addFirst(int num);
+
+    AbstractDynamicString addUnicodeChar(int code);
 
     AbstractDynamicString insert(int pos, char c);
 

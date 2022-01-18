@@ -1,6 +1,8 @@
 package TrieTests;
 
-import tries.FuzzySearchTrie;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import tries.FuzzyTrie;
 import lists.AbstractList;
 import lists.impl.ArrayList;
 import org.junit.Before;
@@ -11,12 +13,12 @@ import java.util.Random;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FuzzySearchTrieTests {
-    private final FuzzySearchTrie trie;
+public class FuzzyTrieTests {
+    private final FuzzyTrie trie;
     private final AbstractList<String> lst;
 
-    public FuzzySearchTrieTests() {
-        trie = new FuzzySearchTrie();
+    public FuzzyTrieTests() {
+        trie = new FuzzyTrie();
         lst = new ArrayList<>();
     }
 
@@ -37,13 +39,13 @@ public class FuzzySearchTrieTests {
         for (int i = 0; i < 1000; i++) {
             String s = lst.get((int) ((Math.random() * (10000))));
             int randAction = (int) ((Math.random() * (3 - 1)) + 1);
-            StringBuilder mutableString = new StringBuilder(s);
+            AbstractDynamicString mutableString = new DynamicLinkedString(s);
             int randomPosition = (int) (Math.random() * (s.length() - 1));
             char randomChar = (char) (new Random().nextInt(26) + 'a');
             switch (randAction) {
                 case 1:
                     if (s.length() > 2) {
-                        mutableString.deleteCharAt(randomPosition);
+                        mutableString.deleteAtPosition(randomPosition);
                         break;
                     }
                 case 2:
@@ -67,13 +69,13 @@ public class FuzzySearchTrieTests {
         for (int i = 0; i < 1000; i++) {
             String s = lst.get((int) ((Math.random() * (10000))));
             int randAction = (int) ((Math.random() * (3 - 1)) + 1);
-            StringBuilder mutableString = new StringBuilder(s);
+            AbstractDynamicString mutableString = new DynamicLinkedString(s);
             int randomPosition = (int) (Math.random() * (s.length() - 1));
             char randomChar = (char) (new Random().nextInt(26) + 'a');
             switch (randAction) {
                 case 1:
                     if (s.length() > 2) {
-                        mutableString.deleteCharAt(randomPosition);
+                        mutableString.deleteAtPosition(randomPosition);
                         break;
                     }
                 case 2:
@@ -94,13 +96,13 @@ public class FuzzySearchTrieTests {
         for (int i = 0; i < 1000; i++) {
             String s = lst.get((int) ((Math.random() * (10000))));
             int randAction = (int) ((Math.random() * (3 - 1)) + 1);
-            StringBuilder mutableString = new StringBuilder(s);
+            AbstractDynamicString mutableString = new DynamicLinkedString(s);
             int randomPosition = (int) (Math.random() * 3);
             char randomChar = (char) (new Random().nextInt(26) + 'a');
             switch (randAction) {
                 case 1:
                     if (s.length() > 2) {
-                        mutableString.deleteCharAt(randomPosition);
+                        mutableString.deleteAtPosition(randomPosition);
                         break;
                     }
                 case 2:
@@ -110,7 +112,7 @@ public class FuzzySearchTrieTests {
                     mutableString.replace(randomPosition, randomPosition, String.valueOf(randomChar));
                     break;
             }
-            if (mutableString.length() > 5) mutableString = new StringBuilder(mutableString.substring(0, 3));
+            if (mutableString.getSize() > 5) mutableString = new DynamicLinkedString(mutableString.subString(0, 3));
             if (!trie.presents(mutableString.toString())) {
                 assertTrue(trie.presents(mutableString.toString(), 1));
             }
@@ -121,12 +123,12 @@ public class FuzzySearchTrieTests {
         int leftLimit = 48;
         int rightLimit = 122;
         int len = (int) ((Math.random() * (maxLen - minLen)) + minLen);
-        return new Random().ints(leftLimit, rightLimit + 1)
+        AbstractDynamicString s = new DynamicLinkedString();
+        new Random().ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(len)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+                .forEach(s::addUnicodeChar);
+        return s.toString();
     }
-
 
 }

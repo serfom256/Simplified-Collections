@@ -1,7 +1,7 @@
 package math;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
 import sets.AbstractSet;
 import sets.Set;
 import lists.AbstractLinkedList;
@@ -58,10 +58,8 @@ public class ExpressionInterpreter {
                     primaryOperationsPos.deleteLast();
             } else if (charSet.containsKey(ch) && i != 0) {
                 if (currentNum.getSize() != 0) lst.add(currentNum.toString());
-                if (primaryOperations.contains(ch)) {
-                    if (primaryOperationsPos.getSize() == 0 || primaryOperationsPos.get(primaryOperationsPos.getSize() - 1) != i) {
-                        primaryOperationsPos.add(lst.getSize());
-                    }
+                if (primaryOperations.contains(ch) && (primaryOperationsPos.getSize() == 0 || primaryOperationsPos.get(primaryOperationsPos.getSize() - 1) != i)) {
+                    primaryOperationsPos.add(lst.getSize());
                 }
                 lst.add(String.valueOf(ch));
                 currentNum.clear();

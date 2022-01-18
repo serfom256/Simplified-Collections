@@ -1,7 +1,8 @@
 package sets;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.NullableArgumentException;
 import hashtables.HashTable;
 import lists.AbstractList;
 import lists.impl.ArrayList;
@@ -32,7 +33,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
      * Add element to the Set
      *
      * @param element element to append
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public void add(E element) {
@@ -44,6 +45,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
      *
      * @param element element to remove
      * @return removed element if element present in the set otherwise null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public boolean remove(E element) {
@@ -55,7 +57,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
      *
      * @param element test element present in the Set
      * @return true if element present in the set otherwise false
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public boolean contains(E element) {
@@ -70,23 +72,14 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
     }
 
     /**
-     * Replace element in the Set if element present in the Set
-     *
-     * @param oldElement element to replace
-     * @param newElement new element to replace old element
-     * @throws IllegalArgumentException if (OldElement or newElement) is null
-     */
-    @Override
-    public void update(E oldElement, E newElement) {
-        hashTable.replace(oldElement, newElement);
-    }
-
-    /**
      * Returns set of elements from the specified set which isn't presents in the specified set
      * {1, 2, 3}.left({3, 4, 5, 6}) => {1, 2}
+     *
+     * @throws NullableArgumentException if the specified set is null
      */
     @Override
     public Set<E> left(AbstractSet<E> set) {
+        if (set == null) throw new NullableArgumentException();
         Set<E> left = new Set<>(hashTable.getCapacity());
         for (E element : set) {
             if (!this.contains(element)) left.add(element);
@@ -97,9 +90,12 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
     /**
      * Returns set of elements from the specified set which isn't presents in this set
      * {1, 2, 3}.right({3, 4, 5, 6}) => {4, 5, 6}
+     *
+     * @throws NullableArgumentException if the specified set is null
      */
     @Override
     public Set<E> right(AbstractSet<E> set) {
+        if (set == null) throw new NullableArgumentException();
         Set<E> right = new Set<>(hashTable.getCapacity());
         for (E element : this) {
             if (!set.contains(element)) right.add(element);
@@ -110,9 +106,12 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
     /**
      * Returns set of crossing elements from this set and specified set
      * {1, 2, 3, 4}.between({1, 3, 4, 5, 6}) => {1, 3, 4}
+     *
+     * @throws NullableArgumentException if the specified set is null
      */
     @Override
     public Set<E> between(AbstractSet<E> set) {
+        if (set == null) throw new NullableArgumentException();
         Set<E> mid = new Set<>();
         for (E element : set) {
             if (this.contains(element)) mid.add(element);
@@ -125,9 +124,11 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
      * {1, 2, 3, 4}.union({4, 5, 6}) => {1, 2, 3, 4, 5, 6}
      *
      * @return union of this and specified set
+     * @throws NullableArgumentException if the specified set is null
      */
     @Override
     public Set<E> union(AbstractSet<E> set) {
+        if (set == null) throw new NullableArgumentException();
         Set<E> union = new Set<>((int) ((hashTable.getSize() + set.getSize()) * 1.4));
         Iterator<E> foreignIterator = set.iterator();
         Iterator<E> selfIterator = this.iterator();

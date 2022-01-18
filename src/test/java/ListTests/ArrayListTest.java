@@ -1,5 +1,6 @@
 package ListTests;
 
+import additional.exceptions.IndexOutOfCollectionBoundsException;
 import lists.AbstractList;
 import lists.impl.ArrayList;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class ArrayListTest {
         assertEquals(34, list.getSize());
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = IndexOutOfCollectionBoundsException.class)
     public void insert_at_invalid_position_should_trows_exception() {
         Integer[] elements = {99, 54, 123, 543};
         Integer[] positions = {-10, -8, 99, 58};
@@ -93,13 +94,13 @@ public class ArrayListTest {
         assertEquals(0, list.getSize());
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = IndexOutOfCollectionBoundsException.class)
     public void pop_value_at_empty_list_should_throw_exception() {
         list.clear();
         list.deleteAtPosition(0);
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = IndexOutOfCollectionBoundsException.class)
     public void pop_out_of_list_bounds_should_throw_exception() {
         list.clear();
         list.deleteAtPosition(99);
@@ -141,17 +142,17 @@ public class ArrayListTest {
         assertEquals(18, list.getSize());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IndexOutOfCollectionBoundsException.class)
     public void removeRange_should_throw_exception_Invalid_start_index() {
         list.delete(-10, 8);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IndexOutOfCollectionBoundsException.class)
     public void removeRange_should_throw_exception_Invalid_end_index() {
         list.delete(5, 40);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IndexOutOfCollectionBoundsException.class)
     public void removeRange_should_throw_exception_Invalid_start_and_end_indexes() {
         list.delete(9, 1);
     }

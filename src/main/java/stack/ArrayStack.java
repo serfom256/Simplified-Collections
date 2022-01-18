@@ -1,7 +1,7 @@
 package stack;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
 
 public class ArrayStack<E> implements AbstractStack<E> {
     private static final int DEFAULT_CAPACITY = 20;

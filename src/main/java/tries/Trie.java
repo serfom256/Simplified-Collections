@@ -1,7 +1,8 @@
 package tries;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.NullableArgumentException;
 import sets.AbstractSet;
 import sets.RBTSet;
 import hashtables.HashTable;
@@ -81,10 +82,10 @@ public class Trie implements Iterable<String> {
 
     /**
      * @return true if specified sequence present in trie as a prefix
-     * @throws IllegalArgumentException if specified sequence is null
+     * @throws NullableArgumentException if specified sequence is null
      */
     public boolean presents(String sequence) {
-        if (sequence == null) throw new IllegalArgumentException("Value to find must be not null");
+        if (sequence == null) throw new NullableArgumentException();
         TNode curr = root;
         for (int i = 0; i < sequence.length(); i++) {
             char c = sequence.charAt(i);
@@ -97,11 +98,10 @@ public class Trie implements Iterable<String> {
     /**
      * Returns true if specified sequence was added to trie otherwise false
      *
-     * @throws IllegalArgumentException if specified sequence is null
+     * @throws NullableArgumentException if specified sequence is null
      */
     public boolean contains(String sequence) {
-        if (sequence == null) throw new IllegalArgumentException("Value to find must be not null");
-        if (sequence.length() == 0) return false;
+        if (sequence == null) throw new NullableArgumentException();
         TNode curr = root;
         TNode last = null;
         for (int i = 0; i < sequence.length(); i++) {
@@ -110,7 +110,7 @@ public class Trie implements Iterable<String> {
             if (last == null) return false;
             curr = last;
         }
-        return last.isEnd;
+        return last != null && last.isEnd;
     }
 
     /**
@@ -118,6 +118,7 @@ public class Trie implements Iterable<String> {
      *
      * @param prefix to search sequences with specified prefix
      * @return sequences as a String if found otherwise empty String
+     * @throws NullableArgumentException if the specified prefix is null
      */
     public String getByPrefix(String prefix) {
         String[] res = getByPrefix(prefix, 1);
@@ -130,8 +131,11 @@ public class Trie implements Iterable<String> {
      * @param prefix to search sequences with specified prefix
      * @return sequences as a String array if sequences with specified prefix founded
      * otherwise empty String array
+     * @throws IllegalArgumentException if count < 0
+     * @throws NullableArgumentException if the specified prefix is null
      */
     public String[] getByPrefix(String prefix, int count) {
+        if (prefix == null) throw new NullableArgumentException();
         if (count <= 0) throw new IllegalArgumentException("Count must be more then 0");
         if (prefix.length() == 0) return new String[0];
         AbstractSet<String> list = new RBTSet<>();
@@ -182,9 +186,11 @@ public class Trie implements Iterable<String> {
      *
      * @param sequence sequence to remove
      * @return true if removed otherwise false
+     * @throws NullableArgumentException if the specified sequence is null
      */
     public boolean removeHard(String sequence) {
-        if (sequence == null || sequence.length() == 0) return false;
+        if (sequence == null) throw new NullableArgumentException();
+        if (sequence.length() == 0) return false;
         return removeSequenceHard(sequence);
     }
 
@@ -204,9 +210,11 @@ public class Trie implements Iterable<String> {
      *
      * @param sequence sequence to remove
      * @return true if removed otherwise false
+     * @throws NullableArgumentException if the specified sequence is null
      */
     public boolean removeWeak(String sequence) {
-        if (sequence == null || sequence.length() == 0) return false;
+        if (sequence == null) throw new NullableArgumentException();
+        if (sequence.length() == 0) return false;
         return removeSequenceWeak(sequence);
     }
 
@@ -225,9 +233,11 @@ public class Trie implements Iterable<String> {
      *
      * @param sequence sequence to remove
      * @return true if removed otherwise false
+     * @throws NullableArgumentException if the specified sequence is null
      */
     public boolean remove(String sequence) {
-        if (sequence == null || sequence.length() == 0) return false;
+        if (sequence == null) throw new NullableArgumentException();
+        if (sequence.length() == 0) return false;
         TNode curr = root, lastNode = root;
         int lastCharPos = 0;
         int len = sequence.length() - 1;
@@ -325,13 +335,13 @@ public class Trie implements Iterable<String> {
     /**
      * Helps to collect all entries from the trie
      */
-    private StringBuilder getAll(StringBuilder result, StringBuilder current, HashTable<Character, TNode> nodes) {
+    private AbstractDynamicString getAll(AbstractDynamicString result, AbstractDynamicString current, HashTable<Character, TNode> nodes) {
         for (Character c : nodes) {
             TNode node = nodes.get(c);
-            current.append(node.element);
-            if (node.isEnd) result.append(current).append(", ");
+            current.add(node.element);
+            if (node.isEnd) result.add(current).add(", ");
             getAll(result, current, node.nodes);
-            current.deleteCharAt(current.length() - 1);
+            current.deleteLast();
         }
         return result;
     }
@@ -339,8 +349,8 @@ public class Trie implements Iterable<String> {
     @Override
     public String toString() {
         if (entriesCount == 0) return "[]";
-        StringBuilder res = getAll(new StringBuilder("["), new StringBuilder(), root.nodes);
-        return res.delete(res.length() - 2, res.length()).append(']').toString();
+        AbstractDynamicString res = getAll(new DynamicLinkedString("["), new DynamicLinkedString(), root.nodes);
+        return res.replace(res.getSize() - 2, ']').toString();
     }
 
 
@@ -399,7 +409,7 @@ public class Trie implements Iterable<String> {
 
         @Override
         public boolean hasNext() {
-            return position  < entriesCount;
+            return position < entriesCount;
         }
 
         @Override

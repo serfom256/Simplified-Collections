@@ -1,9 +1,8 @@
 package additional.exceptions;
 
-// todo replace all IllegalArgumentExceptions to NullableArgumentException
 public class NullableArgumentException extends IllegalArgumentException {
     public NullableArgumentException() {
-        super();
+        super("Specified argument is null");
     }
 
     public NullableArgumentException(String s) {

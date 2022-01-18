@@ -1,7 +1,8 @@
 package lists.impl;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.IndexOutOfCollectionBoundsException;
 import lists.AbstractList;
 
 import java.lang.reflect.Array;
@@ -64,11 +65,12 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param element element to add to the position
      * @param pos     this is position to insert the element
+     * @throws IndexOutOfCollectionBoundsException if the specified position out of list bounds
      */
     @Override
     public void insert(int pos, E element) {
         if (pos < 0 || pos > size) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IndexOutOfCollectionBoundsException();
         }
         if (++size >= capacity) {
             capacity += (capacity >> 1);
@@ -109,12 +111,12 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param pos position of element to remove
      * @return removed element from position
-     * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if specified index out of list bounds
      */
     @Override
     public E deleteAtPosition(int pos) {
         if (pos < 0 || pos >= size) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IndexOutOfCollectionBoundsException();
         }
         E toRemove = data[pos];
         System.arraycopy(data, pos + 1, data, pos, size - pos - 1);
@@ -131,13 +133,13 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void delete(int start, int end) {
         if (start < 0 || end > size || start >= end) {
-            throw new IllegalArgumentException("Invalid method parameters");
+            throw new IndexOutOfCollectionBoundsException();
         }
         int gap = end - start;
         for (int i = start; (i + gap) < size; i++) {
@@ -157,8 +159,8 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param start start of range
      * @param end   end of range
      * @param data  value for replacement
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, int end, E data) {
@@ -171,8 +173,8 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param start start of range
      * @param data  value for replacement
-     * @throws IllegalArgumentException if start < 0 or start > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, E data) {
@@ -186,8 +188,8 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param start start of range
      * @param end   end of range
      * @param data  values for replacement
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, int end, Iterable<E> data) {
@@ -202,8 +204,8 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param start start of range
      * @param data  values for replacement
-     * @throws IllegalArgumentException if start < 0 or start > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, Iterable<E> data) {
@@ -218,12 +220,12 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param position position of element to replace
      * @param element  element to replace
-     * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if specified index out of list bounds
      */
     @Override
     public void update(int position, E element) {
         if (position < 0 || position >= size) {
-            throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         data[position] = element;
     }
@@ -249,12 +251,12 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param position position of element
      * @return element from the specified position
-     * @throws ArrayIndexOutOfBoundsException if position out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if position out of list bounds
      */
     @Override
     public E get(int position) {
         if (position < 0 || position >= size) {
-            throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         return data[position];
     }
@@ -264,13 +266,13 @@ public class ArrayList<E> implements AbstractList<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public AbstractList<E> slice(int start, int end) {
         if (start < 0 || end > size || start >= end) {
-            throw new IllegalArgumentException("Invalid method parameters");
+            throw new IndexOutOfCollectionBoundsException();
         }
         AbstractList<E> sublist = new ArrayList<>();
         for (int i = start; i < end; i++) {

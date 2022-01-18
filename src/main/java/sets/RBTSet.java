@@ -1,7 +1,8 @@
 package sets;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.NullableArgumentException;
 import additional.nodes.TreeNode;
 import lists.AbstractList;
 import lists.impl.ArrayList;
@@ -106,12 +107,12 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * Add element to the Set
      *
      * @param element element to append
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if element is null
      */
     @Override
     public void add(E element) {
         if (element == null) {
-            throw new IllegalArgumentException("Inserted element must be not null");
+            throw new NullableArgumentException();
         }
         if (root == null) {
             root = new TNode<>(element, black);
@@ -273,27 +274,16 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
         parent.parent = node;
     }
 
-    @Override
-    public void update(E oldElement, E newElement) {
-        if (oldElement == null || newElement == null) {
-            throw new IllegalArgumentException("(oldElement and newElement) must be not null");
-        }
-        TNode<E> node = findNodeByValue(root, oldElement);
-        if (!node.element.equals(oldElement)) return;
-        remove(oldElement);
-        add(newElement);
-    }
-
     /**
      * Search specified element by the position in the Set
      *
      * @param pos position of element
      * @return Element if element present in the Set, otherwise null
-     * @throws ArrayIndexOutOfBoundsException if position out of Set bounds
+     * @throws NullableArgumentException if position out of Set bounds
      */
     @Override
     public E get(int pos) {
-        if (pos < 0 || pos >= size) throw new ArrayIndexOutOfBoundsException("if position out of Set bounds");
+        if (pos < 0 || pos >= size) throw new NullableArgumentException();
         Wrapper<E> obj = new Wrapper<>();
         searchValue(root, 0, pos, obj);
         return obj.value;
@@ -344,12 +334,12 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      *
      * @param element element to remove
      * @return true if element present in the set otherwise false
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public boolean remove(E element) {
         if (element == null) {
-            throw new IllegalArgumentException("Removed element must be not null");
+            throw new NullableArgumentException();
         }
         TNode<E> toRemove = findNodeByValue(root, element);
         if (!toRemove.element.equals(element)) return false;
@@ -450,11 +440,12 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      *
      * @param element element to remove
      * @return removed element if element present in the set otherwise null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public boolean contains(E element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         if (root == null) return false;
         TNode<E> curr = root;
@@ -485,11 +476,11 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * Returns set of elements from the specified set which isn't presents in the specified set
      * {1, 2, 3}.left({3, 4, 5, 6}) => {1, 2}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public RBTSet<E> left(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         RBTSet<E> left = new RBTSet<>();
         for (E element : set) {
             if (!this.contains(element)) left.add(element);
@@ -501,11 +492,11 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * Returns set of elements from the specified set which isn't presents in this set
      * {1, 2, 3}.right({3, 4, 5, 6}) => {4, 5, 6}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public RBTSet<E> right(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         RBTSet<E> right = new RBTSet<>();
         for (E element : this) {
             if (!set.contains(element)) right.add(element);
@@ -517,11 +508,11 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * Returns set with crossing elements from this set and specified set
      * {1, 2, 3, 4}.between({1, 3, 4, 5, 6}) => {1, 3, 4}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public RBTSet<E> between(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         RBTSet<E> mid = new RBTSet<>();
         for (E element : set) {
             if (this.contains(element)) mid.add(element);
@@ -533,11 +524,11 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * Returns union of this set and specified set
      * {1, 2, 3, 4}.union({4, 5, 6}) => {1, 2, 3, 4, 5, 6}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public RBTSet<E> union(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         RBTSet<E> union = new RBTSet<>();
         Iterator<E> foreignIterator = set.iterator();
         Iterator<E> selfIterator = this.iterator();

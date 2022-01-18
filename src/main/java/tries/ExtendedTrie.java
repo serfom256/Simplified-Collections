@@ -1,6 +1,6 @@
 package tries;
 
-public class ExtendedTrie extends FuzzySearchTrie {
+public class ExtendedTrie extends FuzzyTrie {
 
     public ExtendedTrie() {
         super();

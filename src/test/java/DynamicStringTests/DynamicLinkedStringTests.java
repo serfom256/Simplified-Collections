@@ -1,7 +1,7 @@
 package DynamicStringTests;
 
 
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.DynamicLinkedString;
 import org.junit.Before;
 import org.junit.Test;
 

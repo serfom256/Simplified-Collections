@@ -1,7 +1,8 @@
 package heap;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.NullableArgumentException;
 
 /**
  * This is simple MAX binary Heap
@@ -40,7 +41,7 @@ public class MaxHeap<T extends Comparable<? super T>> {
     @SuppressWarnings("unchecked")
     private void initHeap(int capacity) {
         if (capacity < 10) {
-            throw new IllegalArgumentException("Capacity if heap must be more then 10");
+            throw new NullableArgumentException();
         }
         heap = new Data[capacity];
     }
@@ -61,11 +62,11 @@ public class MaxHeap<T extends Comparable<? super T>> {
      * Add element to the heap
      *
      * @param element element to add into the heap
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if element is null
      */
     public void push(T element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         if (heap == null) initHeap(this.capacity);
         if (isOverFlow()) grow();
@@ -186,11 +187,11 @@ public class MaxHeap<T extends Comparable<? super T>> {
      *
      * @param newElement the element which replaces old element if old element in heap
      * @param oldElement replacement element
-     * @throws IllegalArgumentException if (newElement or oldElement) is null
+     * @throws NullableArgumentException if (newElement or oldElement) is null
      */
     public void update(T oldElement, T newElement) {
         if (newElement == null || oldElement == null) {
-            throw new IllegalArgumentException("Elements must be not null");
+            throw new NullableArgumentException();
         }
         if (heap == null) initHeap(this.capacity);
         for (int i = 0; i < size; i++) {
@@ -206,11 +207,11 @@ public class MaxHeap<T extends Comparable<? super T>> {
      *
      * @param newElement the element which replaces old element if old element in heap
      * @param oldElement replacement element
-     * @throws IllegalArgumentException if (newElement or oldElement) is null
+     * @throws NullableArgumentException if (newElement or oldElement) is null
      */
     public void updateEquals(T oldElement, T newElement) {
         if (newElement == null || oldElement == null) {
-            throw new IllegalArgumentException("Elements must be not null");
+            throw new NullableArgumentException();
         }
         if (heap == null) initHeap(this.capacity);
         for (int i = 0; i < size; i++) {
@@ -240,11 +241,11 @@ public class MaxHeap<T extends Comparable<? super T>> {
      * Removes element in the heap
      *
      * @param element element to remove
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if element is null
      */
     public void remove(T element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         if (size == 0) return;
         for (int i = 0; i < size; i++) {
@@ -262,11 +263,11 @@ public class MaxHeap<T extends Comparable<? super T>> {
      *
      * @param element element in heap
      * @return position of element if element in the heap else -1
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if element is null
      */
     public boolean contains(T element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         return contains(element, 0);
     }

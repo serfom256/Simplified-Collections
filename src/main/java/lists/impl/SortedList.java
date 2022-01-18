@@ -1,7 +1,9 @@
 package lists.impl;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.IndexOutOfCollectionBoundsException;
+import additional.exceptions.NullableArgumentException;
 import lists.AbstractList;
 import lists.AbstractSortedList;
 
@@ -67,7 +69,7 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      * Appends all elements from Iterable collection to the list in the ascending order
      *
      * @param data elements to append
-     * @throws IllegalArgumentException if one element of the iterable is null
+     * @throws NullableArgumentException if one element of the iterable is null
      */
     @Override
     public <T extends Iterable<E>> void addFrom(T data) {
@@ -80,10 +82,10 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      * Appends specified element to the list in the ascending order
      *
      * @param element the element to append
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     public void add(E element) {
-        if (element == null) throw new IllegalArgumentException("Inserted element must be not null");
+        if (element == null) throw new NullableArgumentException();
         if (top == null) initHeadNodes();
         byte level = getRandomLevel();
         if (level == height) addTopLayer();
@@ -124,12 +126,12 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      *
      * @param position position of element
      * @return removed element from position
-     * @throws ArrayIndexOutOfBoundsException if specified position out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if specified position out of list bounds
      */
     @Override
     public E deleteAtPosition(int position) {
         if (position < 0 && position >= size) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> toRemove = getNodeByPosition(position);
         deleteNode(toRemove);
@@ -142,12 +144,12 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      *
      * @param position position of element
      * @return element from the specified position
-     * @throws ArrayIndexOutOfBoundsException if specified position out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if specified position out of list bounds
      */
     @Override
     public E get(int position) {
         if (position < 0 || position >= size) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IndexOutOfCollectionBoundsException();
         }
         return getNodeByPosition(position).value;
     }
@@ -181,11 +183,11 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      *
      * @param element element to remove of list
      * @return removed element
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public boolean delete(E element) {
-        if (element == null) throw new IllegalArgumentException("Removed element must be not null");
+        if (element == null) throw new NullableArgumentException();
         Node<E> toRemove = findNodeByValue(element);
         if (toRemove == null) return false;
         Node<E> next = toRemove.next;
@@ -316,10 +318,10 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      *
      * @param element test element present in the Set
      * @return true if element presents otherwise false
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     public boolean contains(E element) {
-        if (element == null) throw new IllegalArgumentException("Element must be not null");
+        if (element == null) throw new NullableArgumentException();
         return findNodeByValue(element) != null;
     }
 
@@ -336,11 +338,11 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
     /**
      * Returns count of elements which equals the specified element in this list
      *
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public int count(E element) {
-        if (element == null) throw new IllegalArgumentException("Element must be not null");
+        if (element == null) throw new NullableArgumentException();
         int count = 0;
         if (head == null) return 0;
         for (Node<E> first = head.next; first != null; first = first.next) {
@@ -356,11 +358,11 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      * Returns first occurrence position of specified element in the list
      *
      * @return first position of the specified element if specified element found otherwise -1
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public int indexOf(E element) {
-        if (element == null) throw new IllegalArgumentException("Argument must be not null");
+        if (element == null) throw new NullableArgumentException();
         int pos = 0;
         if (head == null) return 0;
         for (Node<E> first = head.next; first != null; first = first.next, pos++) {
@@ -375,11 +377,11 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      * Returns last occurrence position of specified element in the list
      *
      * @return last position of the specified element if specified element found otherwise -1
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public int lastIndexOf(E element) {
-        if (element == null) throw new IllegalArgumentException("Argument must be not null");
+        if (element == null) throw new NullableArgumentException();
         int pos = 0;
         int result = -1;
         for (Node<E> first = head.next; first != null; first = first.next, pos++) {
@@ -395,13 +397,13 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public AbstractList<E> slice(int start, int end) {
         if (start < 0 || end > size || start >= end) {
-            throw new IllegalArgumentException("Specified start or end position are invalid");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> curr = getNodeByPosition(start);
         DoubleLinkedList<E> result = new DoubleLinkedList<>();

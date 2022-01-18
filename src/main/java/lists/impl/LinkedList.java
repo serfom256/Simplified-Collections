@@ -1,7 +1,8 @@
 package lists.impl;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.IndexOutOfCollectionBoundsException;
 import lists.AbstractLinkedList;
 
 import java.lang.reflect.Array;
@@ -180,30 +181,30 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param pos position of element
      * @return removed element from position
-     * @throws ArrayIndexOutOfBoundsException if position out of the list bounds
+     * @throws IndexOutOfCollectionBoundsException if the specified position out of the list bounds
      */
     @Override
     public E deleteAtPosition(int pos) {
         if (pos < 0 || pos >= length) {
-            throw new ArrayIndexOutOfBoundsException("Index out of the list bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         if (pos == 0) return deleteFirst();
         if (pos == length - 1) return deleteLast();
         Node<E> node = getNode(pos - 1);
         if (deleteAfter(node) != null) length--;
-        return node.val;
+        return node == null ? null : node.val;
     }
 
     /**
      * Removes first element
      *
      * @return first element of list if list isn't empty else return null
-     * @throws ArrayIndexOutOfBoundsException if list is empty
+     * @throws IndexOutOfCollectionBoundsException if list is empty
      */
     @Override
     public E deleteFirst() {
         if (head == null) {
-            throw new ArrayIndexOutOfBoundsException("List is empty");
+            throw new IndexOutOfCollectionBoundsException();
         }
         E value = head.val;
         head = head.next;
@@ -216,12 +217,12 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * Removes last element
      *
      * @return last element of list if list isn't empty else return null
-     * @throws ArrayIndexOutOfBoundsException if list is empty
+     * @throws IndexOutOfCollectionBoundsException if list is empty
      */
     @Override
     public E deleteLast() {
         if (last == null) {
-            throw new ArrayIndexOutOfBoundsException("List is empty");
+            throw new IndexOutOfCollectionBoundsException();
         }
         E toRemove = last.val;
         if (head.next == null) {
@@ -240,13 +241,13 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void delete(int start, int end) {
         if (start < 0 || end > length || start >= end) {
-            throw new IllegalArgumentException("Invalid method parameters");
+            throw new IndexOutOfCollectionBoundsException();
         }
         if (start == 0) {
             while (start++ < end) {
@@ -268,8 +269,8 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param end   end of range
      * @param data  value for replacement
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, int end, E data) {
@@ -282,8 +283,8 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param data  value for replacement
-     * @throws IllegalArgumentException if start < 0 or start > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, E data) {
@@ -297,8 +298,8 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param end   end of range
      * @param data  values for replacement
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, int end, Iterable<E> data) {
@@ -315,8 +316,8 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param data  values for replacement
-     * @throws IllegalArgumentException if start < 0 or start > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, Iterable<E> data) {
@@ -331,12 +332,12 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param pos  position of element to replace
      * @param data element to replace
-     * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if specified index out of list bounds
      */
     @Override
     public void update(int pos, E data) {
         if (pos < 0 || pos >= length) {
-            throw new ArrayIndexOutOfBoundsException("Specified position out of list bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         getNode(pos).val = data;
     }
@@ -366,12 +367,12 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param position position of element
      * @return element from the specified position
-     * @throws ArrayIndexOutOfBoundsException if position out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if position out of list bounds
      */
     @Override
     public E get(int position) {
         if (position < 0 || position >= length) {
-            throw new ArrayIndexOutOfBoundsException("Position out of list bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> first = head;
         while (position-- > 0) {
@@ -385,7 +386,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      */
     private Node<E> getNode(int position) {
         if (position < 0 || position >= length) {
-            throw new ArrayIndexOutOfBoundsException("Position out of list bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> first = head;
         while (position-- > 0) {
@@ -399,13 +400,13 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public LinkedList<E> slice(int start, int end) {
         if (start < 0 || end > length || start >= end) {
-            throw new IllegalArgumentException("Invalid method parameters");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> curr = getNode(start);
         LinkedList<E> result = new LinkedList<>();

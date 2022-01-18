@@ -1,7 +1,8 @@
 package lists.impl;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.IndexOutOfCollectionBoundsException;
 import lists.AbstractLinkedList;
 
 import java.lang.reflect.Array;
@@ -137,21 +138,6 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
     }
 
     /**
-     * Removes node before the specified node if the specified node is not equals null
-     *
-     * @return node if node before the specified node removed otherwise null
-     */
-    private Node<E> deleteBefore(Node<E> node) {
-        Node<E> toRemove = node.prev;
-        if (toRemove == null) return null;
-        if (toRemove == head) head = toRemove.next;
-        Node<E> prev = toRemove.prev;
-        if (prev != null) prev.next = node;
-        node.prev = prev;
-        return node;
-    }
-
-    /**
      * Removes node after the specified node if the specified node is not equals null
      *
      * @return node if node after the specified node removed otherwise null
@@ -213,12 +199,12 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param position position of element
      * @return removed element from position
-     * @throws ArrayIndexOutOfBoundsException if specified position out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if the specified position out of list bounds
      */
     @Override
     public E deleteAtPosition(int position) {
         if (position < 0 && position >= length) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> node = getNode(position);
         if (node.prev == null) return deleteFirst();
@@ -231,12 +217,12 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * Removes first element
      *
      * @return first element of list if list isn't empty otherwise null
-     * @throws ArrayIndexOutOfBoundsException if list is empty
+     * @throws IndexOutOfCollectionBoundsException if list is empty
      */
     @Override
     public E deleteFirst() {
         if (head == null) {
-            throw new ArrayIndexOutOfBoundsException("List is empty");
+            throw new IndexOutOfCollectionBoundsException();
         }
         length--;
         E toRemove = head.val;
@@ -250,12 +236,12 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * Removes last element
      *
      * @return last element of list if list isn't empty otherwise null
-     * @throws ArrayIndexOutOfBoundsException if list is empty
+     * @throws IndexOutOfCollectionBoundsException if list is empty
      */
     @Override
     public E deleteLast() {
         if (head == null) {
-            throw new ArrayIndexOutOfBoundsException("List is empty");
+            throw new IndexOutOfCollectionBoundsException();
         }
         E toRemove = last.val;
         length--;
@@ -270,13 +256,13 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void delete(int start, int end) {
         if (start < 0 || end > length || start >= end) {
-            throw new IllegalArgumentException("Invalid method parameters");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> node = getNode(start);
         if (node == head) {
@@ -298,8 +284,8 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param end   end of range
      * @param data  value for replacement
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, int end, E data) {
@@ -312,8 +298,8 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param data  value for replacement
-     * @throws IllegalArgumentException if start < 0 or start > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, E data) {
@@ -327,8 +313,8 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param end   end of range
      * @param data  values for replacement
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, int end, Iterable<E> data) {
@@ -345,8 +331,8 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param data  values for replacement
-     * @throws IllegalArgumentException if start < 0 or start > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public void replace(int start, Iterable<E> data) {
@@ -361,12 +347,12 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param pos  position of element to replace
      * @param data element to replace
-     * @throws ArrayIndexOutOfBoundsException if specified index out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if specified index out of list bounds
      */
     @Override
     public void update(int pos, E data) {
         if (pos < 0 || pos >= length) {
-            throw new ArrayIndexOutOfBoundsException("Specified position out of list bounds");
+            throw new IndexOutOfCollectionBoundsException();
         }
         getNode(pos).val = data;
     }
@@ -394,12 +380,12 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param position position of element
      * @return element from the specified position
-     * @throws ArrayIndexOutOfBoundsException if the specified position out of list bounds
+     * @throws IndexOutOfCollectionBoundsException if the specified position out of list bounds
      */
     @Override
     public E get(int position) {
         if (position < 0 || position >= length) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IndexOutOfCollectionBoundsException();
         }
         return getNode(position).val;
     }
@@ -429,13 +415,13 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of range
      * @param end   end of range
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     @Override
     public DoubleLinkedList<E> slice(int start, int end) {
         if (start < 0 || end > length || start >= end) {
-            throw new IllegalArgumentException("Specified start or end position are invalid");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> curr = getNode(start);
         DoubleLinkedList<E> result = new DoubleLinkedList<>();
@@ -450,7 +436,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start initial position to slicing
      * @return slice of current list from specified position to list length
-     * @throws IllegalArgumentException if start < 0
+     * @throws IndexOutOfCollectionBoundsException if start < 0
      */
     public DoubleLinkedList<E> sliceFrom(int start) {
         return slice(start, length);
@@ -461,7 +447,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param end end of slice from 0
      * @return slice of current list from 0 to specified position
-     * @throws IllegalArgumentException if end > list size
+     * @throws IndexOutOfCollectionBoundsException if end > list size
      */
     public DoubleLinkedList<E> sliceBefore(int end) {
         return slice(0, end);
@@ -588,12 +574,12 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      *
      * @param start start of bounds
      * @param end   end of bounds
-     * @throws IllegalArgumentException if start < 0 or end > list size
-     *                                  or if start index larger then end index
+     * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
+     *                                             or if start index larger then end index
      */
     public void setLength(int start, int end) {
         if (start < 0 || end > length || start >= end) {
-            throw new IllegalArgumentException("Invalid method arguments");
+            throw new IndexOutOfCollectionBoundsException();
         }
         Node<E> beginNode = getNode(start);
         Node<E> endNode = beginNode;

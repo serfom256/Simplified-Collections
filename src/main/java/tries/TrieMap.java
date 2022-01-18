@@ -1,7 +1,7 @@
 package tries;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
 import sets.AbstractSet;
 import sets.Set;
 import sets.SortedSet;

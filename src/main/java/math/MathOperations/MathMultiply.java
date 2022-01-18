@@ -1,7 +1,7 @@
 package math.MathOperations;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
 
 public class MathMultiply implements AbstractOperation {
 

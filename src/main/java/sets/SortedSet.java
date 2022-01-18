@@ -1,7 +1,9 @@
 package sets;
 
-import additional.DynamicString.AbstractDynamicString;
-import additional.DynamicString.DynamicLinkedString;
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
+import additional.exceptions.IndexOutOfCollectionBoundsException;
+import additional.exceptions.NullableArgumentException;
 import additional.nodes.TreeNode;
 import lists.AbstractList;
 import lists.impl.ArrayList;
@@ -64,10 +66,13 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
         this.maxBalanceThreshold = threshold;
     }
 
+    /**
+     * @throws NullableArgumentException if one of specified  arguments is null
+     */
     @SafeVarargs
     public final void addAll(E... data) {
         for (E el : data) {
-            if (el == null) throw new IllegalArgumentException("Inserted element must be not null");
+            if (el == null) throw new NullableArgumentException();
             root = insert(root, el);
         }
         reBalance();
@@ -77,12 +82,12 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      * Add element to the Set
      *
      * @param element element to append
-     * @throws IllegalArgumentException if element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public void add(E element) {
         if (element == null) {
-            throw new IllegalArgumentException("Inserted element must be not null");
+            throw new NullableArgumentException();
         }
         if (root == null) {
             root = new TNode<>(element);
@@ -112,33 +117,15 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
     }
 
     /**
-     * Replace element in the Set if element present in the Set
-     *
-     * @param oldElement element to replace
-     * @param newElement new element to replace old element
-     * @throws IllegalArgumentException if (oldElement or newElement) is null
-     */
-    @Override
-    public void update(E oldElement, E newElement) {
-        if (oldElement == null || newElement == null) {
-            throw new IllegalArgumentException("(oldElement or newElement) must be not null");
-        }
-        TNode<E> node = getNode(oldElement);
-        if (node == null || !contains(oldElement)) return;
-        root = insert(deleteNode(root, oldElement), newElement);
-        size--;
-    }
-
-    /**
      * Search specified element by the position in the Set
      *
      * @param pos position of element
      * @return Element if element present in the Set, otherwise null
-     * @throws ArrayIndexOutOfBoundsException if position out of Set bounds
+     * @throws IndexOutOfCollectionBoundsException if position out of Set bounds
      */
     @Override
     public E get(int pos) {
-        if (pos < 0 || pos >= size) throw new ArrayIndexOutOfBoundsException("if position out of Set bounds");
+        if (pos < 0 || pos >= size) throw new IndexOutOfCollectionBoundsException();
         Wrapper<E> obj = new Wrapper<>();
         searchValue(root, 0, pos, obj);
         return obj.value;
@@ -219,12 +206,12 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      *
      * @param element element to remove
      * @return true if element present in the set otherwise false
-     * @throws IllegalArgumentException if the specified element is null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public boolean remove(E element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         if (contains(element)) {
             root = deleteNode(root, element);
@@ -300,11 +287,12 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      *
      * @param element element to remove
      * @return removed element if element present in the set otherwise null
+     * @throws NullableArgumentException if the specified element is null
      */
     @Override
     public boolean contains(E element) {
         if (element == null) {
-            throw new IllegalArgumentException("Element must be not null");
+            throw new NullableArgumentException();
         }
         if (root == null) return false;
         return getNode(element) != null;
@@ -371,11 +359,11 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      * Returns set of elements from the specified set which isn't presents in the specified set
      * {1, 2, 3}.left({3, 4, 5, 6}) => {1, 2}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public AbstractSet<E> left(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         SortedSet<E> left = new SortedSet<>();
         for (E element : set) {
             if (!this.contains(element)) left.add(element);
@@ -387,11 +375,11 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      * Returns set of elements from the specified set which isn't presents in this set
      * {1, 2, 3}.right({3, 4, 5, 6}) => {4, 5, 6}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public AbstractSet<E> right(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         SortedSet<E> right = new SortedSet<>();
         for (E element : this) {
             if (!set.contains(element)) right.add(element);
@@ -403,11 +391,11 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      * Returns set with crossing elements from this set and specified set
      * {1, 2, 3, 4}.between({1, 3, 4, 5, 6}) => {1, 3, 4}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public AbstractSet<E> between(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         SortedSet<E> mid = new SortedSet<>();
         for (E element : set) {
             if (this.contains(element)) mid.add(element);
@@ -419,11 +407,11 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      * Returns union of this set and specified set
      * {1, 2, 3, 4}.union({4, 5, 6}) => {1, 2, 3, 4, 5, 6}
      *
-     * @throws IllegalArgumentException if specified set is null
+     * @throws NullableArgumentException if specified set is null
      */
     @Override
     public AbstractSet<E> union(AbstractSet<E> set) {
-        if (set == null) throw new IllegalArgumentException("Argument must be not null");
+        if (set == null) throw new NullableArgumentException();
         SortedSet<E> union = new SortedSet<>();
         Iterator<E> foreignIterator = set.iterator();
         Iterator<E> selfIterator = this.iterator();

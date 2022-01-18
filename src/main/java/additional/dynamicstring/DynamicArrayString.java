@@ -1,4 +1,4 @@
-package additional.DynamicString;
+package additional.dynamicstring;
 
 public class DynamicArrayString {
 }
