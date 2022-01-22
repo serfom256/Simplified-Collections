@@ -77,19 +77,19 @@ public class HashTableTest {
             hashTable.add(s, i);
         }
         for (String value : testArr) {
-            assertEquals(value, hashTable.deleteValue(s, value));
+            assertTrue(hashTable.deleteValue(s, value));
         }
-        assertNull(testArr[0], hashTable.deleteValue(s, testArr[0]));
+        assertFalse(hashTable.deleteValue(s, testArr[0]));
 
 
         for (int i = 0; i < 10; i++) {
-            assertEquals(i + "_value", hashTable.deleteValue(i + "_key", i + "_value"));
+            assertTrue(hashTable.deleteValue(i + "_key", i + "_value"));
         }
         assertEquals(0, hashTable.getSize());
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         for (int i = 0; i < 100; i++) {
             hashTable.add(i + "_key", i + "_value");
         }
@@ -154,10 +154,10 @@ public class HashTableTest {
             hashTable.add(oldKey, i + "_value");
         }
         for (int i = 0; i < newKeys.length; i++) {
-            assertEquals(i + "_key", hashTable.replace(i + "_key", newKeys[i]));
+            assertTrue( hashTable.replace(i + "_key", newKeys[i]));
         }
 
-        assertNull(hashTable.replace("0_key", newKeys[0]));
+        assertFalse(hashTable.replace("0_key", newKeys[0]));
         assertEquals(newKeys.length, hashTable.getSize());
     }
 

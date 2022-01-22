@@ -7,80 +7,80 @@ public class ExtendedTrie extends FuzzyTrie {
     }
 
     @Override
-    public void put(String sequence) {
-        super.put(sequence);
+    public void add(String sequence) {
+        super.add(sequence);
     }
 
-    public void put(char[] sequence) {
-        super.put(String.valueOf(sequence));
+    public void add(char[] sequence) {
+        super.add(String.valueOf(sequence));
     }
 
-    public void put(int[] sequence) {
+    public void add(int[] sequence) {
         char[] wrapper = new char[sequence.length];
         for (int i = 0; i < sequence.length; i++) {
             if (sequence[i] < -10 || sequence[i] > 10) throw new IllegalArgumentException();
             wrapper[i] = (char) sequence[i];
         }
-        super.put(String.valueOf(wrapper));
+        super.add(String.valueOf(wrapper));
     }
 
-    public void put(int integer) {
-        super.put(String.valueOf(integer));
+    public void add(int integer) {
+        super.add(String.valueOf(integer));
     }
 
-    public void put(long lng) {
-        super.put(String.valueOf(lng));
+    public void add(long lng) {
+        super.add(String.valueOf(lng));
     }
 
-    public void put(float flt) {
-        super.put(String.valueOf(flt));
+    public void add(float flt) {
+        super.add(String.valueOf(flt));
     }
 
-    public void put(double dbl) {
-        super.put(String.valueOf(dbl));
+    public void add(double dbl) {
+        super.add(String.valueOf(dbl));
     }
 
-    public void put(Object o) {
-        super.put(String.valueOf(o));
+    public void add(Object o) {
+        super.add(String.valueOf(o));
     }
 
 
     @Override
-    public boolean remove(String sequence) {
-        return super.remove(sequence);
+    public boolean delete(String sequence) {
+        return super.delete(sequence);
     }
 
-    public boolean remove(char[] sequence) {
-        return super.remove(String.valueOf(sequence));
+    public boolean delete(char[] sequence) {
+        return super.delete(String.valueOf(sequence));
     }
 
-    public boolean remove(int[] sequence) {
+    public boolean delete(int[] sequence) {
         char[] wrapper = new char[sequence.length];
         for (int i = 0; i < sequence.length; i++) {
             if (sequence[i] < -10 || sequence[i] > 10) throw new IllegalArgumentException();
             wrapper[i] = (char) sequence[i];
         }
-        return super.remove(String.valueOf(wrapper));
+        return super.delete(String.valueOf(wrapper));
     }
 
-    public boolean remove(int integer) {
-        return super.remove(String.valueOf(integer));
+    public boolean delete(int integer) {
+        return super.delete(String.valueOf(integer));
     }
 
-    public boolean remove(long lng) {
-        return super.remove(String.valueOf(lng));
+    public boolean delete(long lng) {
+        return super.delete(String.valueOf(lng));
     }
 
-    public boolean remove(float flt) {
-        return super.remove(String.valueOf(flt));
+    public boolean delete(float flt) {
+        return super.delete(String.valueOf(flt));
     }
 
-    public boolean remove(double dbl) {
-        return super.remove(String.valueOf(dbl));
+    public boolean delete(double dbl) {
+        return super.delete(String.valueOf(dbl));
     }
 
-    public boolean remove(Object o) {
-        return super.remove(String.valueOf(o));
+    public boolean delete(Object o) {
+        return super.delete(String.valueOf(o));
     }
 
 

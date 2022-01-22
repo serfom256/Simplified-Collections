@@ -6,7 +6,7 @@ public interface AbstractSet<E> extends Iterable<E> {
 
     void clear();
 
-    boolean remove(E element);
+    boolean delete(E element);
 
     boolean contains(E element);
 

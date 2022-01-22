@@ -64,9 +64,9 @@ public class HeapTest {
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         heap.push(6);
-        heap.remove(6);
+        heap.delete(6);
         assertSame(false, heap.contains(999));
     }
 

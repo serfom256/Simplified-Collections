@@ -69,10 +69,11 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      * Appends all elements from Iterable collection to the list in the ascending order
      *
      * @param data elements to append
-     * @throws NullableArgumentException if one element of the iterable is null
+     * @throws NullableArgumentException if one element of the iterable collection is null
      */
     @Override
     public <T extends Iterable<E>> void addFrom(T data) {
+        if (data == null) throw new NullableArgumentException();
         for (E obj : data) {
             add(obj);
         }
@@ -197,7 +198,7 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
             while (top != null && top.next == null) {
                 removeTopLayer();
             }
-        } else if (next.down != null && (next.level > (height >> 1 ^ height >> 2) && random.nextDouble() < 0.4)) { // balancing top layers
+        } else if (next.down != null && (next.level > ((height >> 1) + (height >> 2)) && random.nextDouble() < 0.4)) { // balancing top layers
             Node<E> newNode = restoreIntegrity(next, true);
             if (newNode != null && newNode.next == top.next.next && newNode.prev.prev == null) {
                 removeTopLayer();

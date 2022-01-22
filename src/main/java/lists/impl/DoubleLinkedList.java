@@ -3,6 +3,7 @@ package lists.impl;
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.IndexOutOfCollectionBoundsException;
+import additional.exceptions.NullableArgumentException;
 import lists.AbstractLinkedList;
 
 import java.lang.reflect.Array;
@@ -52,9 +53,11 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * Add all data from Iterable collection in the end of list
      *
      * @param data elements to append
+     * @throws NullableArgumentException if the specified data is null
      */
     @Override
     public <T extends Iterable<E>> void addFrom(T data) {
+        if(data == null) throw new NullableArgumentException();
         for (E obj : data) {
             addLast(obj);
         }

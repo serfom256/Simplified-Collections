@@ -88,12 +88,12 @@ public class PriorityQueueTest {
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         queue.push("some item",10);
-        queue.remove("some item");
+        queue.delete("some item");
         assertSame(false, queue.contains("some item"));
         for (String s : testArr) {
-            queue.remove(s);
+            queue.delete(s);
             assertSame(false, queue.contains(s));
         }
         assertSame(0,queue.getSize());

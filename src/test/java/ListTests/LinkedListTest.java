@@ -105,7 +105,7 @@ public class LinkedListTest {
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         list.delete(7);
         assertSame(-1, list.indexOf(7));
         assertEquals(8, list.getSize());

@@ -260,7 +260,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
      * @param element element to remove
      * @throws NullableArgumentException if element is null
      */
-    public void remove(T element) {
+    public void delete(T element) {
         if (element == null) {
             throw new NullableArgumentException();
         }

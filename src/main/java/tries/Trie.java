@@ -45,11 +45,11 @@ public class Trie implements Iterable<String> {
     }
 
     /**
-     * Append specified sequence to the Trie if sequence not equals null
+     * Appends specified sequence to the Trie if sequence not equals null
      *
      * @param sequence sequence to append
      */
-    public void put(String sequence) {
+    public void add(String sequence) {
         if (sequence == null || sequence.length() == 0) return;
         putSequence(sequence);
     }
@@ -77,7 +77,7 @@ public class Trie implements Iterable<String> {
     }
 
     public final void addAll(String... data) {
-        for (String obj : data) put(obj);
+        for (String obj : data) add(obj);
     }
 
     /**
@@ -131,7 +131,7 @@ public class Trie implements Iterable<String> {
      * @param prefix to search sequences with specified prefix
      * @return sequences as a String array if sequences with specified prefix founded
      * otherwise empty String array
-     * @throws IllegalArgumentException if count < 0
+     * @throws IllegalArgumentException  if count < 0
      * @throws NullableArgumentException if the specified prefix is null
      */
     public String[] getByPrefix(String prefix, int count) {
@@ -235,12 +235,11 @@ public class Trie implements Iterable<String> {
      * @return true if removed otherwise false
      * @throws NullableArgumentException if the specified sequence is null
      */
-    public boolean remove(String sequence) {
+    public boolean delete(String sequence) {
         if (sequence == null) throw new NullableArgumentException();
         if (sequence.length() == 0) return false;
         TNode curr = root, lastNode = root;
-        int lastCharPos = 0;
-        int len = sequence.length() - 1;
+        int lastCharPos = 0, len = sequence.length() - 1;
         for (int i = 0; i <= len; i++) {
             Character c = sequence.charAt(i);
             curr = curr.nodes.get(c);

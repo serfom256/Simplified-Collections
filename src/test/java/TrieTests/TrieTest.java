@@ -8,11 +8,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TrieTests {
+public class TrieTest {
     Trie trie;
     ArrayList<String> lst;
 
-    public TrieTests() {
+    public TrieTest() {
         trie = new Trie();
         lst = new ArrayList<>();
         lst.addAll("a", "ab", "abc", "abcd", "abcde", "new data", "user",
@@ -23,29 +23,29 @@ public class TrieTests {
     @Before
     public void setUp() {
         trie.clear();
-        for (String s : lst) trie.put(s);
+        for (String s : lst) trie.add(s);
     }
 
     @Test
-    public void put() {
+    public void add() {
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
         String[] list = new String[]{"some data", "keyboard", "computer", "tech", "java"};
         String[] list1 = new String[]{"temp", "test", "", "0000", "abc", ""};
-        for (String s : list) trie.put(s);
+        for (String s : list) trie.add(s);
 
         assertEquals(25, trie.getEntriesCount());
         assertEquals(99, trie.getSize());
-        for (String s : list1) trie.put(s);
+        for (String s : list1) trie.add(s);
 
         assertEquals(25, trie.getEntriesCount());
         assertEquals(99, trie.getSize());
 
-        trie.put(null);
+        trie.add(null);
         assertEquals(25, trie.getEntriesCount());
         assertEquals(99, trie.getSize());
 
-        for (String s : lst) trie.put(s);
+        for (String s : lst) trie.add(s);
 
         assertEquals(25, trie.getEntriesCount());
         assertEquals(99, trie.getSize());
@@ -56,7 +56,7 @@ public class TrieTests {
     public void presents() {
         String[] list = new String[]{"some data", "keyboard", "computer", "tech", "java"};
         for (String s : list) {
-            trie.put(s);
+            trie.add(s);
         }
         for (String s : lst) {
             assertTrue(trie.presents(s));
@@ -133,7 +133,7 @@ public class TrieTests {
         assertEquals(0, trie.getSize());
 
         String[] list = new String[]{"some data", "keyboard", "computer", "tech", "java"};
-        for (String s : list) trie.put(s);
+        for (String s : list) trie.add(s);
 
         assertEquals(33, trie.getSize());
     }
@@ -145,7 +145,7 @@ public class TrieTests {
         assertEquals(0, trie.getEntriesCount());
 
         String[] list = new String[]{"some data", "keyboard", "computer", "tech", "java"};
-        for (String s : list) trie.put(s);
+        for (String s : list) trie.add(s);
         assertEquals(5, trie.getEntriesCount());
     }
 
@@ -206,36 +206,35 @@ public class TrieTests {
     }
 
     @Test
-    public void remove() {
-
+    public void delete() {
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
-        assertTrue(trie.remove("abc"));
+        assertTrue(trie.delete("abc"));
         assertFalse(trie.contains("abc"));
         assertTrue(trie.contains("abcd"));
         assertTrue(trie.contains("abcde"));
         assertEquals(19, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
-        assertTrue(trie.remove("q"));
+        assertTrue(trie.delete("q"));
         assertFalse(trie.contains("q"));
         assertTrue(trie.contains("qwerty"));
         assertTrue(trie.contains("qwebcd"));
         assertEquals(18, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
-        assertFalse(trie.remove("00"));
+        assertFalse(trie.delete("00"));
         assertTrue(trie.contains("000qwerty"));
         assertTrue(trie.contains("0000"));
         assertEquals(18, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
-        assertTrue(trie.remove("abcde"));
+        assertTrue(trie.delete("abcde"));
         assertEquals(17, trie.getEntriesCount());
         assertEquals(67, trie.getSize());
-        assertFalse(trie.remove(""));
+        assertFalse(trie.delete(""));
         for (String s : lst) {
-            if (trie.contains(s)) assertTrue(trie.remove(s));
+            if (trie.contains(s)) assertTrue(trie.delete(s));
         }
         assertEquals(0, trie.getSize());
         assertEquals(0, trie.getEntriesCount());

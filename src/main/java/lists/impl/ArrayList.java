@@ -3,6 +3,7 @@ package lists.impl;
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.IndexOutOfCollectionBoundsException;
+import additional.exceptions.NullableArgumentException;
 import lists.AbstractList;
 
 import java.lang.reflect.Array;
@@ -37,9 +38,11 @@ public class ArrayList<E> implements AbstractList<E> {
      * Add all data from Iterable objects in the end of list
      *
      * @param data it is all iterable object of elements to add
+     * @throws NullableArgumentException if the specified data is null
      */
     @Override
     public <T extends Iterable<E>> void addFrom(T data) {
+        if(data == null) throw new NullableArgumentException();
         for (E obj : data) {
             add(obj);
         }

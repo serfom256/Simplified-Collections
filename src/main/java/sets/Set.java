@@ -48,7 +48,7 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
      * @throws NullableArgumentException if the specified element is null
      */
     @Override
-    public boolean remove(E element) {
+    public boolean delete(E element) {
         return hashTable.delete(element) != null;
     }
 

@@ -48,14 +48,14 @@ public class SortedSetTest {
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         for (int i = 0; i < 1000; i++) {
             set.add(i + "_element");
         }
         for (int i = 0; i < 1000; i++) {
-            set.remove(i + "_element");
+            set.delete(i + "_element");
         }
-        assertFalse(set.remove("some_element"));
+        assertFalse(set.delete("some_element"));
         assertEquals(0,set.getSize());
     }
 

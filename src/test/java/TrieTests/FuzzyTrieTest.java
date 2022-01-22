@@ -13,11 +13,11 @@ import java.util.Random;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FuzzyTrieTests {
+public class FuzzyTrieTest {
     private final FuzzyTrie trie;
     private final AbstractList<String> lst;
 
-    public FuzzyTrieTests() {
+    public FuzzyTrieTest() {
         trie = new FuzzyTrie();
         lst = new ArrayList<>();
     }
@@ -29,7 +29,7 @@ public class FuzzyTrieTests {
             int minStringLen = 5;
             int maxStringLen = 15;
             String randString = generateString(minStringLen, maxStringLen);
-            trie.put(randString);
+            trie.add(randString);
             lst.add(randString);
         }
     }

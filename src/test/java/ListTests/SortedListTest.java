@@ -6,10 +6,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SortedListTests {
+public class SortedListTest {
     SortedList<Integer> list;
 
-    public SortedListTests() {
+    public SortedListTest() {
         this.list = new SortedList<>();
     }
 
@@ -93,7 +93,6 @@ public class SortedListTests {
         assertEquals(40, list.getSize());
         int initialSize = 40;
         for (Integer i = -10; i < 10; i++) {
-            System.out.println(i);
             assertTrue(list.delete(i));
             assertEquals(--initialSize, list.getSize());
             assertTrue(list.delete(i));

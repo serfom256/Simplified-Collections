@@ -35,13 +35,13 @@ public class SetTest {
     }
 
     @Test
-    public void remove() {
+    public void delete() {
         for (int i = 0; i < 1000; i++) {
             set.add(i + "_element");
         }
         assertEquals(1000, set.getSize());
         for (int i = 0; i < 1000; i++) {
-            assertTrue(set.remove(i + "_element"));
+            assertTrue(set.delete(i + "_element"));
         }
         assertEquals(0, set.getSize());
     }

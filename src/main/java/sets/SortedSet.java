@@ -209,7 +209,7 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
      * @throws NullableArgumentException if the specified element is null
      */
     @Override
-    public boolean remove(E element) {
+    public boolean delete(E element) {
         if (element == null) {
             throw new NullableArgumentException();
         }

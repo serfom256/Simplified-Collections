@@ -9,11 +9,11 @@ import additional.nodes.HashNode;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class HashTable<K, V> implements Iterable<K> {
+public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
 
     private Node<K, V>[] table;
 
-    private static final int DEFAULT_CAPACITY = 32;
+    public static final int DEFAULT_CAPACITY = 32;
     private static final double LOAD_FACTOR = 0.8;
     private int capacity;
     private int size;
@@ -106,13 +106,14 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Append and associate specified key with specified value in the HashTable
-     * If current table size equals or higher then threshold param(table capacity * table load factor) table will be resized
+     * Appends and associate specified key with specified value in the HashTable
+     * If the current table size equals or higher then threshold param(table capacity * table load factor) table will be resized
      *
      * @param key   key to associate with specified value
      * @param value value to associate with specified key
-     * @throws NullableArgumentException if key is null
+     * @throws NullableArgumentException if the specified key is null
      */
+    @Override
     public void add(K key, V value) {
         if (key == null) throw new NullableArgumentException("Specified key must be not null");
         if (table == null) initTable(capacity);
@@ -146,20 +147,21 @@ public class HashTable<K, V> implements Iterable<K> {
 
     /**
      * Removes specified value which associated with the key
+     * Also removes the specified key if the specified key has only one value
      *
-     * @param key   key which value remove
-     * @param value value associated with key
-     * @return removed value if value is present, else null
-     * @throws NullableArgumentException if key is null
+     * @param value value associated with key to remove
+     * @return removed value if value is present otherwise null
+     * @throws NullableArgumentException if the specified key is null
      */
-    public V deleteValue(K key, V value) {
+    @Override
+    public boolean deleteValue(K key, V value) {
         int pos = getPosByKey(key, capacity);
-        if (table == null || table[pos] == null) return null;
+        if (table == null || table[pos] == null) return false;
         int keyHash;
         if (table[pos].hash == (keyHash = generateHash(key)) && table[pos].value.equals(value)) {
             table[pos] = table[pos].next;
             size--;
-            return value;
+            return true;
         }
         for (Node<K, V> current = table[pos]; current.next != null; current = current.next) {
             if (current.next.value.equals(value) && current.next.hash == keyHash) {// if node with specified value found
@@ -169,10 +171,10 @@ public class HashTable<K, V> implements Iterable<K> {
                     current.next = current.next.next; //if removed item isn't last in the bucket
                 }
                 size--;
-                return value;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     /**
@@ -208,9 +210,10 @@ public class HashTable<K, V> implements Iterable<K> {
      * Removes key with associated value
      *
      * @param key key for associated value from which to remove
-     * @return removed key and associated value by specified key in the HashTable
-     * @throws NullableArgumentException if key is null
+     * @return value of the specified key
+     * @throws NullableArgumentException if the specified key is null
      */
+    @Override
     public V delete(K key) {
         int pos = getPosByKey(key, capacity);
         if (table == null || table[pos] == null) {
@@ -220,12 +223,12 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Update value by the specified key
+     * Updates value by the specified key
      *
      * @param key   key which associated value updates
      * @param value value to update
      * @return updated value if HashTable contains value by specified key
-     * @throws NullableArgumentException if key is null
+     * @throws NullableArgumentException if the specified key is null
      */
     public V updateValue(K key, V value) {
         if (key == null) throw new NullableArgumentException("Specified key must be not null");
@@ -243,24 +246,25 @@ public class HashTable<K, V> implements Iterable<K> {
     }
 
     /**
-     * Replace old item with specified key to new item with specified
+     * Replaces oldKey by newKey with saving merging oldKey and newKey values
      *
      * @param oldKey old key of item to replace
      * @param newKey new key to replace oldKey
-     * @return replaced key if update was successful otherwise null
+     * @return true if replacement done otherwise false
      * @throws NullableArgumentException if (oldKey or newKey) is null
      */
-    public K replace(K oldKey, K newKey) {
+    @Override
+    public boolean replace(K oldKey, K newKey) {
         int pos = getPosByKey(oldKey, capacity);
         if (table == null || table[pos] == null || !containsKey(oldKey)) {
-            return null;
+            return false;
         }
         addToBucket(
                 getPosByKey(newKey, capacity),
                 new Node<>(newKey, removeByHash(pos, generateHash(oldKey)), generateHash(newKey)),
                 table);
         size++;
-        return oldKey;
+        return true;
     }
 
     /**
@@ -268,8 +272,9 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @param key key of value in the hashTable
      * @return value by the specified key if key not equals null otherwise null
-     * @throws NullableArgumentException if key is null
+     * @throws NullableArgumentException if the specified key is null
      */
+    @Override
     public V get(K key) {
         int pos = getPosByKey(key, capacity);
         int keyHash = generateHash(key);
@@ -344,8 +349,9 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @param key key of the values in the HashTable
      * @return true if HashTable contains specified key, otherwise false
-     * @throws NullableArgumentException if key is null
+     * @throws NullableArgumentException if the specified key is null
      */
+    @Override
     public boolean containsKey(K key) {
         if (table == null) return false;
         int keyHash = generateHash(key);
@@ -403,6 +409,7 @@ public class HashTable<K, V> implements Iterable<K> {
      *
      * @return size of the hashTable
      */
+    @Override
     public int getSize() {
         return size;
     }
