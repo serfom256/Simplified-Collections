@@ -98,9 +98,20 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
         this.size = 0;
     }
 
+    /**
+     * @throws NullableArgumentException if one of specified  arguments is null
+     */
     @SafeVarargs
     public final void addAll(E... data) {
         for (E el : data) add(el);
+    }
+
+    /**
+     * @throws NullableArgumentException if one of specified  arguments is null
+     */
+    @Override
+    public <T extends Iterable<E>> void addFrom(T iterable) {
+        for (E e : iterable) add(e);
     }
 
     /**

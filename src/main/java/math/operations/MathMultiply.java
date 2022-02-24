@@ -1,4 +1,4 @@
-package math.MathOperations;
+package math.operations;
 
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
@@ -20,9 +20,8 @@ public class MathMultiply implements AbstractOperation {
         int i = d.length - 1;
         while (d[i] == 0) i--;
         for (int j = i; j >= 0; j--) {
-            result.addFirst(d[j]);
+            result.add(d[j]);
         }
         return result.toString();
-
     }
 }

@@ -2,16 +2,15 @@ package math;
 
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
-import sets.AbstractSet;
-import sets.Set;
+import hashtables.HashTable;
 import lists.AbstractLinkedList;
 import lists.AbstractList;
 import lists.impl.ArrayList;
 import lists.impl.DoubleLinkedList;
-import math.MathOperations.*;
-import hashtables.HashTable;
+import math.operations.*;
+import sets.AbstractSet;
+import sets.Set;
 import stack.ArrayStack;
-
 
 public class ExpressionInterpreter {
 
@@ -20,7 +19,7 @@ public class ExpressionInterpreter {
     private final AbstractSet<Character> planeOperations = new Set<>();
 
     public ExpressionInterpreter() {
-        charSet.add('+', new MathSum());
+        charSet.add('+', new MathAddition());
         charSet.add('-', new MathSubtraction());
         charSet.add('*', new MathMultiply());
         charSet.add('/', new MathDivision());
@@ -81,6 +80,7 @@ public class ExpressionInterpreter {
         for (Integer i : pPos) {
             int gap = exp.getSize();
             i -= temp;
+            if (i == -1) continue;
             exp.replace(i - 1, Math.min(i + 2, exp.getSize()), calculateExp(exp.get(i - 1), exp.get(i).charAt(0), exp.get(i + 1)));
             temp += gap - exp.getSize();
         }

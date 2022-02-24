@@ -13,9 +13,10 @@
 - [x] Set (Based on RBT tree)
 - [x] Stack(Based on Array)
 - [x] Sorted List(Based on Skip List)
+- [x] TrieMap
 
 ### In developing
-- TrieMap
+
 - Expression interpreter
 - BK Tree
 

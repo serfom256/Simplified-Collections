@@ -18,6 +18,8 @@ public interface AbstractList<E> extends SimpleList<E> {
 
     void delete(int start, int end);
 
+ //   void set(int pos, E value);
+
     E get(int position);
 
     E getFirst();

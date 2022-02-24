@@ -1,9 +1,9 @@
-package math.MathOperations;
+package math.operations;
 
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 
-public class MathSum implements AbstractOperation {
+public class MathAddition implements AbstractOperation {
 
     @Override
     public String calculate(String s1, String s2) {

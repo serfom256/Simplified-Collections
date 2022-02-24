@@ -42,6 +42,16 @@ public class DynamicLinkedString implements AbstractDynamicString {
         }
     }
 
+    public DynamicLinkedString(Character c) {
+        this();
+        addFirst(c);
+    }
+
+    public DynamicLinkedString(char c) {
+        this();
+        addFirst(c);
+    }
+
     public DynamicLinkedString(AbstractDynamicString str) {
         this();
         for (char c : str) {

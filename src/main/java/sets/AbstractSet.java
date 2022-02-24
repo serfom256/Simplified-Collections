@@ -2,6 +2,8 @@ package sets;
 
 public interface AbstractSet<E> extends Iterable<E> {
 
+    <T extends Iterable<E>> void addFrom(T iterable);
+
     void add(E element);
 
     void clear();

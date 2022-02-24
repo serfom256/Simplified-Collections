@@ -22,11 +22,22 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
         hashTable = new HashTable<>(capacity);
     }
 
+    /**
+     * @throws NullableArgumentException if one of specified  arguments is null
+     */
     @SafeVarargs
     public final void addAll(E... data) {
         for (E obj : data) {
             add(obj);
         }
+    }
+
+    /**
+     * @throws NullableArgumentException if one of specified  arguments is null
+     */
+    @Override
+    public <T extends Iterable<E>> void addFrom(T iterable) {
+        for (E e : iterable) add(e);
     }
 
     /**
@@ -148,6 +159,14 @@ public class Set<E> implements Iterable<E>, AbstractSet<E> {
     @Override
     public int getSize() {
         return hashTable.getSize();
+    }
+
+    public int getCapacity() {
+        return hashTable.getCapacity();
+    }
+
+    public void setCapacity(int cap) {
+        hashTable.setCapacity(cap);
     }
 
     /**

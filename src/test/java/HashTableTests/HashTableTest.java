@@ -4,6 +4,7 @@ package HashTableTests;
 import additional.nodes.HashNode;
 import hashtables.HashTable;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.security.SecureRandom;
@@ -154,7 +155,7 @@ public class HashTableTest {
             hashTable.add(oldKey, i + "_value");
         }
         for (int i = 0; i < newKeys.length; i++) {
-            assertTrue( hashTable.replace(i + "_key", newKeys[i]));
+            assertTrue(hashTable.replace(i + "_key", newKeys[i]));
         }
 
         assertFalse(hashTable.replace("0_key", newKeys[0]));
@@ -209,7 +210,33 @@ public class HashTableTest {
         for (int i = 0; i < 100; i++) {
             hashTable.add(i + "_k", i + "_v");
         }
-        assertEquals(162, hashTable.getCapacity());
+        assertEquals(256, hashTable.getCapacity());
+        for (int i = 0; i < 1000; i++) {
+            hashTable.add(i + "_k", i + "_v");
+        }
+        assertEquals(2048, hashTable.getCapacity());
+    }
+
+    @Test
+    @Ignore("Very slow")
+    public void setCapacity() {
+        int c = -10000;
+        for (; c < Integer.MAX_VALUE >> 1; c++) {
+            assertTrue(isPowerOfTwo(hashTable.setCapacity(c).getCapacity()));
+        }
+        while (c > -10) {
+            assertTrue(isPowerOfTwo(hashTable.setCapacity(c--).getCapacity()));
+        }
+        assertEquals(16, hashTable.getCapacity());
+        hashTable.clear();
+        for (int i = 20; i > -10; i--) {
+            assertTrue(isPowerOfTwo(hashTable.setCapacity(i).getCapacity()));
+        }
+        assertEquals(2, hashTable.getCapacity());
+    }
+
+    private boolean isPowerOfTwo(int cap) {
+        return (cap & (cap - 1)) == 0;
     }
 
     @Test

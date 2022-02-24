@@ -1,4 +1,4 @@
-package math.MathOperations;
+package math.operations;
 
 public class MathMax implements AbstractOperation {
 

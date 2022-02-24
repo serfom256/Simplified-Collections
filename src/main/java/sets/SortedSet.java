@@ -79,6 +79,18 @@ public class SortedSet<E extends Comparable<E>> implements AbstractSortedSet<E> 
     }
 
     /**
+     * @throws NullableArgumentException if one of specified  arguments is null
+     */
+    @Override
+    public <T extends Iterable<E>> void addFrom(T iterable) {
+        for (E el : iterable) {
+            if (el == null) throw new NullableArgumentException();
+            root = insert(root, el);
+        }
+        reBalance();
+    }
+
+    /**
      * Add element to the Set
      *
      * @param element element to append

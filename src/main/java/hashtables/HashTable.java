@@ -14,6 +14,8 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     private Node<K, V>[] table;
 
     public static final int DEFAULT_CAPACITY = 32;
+    private static final int MAX_CAPACITY = 1 << 30;
+    private static final int MIN_CAPACITY = 1 << 1;
     private static final double LOAD_FACTOR = 0.8;
     private int capacity;
     private int size;
@@ -53,14 +55,14 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     }
 
     public HashTable(int capacity) {
-        this.capacity = capacity;
+        this.capacity = DEFAULT_CAPACITY;
+        this.capacity = getPowerOfTwoCap(capacity);
         this.size = 0;
         items = new Items();
     }
 
     @SuppressWarnings("unchecked")
     private void initTable(int capacity) {
-        if (capacity <= 0) throw new IllegalArgumentException("Specified capacity must be more then 0");
         table = new Node[capacity];
     }
 
@@ -69,7 +71,8 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void resizeTable() {
-        int newCapacity = capacity + (capacity >> 1);
+        if (capacity == MAX_CAPACITY) return;
+        int newCapacity = getPowerOfTwoCap(capacity << 1);
         Node[] newTab = new Node[newCapacity];
         for (int i = 0; i < capacity; i++) {
             if (table[i] != null) {
@@ -116,6 +119,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     @Override
     public void add(K key, V value) {
         if (key == null) throw new NullableArgumentException("Specified key must be not null");
+        if (size + 1 < 0) throw new NullableArgumentException("Out of the HashTable memory");
         if (table == null) initTable(capacity);
         if ((++size) >= capacity * LOAD_FACTOR) {
             resizeTable();
@@ -268,9 +272,9 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     }
 
     /**
-     * Returns value by key in the hashTable
+     * Returns value by key in the HashTable
      *
-     * @param key key of value in the hashTable
+     * @param key key of value in the HashTable
      * @return value by the specified key if key not equals null otherwise null
      * @throws NullableArgumentException if the specified key is null
      */
@@ -353,7 +357,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
      */
     @Override
     public boolean containsKey(K key) {
-        if (table == null) return false;
+        if (table == null || key == null) return false;
         int keyHash = generateHash(key);
         for (Node<K, V> current = table[getPosByKey(key, capacity)]; current != null; current = current.next) {
             if (current.hash == keyHash) {
@@ -407,7 +411,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     /**
      * Provides get size of the HashTable
      *
-     * @return size of the hashTable
+     * @return size of the HashTable
      */
     @Override
     public int getSize() {
@@ -417,7 +421,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     /**
      * Provides get capacity of the HashTable
      *
-     * @return capacity of the hashTable
+     * @return capacity of the HashTable
      */
     public int getCapacity() {
         return capacity;
@@ -432,6 +436,31 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
             table[i] = null;
         }
         this.size = 0;
+    }
+
+    /**
+     * Updates table capacity
+     */
+    public HashTable<K, V> setCapacity(int cap) {
+        this.capacity = getPowerOfTwoCap(cap);
+        return this;
+    }
+
+    private int getPowerOfTwoCap(int cap) {
+        if (cap == capacity || cap < MIN_CAPACITY || cap <= size) return capacity;
+        int powerOfTwoCap = capacity;
+        if (cap < capacity) {
+            while (cap < powerOfTwoCap) {
+                powerOfTwoCap >>= 1;
+            }
+            if (powerOfTwoCap < cap) powerOfTwoCap <<= 1;
+        } else {
+            while (cap > powerOfTwoCap && powerOfTwoCap > 0) {
+                powerOfTwoCap <<= 1;
+            }
+            if (powerOfTwoCap < 0) powerOfTwoCap = MAX_CAPACITY;
+        }
+        return powerOfTwoCap;
     }
 
     @Override
