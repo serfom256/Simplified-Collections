@@ -35,7 +35,7 @@ public class FuzzyTrieTest {
     }
 
     @Test
-    public void getByPrefixShouldFoundValue() {
+    public void getByPrefixShouldFindValue() {
         for (int i = 0; i < 1000; i++) {
             String s = lst.get((int) ((Math.random() * (10000))));
             int randAction = (int) ((Math.random() * (3 - 1)) + 1);

@@ -19,7 +19,7 @@ public class FuzzyTrie extends Trie {
      * @param prefix   to search sequences with specified prefix
      * @param distance maximum indistinct distance
      * @return sequences as a String if found otherwise empty String
-     * @throws IllegalArgumentException  if prefix length must be more then specified distance
+     * @throws IllegalArgumentException  if the specified prefix length less then specified distance
      * @throws NullableArgumentException if the specified prefix is null
      */
     public String getByPrefixFuzzy(String prefix, int distance) {
@@ -35,7 +35,7 @@ public class FuzzyTrie extends Trie {
      * @param distance maximum indistinct distance
      * @return sequences as a String array if sequences with specified prefix founded
      * otherwise empty String array
-     * @throws IllegalArgumentException  if prefix length must be more then specified distance
+     * @throws IllegalArgumentException  if the specified prefix length less then specified distance
      * @throws NullableArgumentException if the specified prefix is null
      */
     public String[] getByPrefixFuzzy(String prefix, int count, int distance) {

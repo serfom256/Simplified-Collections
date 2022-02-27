@@ -49,9 +49,16 @@ public class TrieMap {
 
     public TrieMap() {
         this.root = new TNode();
+        this.root.nodes.setCapacity(32);
         this.size = 0;
     }
 
+    /**
+     * Appends the new key-values pair to the TrieMap of the specified key and the specified value
+     *
+     * @throws NullableArgumentException if the specified key or value is null
+     * @throws IllegalArgumentException  if the length of the specified key is equals 0
+     */
     public void add(String key, String value) {
         if (key == null || value == null) throw new NullableArgumentException();
         if (key.length() == 0) throw new IllegalArgumentException();
@@ -67,6 +74,11 @@ public class TrieMap {
         keyNode.isEnd = keyNode.isKey = true;
     }
 
+    /**
+     * Creates branch from all characters of the specified sequence
+     *
+     * @return end node of branch
+     */
     private TNode putSequence(String sequence) {
         TNode curr = root;
         for (int i = 0; i < sequence.length(); i++) {
@@ -82,6 +94,11 @@ public class TrieMap {
         return curr;
     }
 
+    /**
+     * Returns node by the specified value
+     *
+     * @return end node for the specified val if founded otherwise null
+     */
     private TNode getNode(String val) {
         TNode curr = root;
         for (int i = 0; i < val.length(); i++) {
@@ -91,12 +108,19 @@ public class TrieMap {
         return curr;
     }
 
+    /**
+     * Removes the specified key and all associated with the specified key values
+     *
+     * @param key key to remove
+     * @return true if removed otherwise false
+     * @throws NullableArgumentException if the specified key is null
+     */
     public Pair<String, AbstractSet<String>> deleteKey(String key) {
         if (key == null) throw new NullableArgumentException();
         Pair<String, AbstractSet<String>> result;
         TNode keyNode = getNode(key);
         if (keyNode == null || !keyNode.isKey) return new Pair<>();
-        result = getPairAsString(keyNode);
+        result = getPair(keyNode);
         deleteValuesFor(keyNode);
         pairsCount--;
         keyNode.isKey = false;
@@ -113,6 +137,13 @@ public class TrieMap {
         return false;
     }
 
+    /**
+     * Removes the specified value from the TrieMap
+     *
+     * @param value value to remove
+     * @return true if removed otherwise false
+     * @throws NullableArgumentException if the specified value is null
+     */
     public boolean deleteValue(String value) {
         if (value == null) throw new NullableArgumentException();
         TNode valueNode = getNode(value);
@@ -126,6 +157,9 @@ public class TrieMap {
         return true;
     }
 
+    /**
+     * Unlinks all value nodes from the specified node
+     */
     private void deleteValuesFor(TNode keyNode) {
         for (TNode value : keyNode.pairs) {
             if (value.isKey) continue;
@@ -139,6 +173,9 @@ public class TrieMap {
         }
     }
 
+    /**
+     * Removes all nodes from the specified node down to the next end node
+     */
     private void deleteNode(TNode valueNode) {
         TNode node = valueNode;
         TNode prev = valueNode;
@@ -154,52 +191,64 @@ public class TrieMap {
         size -= pos;
     }
 
-    public AbstractList<Pair<String, AbstractSet<String>>> get(String value) {
-        TNode curr = root;
-        for (int i = 0; i < value.length() && curr != null; i++) {
-            char c = value.charAt(i);
-            curr = curr.nodes.get(c);
-        }
-        AbstractList<Pair<String, AbstractSet<String>>> result = new ArrayList<>();
-        if (curr == null || !curr.isEnd) return result;
-        collectAll(result, curr, new Set<>());
-        return result;
+    /**
+     * Searches pair by the specified key
+     *
+     * @return key-values pair if founded otherwise empty pair
+     * @throws NullableArgumentException if the specified key is null
+     */
+    public Pair<String, AbstractSet<String>> get(String key) {
+        if (key == null) throw new NullableArgumentException();
+        TNode curr = getNode(key);
+        if (curr == null || !curr.isKey) return new Pair<>();
+        return getPair(curr);
     }
 
-    public boolean replaceKey(String oldKey, String newKey) {
-        if (oldKey == null || newKey == null) throw new NullableArgumentException();
-        TNode oldKeyNode = getNode(oldKey);
-        if (oldKeyNode == null || !oldKeyNode.isKey) return false;
-        TNode newKeyNode = putSequence(oldKey);
-        newKeyNode.isKey = true;
-        newKeyNode.pairs.addFrom(oldKeyNode.pairs);
-        if (oldKeyNode.nodes.getSize() == 0) deleteNode(oldKeyNode);
-        else oldKeyNode.isKey = false;
-        return true;
-    }
-
+    /**
+     * Returns true if the TrieMap contains the specified key
+     *
+     * @throws NullableArgumentException if the specified key is null
+     */
     public boolean containsKey(String key) {
         if (key == null) throw new NullableArgumentException();
         TNode keyNode = getNode(key);
         return keyNode != null && keyNode.isKey;
     }
 
+    /**
+     * Returns true if the TrieMap contains the specified value
+     *
+     * @throws NullableArgumentException if the specified value is null
+     */
     public boolean containsValue(String value) {
         if (value == null) throw new NullableArgumentException();
         TNode valueNode = getNode(value);
         return valueNode != null && valueNode.isVal;
     }
 
+    /**
+     * Returns true if the TrieMap contains the specified string as key or value
+     *
+     * @throws NullableArgumentException if the specified value is null
+     */
     public boolean contains(String data) {
         if (data == null) throw new NullableArgumentException();
         TNode valueNode = getNode(data);
         return valueNode != null && valueNode.isEnd;
     }
 
+    /**
+     * @param input    string apply to search
+     * @param distance maximum number of typos in the searched string
+     * @param verbose  range of founded results
+     * @return list of founded pairs
+     * @throws NullableArgumentException if the specified key is null
+     * @throws IllegalArgumentException  if the specified input length less then specified distance
+     */
     public AbstractList<Pair<String, AbstractSet<String>>> lookup(String input, int distance, Verbose verbose) {
         if (input == null) throw new NullableArgumentException();
         if (input.length() <= 1 || input.length() <= distance) {
-            throw new IllegalArgumentException("Prefix length must be more then specified distance");
+            throw new IllegalArgumentException("Input length must be more then specified distance");
         }
         AbstractList<Pair<String, AbstractSet<String>>> founded = new ArrayList<>();
         AbstractSet<TNode> memo = new Set<>(4);
@@ -213,18 +262,28 @@ public class TrieMap {
                 return founded;
             }
             if (i == len - 1 && next.isEnd && i + distance >= len) {
-                collectAll(founded, curr, memo);
+                memo.add(curr);
+                collectAll(founded, curr);
             }
             curr = next;
         }
         if (!curr.isEnd) {
             search(len, curr, input, distance, founded, memo, verbose);
-        } else {
-            collectAll(founded, curr, memo);
+        } else if (!memo.contains(curr)) {
+            collectAll(founded, curr);
         }
         return founded;
     }
 
+    /**
+     * @param pos      initial search position
+     * @param curr     initial node
+     * @param toSearch string apply to search
+     * @param distance number of typos
+     * @param founded  list for collecting founded results
+     * @param memo     set for memoization
+     * @param verbose  node traverse range  MIN - only for current node MAX - for all nodes from current down to root node
+     */
     private void search(int pos, TNode curr, String toSearch, int distance, AbstractList<Pair<String, AbstractSet<String>>> founded, AbstractSet<TNode> memo, Verbose verbose) {
         for (int j = pos; j >= 0; j--) {
             fuzzyCompound(curr, toSearch, j, distance, founded, memo);
@@ -234,19 +293,19 @@ public class TrieMap {
     }
 
     /**
-     * Provides to collect all data from the specified node with using fuzzy search
+     * Collects all data from the specified node with using fuzzy search considering the count of typos
      *
      * @param word    word of all collected words
-     * @param pos     position in word from which search starts
+     * @param pos     position in word from which fuzzy search starts
      * @param typos   maximum count of typos in searched word
-     * @param founded set which contains all founded words
+     * @param founded list of founded pairs
      * @param memo    set for memoization
      */
     private void fuzzyCompound(TNode start, String word, int pos, int typos, AbstractList<Pair<String, AbstractSet<String>>> founded, AbstractSet<TNode> memo) {
         if (typos < 0) return;
-        if (pos + typos >= word.length()) {
-            collectAll(founded, start, memo);
-            return;
+        if (pos + typos >= word.length() && start.prev != null && !memo.contains(start.prev)) {
+            memo.add(start.prev);
+            collectAll(founded, start.prev);
         }
         for (Character k : start.nodes) {
             TNode v = start.nodes.get(k);
@@ -260,23 +319,32 @@ public class TrieMap {
         }
     }
 
-    private void collectAll(AbstractList<Pair<String, AbstractSet<String>>> set, TNode node, AbstractSet<TNode> memo) {
-        if (node == null || memo.contains(node)) return;
-        memo.add(node);
-        if (node.isEnd) collectAll(set, node.prev, memo);
+    /**
+     * Collect all key-values pairs from the specified node
+     *
+     * @param set result
+     */
+    private void collectAll(AbstractList<Pair<String, AbstractSet<String>>> set, TNode node) {
         for (HashNode<Character, TNode> n : node.nodes.items) {
             if (n.getValue().isEnd) {
                 Set<String> values = new Set<>(2);
-                String key = getReversed(n.getValue());
-                Pair<String, AbstractSet<String>> pair = new Pair<>(key, values);
-                for (TNode value : n.getValue().pairs) {
-                    values.add(getReversed(value));
+                Pair<String, AbstractSet<String>> pair = new Pair<>();
+                String v = getReversed(n.getValue());
+                if (n.getValue().isKey) pair.setKey(v);
+                else values.add(v);
+                for (TNode val : n.getValue().pairs) {
+                    if (val.isKey) pair.setKey(getReversed(val));
+                    else values.add(getReversed(val));
                 }
+                pair.setValue(values);
                 set.add(pair);
             }
         }
     }
 
+    /**
+     * Returns String which contains characters from the specified node to the TrieMap root
+     */
     private String getReversed(TNode node) {
         AbstractDynamicString prefix = new DynamicLinkedString();
         while (node != root) {
@@ -300,7 +368,10 @@ public class TrieMap {
         this.root.nodes.clear();
     }
 
-    private Pair<String, AbstractSet<String>> getPairAsString(TNode node) {
+    /**
+     * Returns pair of the key and values which linked to the specified node
+     */
+    private Pair<String, AbstractSet<String>> getPair(TNode node) {
         AbstractSet<String> values = new Set<>();
         Pair<String, AbstractSet<String>> pair = new Pair<>(getReversed(node), values);
         for (TNode n : node.pairs) {
@@ -309,11 +380,14 @@ public class TrieMap {
         return pair;
     }
 
+    /**
+     * Helps to print all entries from the TrieMap
+     */
     private void toStringHelper(AbstractDynamicString res, TNode node) {
         for (HashNode<Character, TNode> c : node.nodes.items) {
             TNode curr = c.getValue();
             if (curr.isKey) {
-                res.add(getPairAsString(c.getValue()).toString()).add(", ");
+                res.add(getPair(c.getValue()).toString()).add(", ");
             }
             toStringHelper(res, curr);
         }
@@ -326,39 +400,4 @@ public class TrieMap {
         toStringHelper(s, root);
         return s.replace(s.getSize() - 2, ']').toString();
     }
-
-    public static void main(String[] args) {
-
-//        String search = "234a";
-//        int cnt = 1000, typos = 3;
-        TrieMap map = new TrieMap();
-        map.add("1234", "value");
-        map.add("4567", "value");
-        map.add("qwe", "00000");
-        map.add("qwe", "11111111111");
-        map.add("test", "00000");
-        map.add("abc909", "qwe");
-        map.add("12345", "val");
-        map.add("12345", "this is 12 value");
-        map.add("urge", "ome-random-string");
-        map.add("urge", "somerandomstring");
-
-//        System.out.println(map);
-//        System.out.println(map.deleteKey("1234"));
-//        System.out.println(map.deleteKey("qwe"));
-//        System.out.println(map.deleteKey("test"));
-//        System.out.println(map.deleteKey("4567"));
-//        System.out.println(map.deleteKey("12345"));
-//        System.out.println(map.deleteKey("urge"));
-//        System.out.println(map.deleteKey("abc909"));
-
-        //    System.out.println(map);
-//        long start = System.currentTimeMillis();
-//        for (int i = 0; i < cnt; i++) {
-//            map.lookup(search, typos, Verbose.MIN);
-//        }
-//
-//        System.out.println(System.currentTimeMillis() - start);
-    }
-
 }

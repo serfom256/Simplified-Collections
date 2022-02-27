@@ -1,11 +1,17 @@
 package TrieTests;
 
+import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicLinkedString;
 import additional.nodes.Pair;
+import lists.AbstractList;
 import lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
+import sets.AbstractSet;
 import sets.Set;
 import tries.TrieMap;
+
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -277,4 +283,127 @@ public class TrieMapTest {
         assertFalse(trieMap.contains("6"));
         assertFalse(trieMap.contains(""));
     }
+
+    @Test
+    public void getTest() {
+
+        Set<String> values = new Set<>();
+        values.addAll("value");
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.get("1234").toString());
+        values.clear();
+
+        values.addAll("11111111111", "00000");
+        assertEquals(new Pair<>("qwe", values).toString(), trieMap.get("qwe").toString());
+        values.clear();
+
+        values.addAll("random value", "qwerty");
+        assertEquals(new Pair<>("java", values).toString(), trieMap.get("java").toString());
+        values.clear();
+
+        values.addAll("value");
+        assertEquals(new Pair<>("4567", values).toString(), trieMap.get("4567").toString());
+        values.clear();
+
+        values.addAll("some value");
+        assertEquals(new Pair<>("c++", values).toString(), trieMap.get("c++").toString());
+
+        values.clear();
+
+        values.addAll("val", "temp");
+        assertEquals(new Pair<>("12345", values).toString(), trieMap.get("12345").toString());
+
+        values.clear();
+
+        values.addAll("00000");
+        assertEquals(new Pair<>("test", values).toString(), trieMap.get("test").toString());
+
+        values.clear();
+
+        values.addAll("qwe");
+        assertEquals(new Pair<>("abc909", values).toString(), trieMap.get("abc909").toString());
+
+        assertEquals(new Pair<>().toString(), trieMap.get("qwerty").toString());
+
+    }
+
+    @Test
+    public void lookupTest() {
+        Set<String> values = new Set<>();
+        values.addAll("value");
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("124", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("134", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("234", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("123", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("1234", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("0123", 2, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("1023", 2, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("1203", 2, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("1230", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("01234", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("10234", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("12034", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("12304", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("12340", 1, TrieMap.Verbose.MIN).get(0).toString());
+        assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("001234", 2, TrieMap.Verbose.MIN).get(0).toString());
+        values.clear();
+        values.addAll("random value");
+        assertEquals(new Pair<>("java", values).toString(), trieMap.lookup("rnd value", 3, TrieMap.Verbose.MIN).get(0).toString());
+        values.clear();
+        values.addAll("random value");
+        assertEquals(new Pair<>("java", values).toString(), trieMap.lookup("rnd val", 5, TrieMap.Verbose.MIN).get(0).toString());
+    }
+
+    @Test
+    public void lookUpExtendedTest() {
+        ArrayList<String> lst = new ArrayList<>();
+
+        for (int i = 0; i < 10000; i++) {
+            int minStringLen = 5;
+            int maxStringLen = 15;
+            String randString = generateString(minStringLen, maxStringLen);
+            trieMap.add(randString, "");
+            lst.add(randString);
+        }
+        assertEquals(10008, trieMap.getPairsCount());
+        for (int i = 0; i < 1000; i++) {
+            String s = lst.get((int) ((Math.random() * (10000))));
+            int randAction = (int) ((Math.random() * (3 - 1)) + 1);
+            AbstractDynamicString mutableString = new DynamicLinkedString(s);
+            int randomPosition = (int) (Math.random() * (s.length() - 1));
+            char randomChar = (char) (new Random().nextInt(26) + 'a');
+            switch (randAction) {
+                case 1:
+                    if (s.length() > 2) {
+                        mutableString.deleteAtPosition(randomPosition);
+                        break;
+                    }
+                case 2:
+                    mutableString.insert(randomPosition, randomChar);
+                    break;
+                case 3:
+                    mutableString.replace(randomPosition, randomPosition, String.valueOf(randomChar));
+                    break;
+            }
+            AbstractList<Pair<String, AbstractSet<String>>> founded = trieMap.lookup(mutableString.toString(), 1, TrieMap.Verbose.MIN);
+
+            ArrayList<String> list = new ArrayList<>();
+            for (Pair<String, AbstractSet<String>> f : founded) {
+                list.add(f.getKey());
+            }
+            assertNotEquals(list.indexOf(s), -1);
+        }
+    }
+
+    private String generateString(int minLen, int maxLen) {
+        int leftLimit = 48;
+        int rightLimit = 122;
+        int len = (int) ((Math.random() * (maxLen - minLen)) + minLen);
+        AbstractDynamicString s = new DynamicLinkedString();
+        new Random().ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(len)
+                .forEach(s::addUnicodeChar);
+        return s.toString();
+    }
+
 }

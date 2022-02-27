@@ -8,8 +8,8 @@ public class BloomFilter {
     private int size;
     private final ToIntFunction<String> hashFunction;
 
-    public BloomFilter(int logicalSize) {
-        this.array = new long[logicalSize];
+    public BloomFilter(int size) {
+        this.array = new long[size];
         this.size = 0;
         this.hashFunction = String::hashCode;
     }
