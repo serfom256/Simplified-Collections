@@ -55,7 +55,7 @@ public class FuzzyTrieTest {
                     mutableString.replace(randomPosition, randomPosition, String.valueOf(randomChar));
                     break;
             }
-            if (!trie.presents(mutableString.toString())) {
+            if (!trie.containsPrefix(mutableString.toString())) {
                 String[] founded = trie.getByPrefixFuzzy(mutableString.toString(), 100, 1);
                 ArrayList<String> list = new ArrayList<>();
                 list.addAll(founded);
@@ -85,7 +85,7 @@ public class FuzzyTrieTest {
                     mutableString.replace(randomPosition, randomPosition, String.valueOf(randomChar));
                     break;
             }
-            if (!trie.presents(mutableString.toString())) {
+            if (!trie.containsPrefix(mutableString.toString())) {
                 assertTrue(trie.contains(mutableString.toString(), 1));
             }
         }
@@ -113,7 +113,7 @@ public class FuzzyTrieTest {
                     break;
             }
             if (mutableString.getSize() > 5) mutableString = new DynamicLinkedString(mutableString.subString(0, 3));
-            if (!trie.presents(mutableString.toString())) {
+            if (!trie.containsPrefix(mutableString.toString())) {
                 assertTrue(trie.presents(mutableString.toString(), 1));
             }
         }

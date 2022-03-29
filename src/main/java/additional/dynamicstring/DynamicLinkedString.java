@@ -1,6 +1,7 @@
 package additional.dynamicstring;
 
 import additional.exceptions.IndexOutOfCollectionBoundsException;
+import lists.AbstractList;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -358,7 +359,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
             node = node.prev;
         }
         while (start < end && node != null) {
-            node = deleteAfter(node);
+            deleteAfter(node);
             end--;
             size--;
         }
@@ -377,10 +378,10 @@ public class DynamicLinkedString implements AbstractDynamicString {
         }
         if (start == 0) return clear();
         if (start >= size) start = size;
-        Node node = getNodeByPos(start);
+        Node node = getNodeByPos(start - 1);
         int len = size;
-        for (int i = start; i < len && node != null; i++, size--) {
-            node = deleteAfter(node);
+        for (int i = start; i < len; i++, size--) {
+            deleteAfter(node);
         }
         return this;
     }
@@ -573,6 +574,27 @@ public class DynamicLinkedString implements AbstractDynamicString {
         return replace(start, size, String.valueOf(c));
     }
 
+    /**
+     * Splits current dynamicLinkedString by the specified delimiter
+     */
+    @Override
+    public AbstractList<AbstractDynamicString> split(String delimiter) {
+        //todo implement it!!!
+        throw new IllegalStateException("Method not implemented yet!!!");
+    }
+
+    /**
+     * Splits current dynamicLinkedString by the specified delimiter
+     */
+    @Override
+    public AbstractList<AbstractDynamicString> split(AbstractDynamicString delimiter) {
+        //todo implement it!!!
+        throw new IllegalStateException("Method not implemented yet!!!");
+    }
+
+    /**
+     * Updates value in the specified position by the specified character
+     */
     @Override
     public DynamicLinkedString update(int pos, char c) {
         if (pos < 0 || pos >= size) {
@@ -667,7 +689,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Returns substring in range from start to end
+     * Returns coped substring in range from start to end
      *
      * @param start start position of substring
      * @param end   end position of substring
@@ -679,7 +701,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
 
 
     /**
-     * Returns substring in range from start to end of this dynamicLinkedString
+     * Returns coped substring in range from start to end of this dynamicLinkedString
      *
      * @param start start position of substring
      */
@@ -783,27 +805,50 @@ public class DynamicLinkedString implements AbstractDynamicString {
 
     /**
      * Returns first occurrence of the specified char in this dynamicLinkedString
+     *
+     * @return first char position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
     public int indexOf(char c) {
-        Node first = head;
-        for (int i = 0; first != null; first = first.next, i++) {
+        return indexOf(c, 0);
+    }
+
+    /**
+     * Returns first occurrence of the specified char in this dynamicLinkedString from the specified position
+     *
+     * @return first char position in this dynamicLinkedString if founded otherwise -1
+     */
+    @Override
+    public int indexOf(char c, int pos) {
+        if (size == 0) return -1;
+        Node first = getNodeByPos(pos);
+        for (int i = pos; first != null; first = first.next, i++) {
             if (first.val == c) return i;
         }
         return -1;
     }
 
     /**
-     * Provides to get first index of the specified char array in this dynamicLinkedString
+     * Returns first occurrence of the specified char array in this dynamicLinkedString
      *
-     * @return first char array position in this dynamicLinkedString or -1
+     * @return first char array position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
     public int indexOf(char[] c) {
+        return indexOf(c, 0);
+    }
+
+    /**
+     * Returns first occurrence of the specified char array in this dynamicLinkedString from the specified position
+     *
+     * @return first char array position in this dynamicLinkedString if founded otherwise -1
+     */
+    @Override
+    public int indexOf(char[] c, int pos) {
         if (c.length > size || c.length == 0) return -1;
-        Node first = head;
+        Node first = getNodeByPos(pos);
         int startPos = 0;
-        for (int i = 0; first != null; first = first.next, i++) {
+        for (int i = pos; first != null; first = first.next, i++) {
             if (first.val == c[startPos]) {
                 if (++startPos == c.length) {
                     return i + 1 - c.length;
@@ -816,17 +861,27 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Provides to get first index of the specified String in this dynamicLinkedString
+     * Returns first occurrence of the specified String in this dynamicLinkedString
      *
-     * @return first String position in this dynamicLinkedString or -1
+     * @return first String position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
     public int indexOf(String s) {
+        return indexOf(s, 0);
+    }
+
+    /**
+     * Returns first occurrence of the specified String in this dynamicLinkedString from the specified position
+     *
+     * @return first String position in this dynamicLinkedString if founded otherwise -1
+     */
+    @Override
+    public int indexOf(String s, int pos) {
         int strSize = s.length();
         if (strSize > size || strSize == 0) return -1;
-        Node first = head;
+        Node first = getNodeByPos(pos);
         int startPos = 0;
-        for (int i = 0; first != null; first = first.next, i++) {
+        for (int i = pos; first != null; first = first.next, i++) {
             if (first.val == s.charAt(startPos)) {
                 if (++startPos == strSize) {
                     return i + 1 - strSize;
@@ -839,18 +894,28 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Provides to get first index of the specified String in this dynamicLinkedString
+     * Returns first occurrence first index of the specified String in this dynamicLinkedString
      *
-     * @return first String position in this dynamicLinkedString or -1
+     * @return first String position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
     public int indexOf(AbstractDynamicString s) {
+        return indexOf(s, 0);
+    }
+
+    /**
+     * Returns first occurrence first index of the specified String in this dynamicLinkedString from the specified position
+     *
+     * @return first String position in this dynamicLinkedString if founded otherwise -1
+     */
+    @Override
+    public int indexOf(AbstractDynamicString s, int pos) {
         int strSize = s.getSize();
         if (strSize > size || strSize == 0) return -1;
         Iterator<Character> foreignIterator = s.iterator();
-        Node first = head;
+        Node first = getNodeByPos(pos);
         char fChar = foreignIterator.next();
-        for (int i = 0; first != null; first = first.next, i++) {
+        for (int i = pos; first != null; first = first.next, i++) {
             if (first.val == fChar) {
                 if (!foreignIterator.hasNext()) {
                     return i + 1 - strSize;
@@ -864,10 +929,11 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Provides to get last occurrence of the specified char  in this dynamicLinkedString
+     * Returns last occurrence of the specified char  in this dynamicLinkedString
      *
-     * @return last5 occurrence of the specified char in this dynamicLinkedString or -1
+     * @return last5 occurrence of the specified char in this dynamicLinkedString if founded otherwise -1
      */
+
     @Override
     public int lastIndexOf(char c) {
         Node end = last;
@@ -878,9 +944,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Provides to get last index of the specified char array in this dynamicLinkedString
+     * Returns last index of the specified char array in this dynamicLinkedString
      *
-     * @return last char array position in this dynamicLinkedString or -1
+     * @return last char array position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
     public int lastIndexOf(char[] c) {
@@ -900,9 +966,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Provides to get last index of the specified String in this dynamicLinkedString
+     * Returns last index of the specified String in this dynamicLinkedString
      *
-     * @return last String position in this dynamicLinkedString or -1
+     * @return last String position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
     public int lastIndexOf(String s) {
@@ -923,9 +989,9 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Provides to get last index of the specified String in this dynamicLinkedString
+     * Returns last index of the specified String in this dynamicLinkedString
      *
-     * @return last String position in this dynamicLinkedString or -1
+     * @return last String position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
     public int lastIndexOf(AbstractDynamicString s) {

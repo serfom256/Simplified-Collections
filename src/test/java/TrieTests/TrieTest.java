@@ -53,45 +53,66 @@ public class TrieTest {
     }
 
     @Test
-    public void presents() {
+    public void containsPrefix() {
         String[] list = new String[]{"some data", "keyboard", "computer", "tech", "java"};
         for (String s : list) {
             trie.add(s);
         }
         for (String s : lst) {
-            assertTrue(trie.presents(s));
+            assertTrue(trie.containsPrefix(s));
         }
 
-        assertTrue(trie.presents("abc"));
-        assertTrue(trie.presents("java"));
-        assertTrue(trie.presents("123"));
+        assertTrue(trie.containsPrefix("abc"));
+        assertTrue(trie.containsPrefix("java"));
+        assertTrue(trie.containsPrefix("123"));
 
-        assertTrue(trie.presents("qwerty"));
-        assertTrue(trie.presents("new data"));
-        assertTrue(trie.presents("new"));
+        assertTrue(trie.containsPrefix("qwerty"));
+        assertTrue(trie.containsPrefix("new data"));
+        assertTrue(trie.containsPrefix("new"));
 
-        assertFalse(trie.presents("javac"));
-        assertFalse(trie.presents("keyboard1234"));
-        assertFalse(trie.presents("00001"));
+        assertFalse(trie.containsPrefix("javac"));
+        assertFalse(trie.containsPrefix("keyboard1234"));
+        assertFalse(trie.containsPrefix("00001"));
     }
 
     @Test
     public void contains() {
-        for (String s : lst) assertTrue(trie.contains(s));
+        String[] list = new String[]{"abcd", "keyword", "test", "tech", "java", "1234"};
+        trie.clear();
+        for (String s : list) {
+            trie.add(s);
+        }
 
+        for (String s : list) {
+            assertTrue(trie.contains(s + "additional suffix"));
+        }
 
-        assertTrue(trie.contains("abc"));
-        assertFalse(trie.contains("java"));
-        assertFalse(trie.contains("123"));
+        assertTrue(trie.contains("abcdefg"));
+        assertTrue(trie.contains("java1234"));
+        assertTrue(trie.contains("12345678534"));
 
-        assertTrue(trie.contains("qwerty"));
-        assertFalse(trie.contains("qwer"));
-        assertTrue(trie.contains("new data"));
-        assertFalse(trie.contains("new"));
+        assertFalse(trie.contains("jav"));
+        assertFalse(trie.contains("keywor"));
+        assertFalse(trie.contains("123..."));
+        assertFalse(trie.contains("1235678534"));
+    }
 
-        assertFalse(trie.contains("javac"));
-        assertTrue(trie.contains("1001212454"));
-        assertFalse(trie.contains("00001"));
+    @Test
+    public void presents() {
+        for (String s : lst) assertTrue(trie.presents(s));
+
+        assertTrue(trie.presents("abc"));
+        assertFalse(trie.presents("java"));
+        assertFalse(trie.presents("123"));
+
+        assertTrue(trie.presents("qwerty"));
+        assertFalse(trie.presents("qwer"));
+        assertTrue(trie.presents("new data"));
+        assertFalse(trie.presents("new"));
+
+        assertFalse(trie.presents("javac"));
+        assertTrue(trie.presents("1001212454"));
+        assertFalse(trie.presents("00001"));
     }
 
     @Test
@@ -155,22 +176,22 @@ public class TrieTest {
         assertEquals(68, trie.getSize());
         assertTrue(trie.removeHard("abc"));
 
-        assertTrue(trie.contains("ab"));
-        assertFalse(trie.contains("abc"));
-        assertFalse(trie.contains("abcd"));
-        assertFalse(trie.contains("abcde"));
+        assertTrue(trie.presents("ab"));
+        assertFalse(trie.presents("abc"));
+        assertFalse(trie.presents("abcd"));
+        assertFalse(trie.presents("abcde"));
         assertEquals(17, trie.getEntriesCount());
         assertEquals(65, trie.getSize());
 
         assertTrue(trie.removeHard("q"));
-        assertFalse(trie.contains("qwerty"));
-        assertFalse(trie.contains("qwebcd"));
+        assertFalse(trie.presents("qwerty"));
+        assertFalse(trie.presents("qwebcd"));
         assertEquals(14, trie.getEntriesCount());
         assertEquals(56, trie.getSize());
 
         assertTrue(trie.removeHard("00"));
-        assertFalse(trie.contains("000qwerty"));
-        assertFalse(trie.contains("0000"));
+        assertFalse(trie.presents("000qwerty"));
+        assertFalse(trie.presents("0000"));
         assertEquals(12, trie.getEntriesCount());
         assertEquals(46, trie.getSize());
         assertFalse(trie.removeHard(""));
@@ -181,21 +202,21 @@ public class TrieTest {
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
         assertFalse(trie.removeWeak("abc"));
-        assertTrue(trie.contains("abc"));
-        assertTrue(trie.contains("abcd"));
-        assertTrue(trie.contains("abcde"));
+        assertTrue(trie.presents("abc"));
+        assertTrue(trie.presents("abcd"));
+        assertTrue(trie.presents("abcde"));
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
         assertFalse(trie.removeWeak("q"));
-        assertTrue(trie.contains("qwerty"));
-        assertTrue(trie.contains("qwebcd"));
+        assertTrue(trie.presents("qwerty"));
+        assertTrue(trie.presents("qwebcd"));
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
         assertFalse(trie.removeWeak("00"));
-        assertTrue(trie.contains("000qwerty"));
-        assertTrue(trie.contains("0000"));
+        assertTrue(trie.presents("000qwerty"));
+        assertTrue(trie.presents("0000"));
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
@@ -210,22 +231,22 @@ public class TrieTest {
         assertEquals(20, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
         assertTrue(trie.delete("abc"));
-        assertFalse(trie.contains("abc"));
-        assertTrue(trie.contains("abcd"));
-        assertTrue(trie.contains("abcde"));
+        assertFalse(trie.presents("abc"));
+        assertTrue(trie.presents("abcd"));
+        assertTrue(trie.presents("abcde"));
         assertEquals(19, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
         assertTrue(trie.delete("q"));
-        assertFalse(trie.contains("q"));
-        assertTrue(trie.contains("qwerty"));
-        assertTrue(trie.contains("qwebcd"));
+        assertFalse(trie.presents("q"));
+        assertTrue(trie.presents("qwerty"));
+        assertTrue(trie.presents("qwebcd"));
         assertEquals(18, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
         assertFalse(trie.delete("00"));
-        assertTrue(trie.contains("000qwerty"));
-        assertTrue(trie.contains("0000"));
+        assertTrue(trie.presents("000qwerty"));
+        assertTrue(trie.presents("0000"));
         assertEquals(18, trie.getEntriesCount());
         assertEquals(68, trie.getSize());
 
@@ -234,7 +255,7 @@ public class TrieTest {
         assertEquals(67, trie.getSize());
         assertFalse(trie.delete(""));
         for (String s : lst) {
-            if (trie.contains(s)) assertTrue(trie.delete(s));
+            if (trie.presents(s)) assertTrue(trie.delete(s));
         }
         assertEquals(0, trie.getSize());
         assertEquals(0, trie.getEntriesCount());

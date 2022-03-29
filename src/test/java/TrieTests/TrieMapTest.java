@@ -16,7 +16,8 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 public class TrieMapTest {
-    TrieMap trieMap;
+
+    private final TrieMap trieMap;
 
     public TrieMapTest() {
         this.trieMap = new TrieMap();
@@ -126,7 +127,6 @@ public class TrieMapTest {
         assertEquals(8, trieMap.getPairsCount());
         assertEquals(76, trieMap.getSize());
 
-        Set<String> value = new Set<>();
         assertTrue(trieMap.deleteValue("value"));
         assertEquals(8, trieMap.getPairsCount());
         assertEquals(74, trieMap.getSize());
@@ -146,7 +146,6 @@ public class TrieMapTest {
         assertFalse(trieMap.deleteValue("1111"));
         assertEquals(7, trieMap.getPairsCount());
         assertEquals(74, trieMap.getSize());
-
 
         trieMap.add("qwerty", "");
         assertEquals(8, trieMap.getPairsCount());
@@ -404,6 +403,17 @@ public class TrieMapTest {
                 .limit(len)
                 .forEach(s::addUnicodeChar);
         return s.toString();
+    }
+
+    @Test
+    public void forEach() {
+        AbstractSet<String> prev = new Set<>();
+        for (Pair<String, AbstractSet<String>> s : trieMap) {
+            String stringPair = s.toString();
+            assertFalse(prev.contains(stringPair));
+            prev.add(stringPair);
+        }
+        assertEquals(trieMap.getPairsCount(), prev.getSize());
     }
 
 }

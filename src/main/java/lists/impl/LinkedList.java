@@ -260,7 +260,7 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         }
         Node<E> node = getNode(start - 1);
         while (start < end && node != null) {
-            node = deleteAfter(node);
+            deleteAfter(node);
             end--;
             length--;
         }

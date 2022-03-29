@@ -26,6 +26,10 @@ public class BloomFilter {
         return (array[hash >>> 6] & (1L << hash)) != 0;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     private int getHash(int hash) {
         return hash & (array.length - 1);
     }

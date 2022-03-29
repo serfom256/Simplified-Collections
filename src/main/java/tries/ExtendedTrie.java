@@ -1,5 +1,6 @@
 package tries;
 
+// todo implement more overload methods
 public class ExtendedTrie extends FuzzyTrie {
 
     public ExtendedTrie() {

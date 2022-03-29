@@ -57,7 +57,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      */
     @Override
     public <T extends Iterable<E>> void addFrom(T data) {
-        if(data == null) throw new NullableArgumentException();
+        if (data == null) throw new NullableArgumentException();
         for (E obj : data) {
             addLast(obj);
         }
@@ -130,14 +130,13 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
     /**
      * Links new node with specified element before the specified node
      */
-    private Node<E> insertBefore(Node<E> node, E toInsert) {
+    private void insertBefore(Node<E> node, E toInsert) {
         Node<E> newNode = new Node<>(toInsert);
         newNode.prev = node.prev;
         node.prev = newNode;
         newNode.next = node;
         if (newNode.prev != null) newNode.prev.next = newNode;
         else head = newNode;
-        return newNode;
     }
 
     /**
@@ -274,7 +273,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
             node = node.prev;
         }
         while (start < end && node != null) {
-            node = deleteAfter(node);
+            deleteAfter(node);
             end--;
             length--;
         }

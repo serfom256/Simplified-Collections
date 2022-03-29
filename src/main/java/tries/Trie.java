@@ -84,7 +84,7 @@ public class Trie implements Iterable<String> {
      * @return true if specified sequence present in trie as a prefix
      * @throws NullableArgumentException if specified sequence is null
      */
-    public boolean presents(String sequence) {
+    public boolean containsPrefix(String sequence) {
         if (sequence == null) throw new NullableArgumentException();
         TNode curr = root;
         for (int i = 0; i < sequence.length(); i++) {
@@ -96,11 +96,27 @@ public class Trie implements Iterable<String> {
     }
 
     /**
+     * @return true if specified sequence present in trie as a prefix by the first prefix match
+     * @throws NullableArgumentException if specified sequence is null
+     */
+    public boolean contains(String sequence) {
+        if (sequence == null) throw new NullableArgumentException();
+        TNode curr = root;
+        for (int i = 0; i < sequence.length(); i++) {
+            char c = sequence.charAt(i);
+            curr = curr.nodes.get(c);
+            if (curr == null) return false;
+            if (curr.isEnd) return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns true if specified sequence was added to trie otherwise false
      *
      * @throws NullableArgumentException if specified sequence is null
      */
-    public boolean contains(String sequence) {
+    public boolean presents(String sequence) {
         if (sequence == null) throw new NullableArgumentException();
         TNode curr = root;
         TNode last = null;

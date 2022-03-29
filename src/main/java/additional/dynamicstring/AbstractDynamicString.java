@@ -1,5 +1,7 @@
 package additional.dynamicstring;
 
+import lists.AbstractList;
+
 public interface AbstractDynamicString extends Iterable<Character> {
 
     AbstractDynamicString add(AbstractDynamicString s);
@@ -68,6 +70,10 @@ public interface AbstractDynamicString extends Iterable<Character> {
 
     AbstractDynamicString replace(int start, char c);
 
+    AbstractList<AbstractDynamicString> split(String delimiter);
+
+    AbstractList<AbstractDynamicString> split(AbstractDynamicString delimiter);
+
     AbstractDynamicString update(int pos, char c);
 
     AbstractDynamicString clear();
@@ -105,6 +111,14 @@ public interface AbstractDynamicString extends Iterable<Character> {
     int lastIndexOf(String s);
 
     int lastIndexOf(AbstractDynamicString s);
+
+    int indexOf(char c, int pos);
+
+    int indexOf(char[] c, int pos);
+
+    int indexOf(String s, int pos);
+
+    int indexOf(AbstractDynamicString s, int pos);
 
     char getLast();
 
