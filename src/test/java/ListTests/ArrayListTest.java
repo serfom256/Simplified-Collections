@@ -49,6 +49,16 @@ public class ArrayListTest {
     }
 
     @Test
+    public void addIfAbsent() {
+        list.clear();
+        Integer[] testArr = {99, 999, 9999, 9999, 99, 9999};
+        for (Integer i: testArr) {
+            list.addIfAbsent(i);
+        }
+        assertEquals(3, list.getSize());
+    }
+
+    @Test
     public void insert() {
         Integer[] elements = {99, 54, 123, 543};
         Integer[] positions = {0, 8, 19, 16};

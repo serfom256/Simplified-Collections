@@ -2,11 +2,11 @@ package TrieTests;
 
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
-import tries.FuzzyTrie;
 import lists.AbstractList;
 import lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
+import tries.tries.FuzzyTrie;
 
 import java.util.Random;
 
@@ -56,7 +56,7 @@ public class FuzzyTrieTest {
                     break;
             }
             if (!trie.containsPrefix(mutableString.toString())) {
-                String[] founded = trie.getByPrefixFuzzy(mutableString.toString(), 100, 1);
+                String[] founded = trie.lookupPrefix(mutableString.toString(), 100, 1);
                 ArrayList<String> list = new ArrayList<>();
                 list.addAll(founded);
                 assertNotEquals(list.indexOf(s), -1);

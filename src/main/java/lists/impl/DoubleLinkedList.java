@@ -42,6 +42,11 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
         addLast(element);
     }
 
+    @Override
+    public void addIfAbsent(E element) {
+        if (indexOf(element) == -1) add(element);
+    }
+
     @SafeVarargs
     public final void addAll(E... data) {
         for (E obj : data) {

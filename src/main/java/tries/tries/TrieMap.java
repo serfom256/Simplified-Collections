@@ -1,4 +1,4 @@
-package tries;
+package tries.tries;
 
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
@@ -12,11 +12,12 @@ import sets.AbstractSet;
 import sets.Set;
 import stack.AbstractStack;
 import stack.LinkedStack;
+import tries.AbstractTrieMap;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class TrieMap implements AbstractTrieMap<String, String> {
+public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<String, AbstractSet<String>>> {
 
     private final TNode root;
     private int size;
@@ -29,20 +30,20 @@ public class TrieMap implements AbstractTrieMap<String, String> {
         private boolean isVal;
         private TNode prev;
         private final HashTable<Character, TNode> nodes;
-        private final Set<TNode> pairs;
+        private final AbstractList<TNode> pairs;
 
         public TNode(Character element, TNode prev) {
             this.element = element;
             this.prev = prev;
             this.isKey = this.isVal = this.isEnd = false;
             this.nodes = new HashTable<>(4);
-            this.pairs = new Set<>(4);
+            this.pairs = new ArrayList<>(4);
         }
 
         public TNode() {
             this.isKey = this.isVal = this.isEnd = false;
             this.nodes = new HashTable<>();
-            this.pairs = new Set<>(4);
+            this.pairs = new ArrayList<>(4);
             this.prev = null;
         }
     }
@@ -59,15 +60,14 @@ public class TrieMap implements AbstractTrieMap<String, String> {
      * @throws NullableArgumentException if the specified key or value is null
      * @throws IllegalArgumentException  if the length of the specified key is equals 0
      */
-    @Override
     public void add(String key, String value) {
         if (key == null || value == null) throw new NullableArgumentException();
         if (key.length() == 0) throw new IllegalArgumentException();
         TNode keyNode = putSequence(key);
         if (value.length() != 0) {
             TNode valueNode = putSequence(value);
-            keyNode.pairs.add(valueNode);
-            valueNode.pairs.add(keyNode);
+            keyNode.pairs.addIfAbsent(valueNode);
+            valueNode.pairs.addIfAbsent(keyNode);
             valueNode.isEnd = valueNode.isVal = true;
         }
         if (!keyNode.isKey) pairsCount++;
@@ -115,18 +115,15 @@ public class TrieMap implements AbstractTrieMap<String, String> {
      * @return true if removed otherwise false
      * @throws NullableArgumentException if the specified key is null
      */
-    @Override
     public Pair<String, AbstractSet<String>> deleteKey(String key) {
         if (key == null) throw new NullableArgumentException();
-        Pair<String, AbstractSet<String>> result;
         TNode keyNode = getNode(key);
         if (keyNode == null || !keyNode.isKey) return new Pair<>();
-        result = getPair(keyNode);
+        Pair<String, AbstractSet<String>> result = getPair(keyNode);
         deleteValuesFor(keyNode);
         pairsCount--;
         keyNode.isKey = false;
-        if (isSelfLinked(keyNode)) deleteNode(keyNode);
-        if (keyNode.nodes.getSize() == 0 && !keyNode.isVal) deleteNode(keyNode);
+        if (isSelfLinked(keyNode) || keyNode.nodes.getSize() == 0 && !keyNode.isVal) deleteNode(keyNode);
         else if (!keyNode.isVal) keyNode.isEnd = false;
         return result;
     }
@@ -162,8 +159,13 @@ public class TrieMap implements AbstractTrieMap<String, String> {
      * Unlinks all value nodes from the specified node
      */
     private void deleteValuesFor(TNode keyNode) {
-        for (TNode value : keyNode.pairs) {
-            if (value.isKey) continue;
+        int pos = 0;
+        while (pos < keyNode.pairs.getSize()) {
+            TNode value = keyNode.pairs.get(pos);
+            if (value.isKey) {
+                pos++;
+                continue;
+            }
             if (value.pairs.getSize() <= 1) {
                 if (value.nodes.getSize() == 0) deleteNode(value);
                 else value.isVal = false;
@@ -209,7 +211,6 @@ public class TrieMap implements AbstractTrieMap<String, String> {
      *
      * @throws NullableArgumentException if the specified key is null
      */
-    @Override
     public boolean containsKey(String key) {
         if (key == null) throw new NullableArgumentException();
         TNode keyNode = getNode(key);
@@ -221,7 +222,6 @@ public class TrieMap implements AbstractTrieMap<String, String> {
      *
      * @throws NullableArgumentException if the specified value is null
      */
-    @Override
     public boolean containsValue(String value) {
         if (value == null) throw new NullableArgumentException();
         TNode valueNode = getNode(value);
@@ -233,9 +233,9 @@ public class TrieMap implements AbstractTrieMap<String, String> {
      *
      * @throws NullableArgumentException if the specified value is null
      */
-    public boolean contains(String data) {
-        if (data == null) throw new NullableArgumentException();
-        TNode valueNode = getNode(data);
+    public boolean contains(String key) {
+        if (key == null) throw new NullableArgumentException();
+        TNode valueNode = getNode(key);
         return valueNode != null && valueNode.isEnd;
     }
 

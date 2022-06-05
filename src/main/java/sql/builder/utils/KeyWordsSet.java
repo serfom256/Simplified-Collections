@@ -1,7 +1,7 @@
 package sql.builder.utils;
 
 import sql.builder.tokens.Keyword;
-import tries.Trie;
+import tries.tries.Trie;
 
 public class KeyWordsSet {
 

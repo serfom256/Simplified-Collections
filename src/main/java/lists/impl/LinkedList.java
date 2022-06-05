@@ -62,6 +62,11 @@ public class LinkedList<E> implements AbstractLinkedList<E> {
         addLast(element);
     }
 
+    @Override
+    public void addIfAbsent(E element) {
+        if (indexOf(element) == -1) add(element);
+    }
+
     /**
      * Add data to the beginning of current list
      *

@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import sets.AbstractSet;
 import sets.Set;
-import tries.TrieMap;
+import tries.tries.TrieMap;
 
 import java.util.Random;
 
@@ -80,7 +80,6 @@ public class TrieMapTest {
         assertEquals(6, trieMap.getPairsCount());
         assertEquals(66, trieMap.getSize());
         value.clear();
-
         value.addAll("random value", "qwerty");
         assertEquals(new Pair<>("java", value).toString(), trieMap.deleteKey("java").toString());
         assertEquals(5, trieMap.getPairsCount());

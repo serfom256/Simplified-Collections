@@ -19,12 +19,13 @@
 
 ### In developing
 - Sql Builder
+- RadixTrie
 
 
 ### Will be implemented later
 - [ ] Binary tree printer
 - [ ] MaxBinaryHeap (Based on Binary Tree)
-- [ ] Phonetic Algorithm
+- [ ] Phonetic Algorithms
 - [ ] BK Tree
 
 

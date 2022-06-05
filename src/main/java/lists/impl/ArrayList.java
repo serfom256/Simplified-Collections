@@ -42,7 +42,7 @@ public class ArrayList<E> implements AbstractList<E> {
      */
     @Override
     public <T extends Iterable<E>> void addFrom(T data) {
-        if(data == null) throw new NullableArgumentException();
+        if (data == null) throw new NullableArgumentException();
         for (E obj : data) {
             add(obj);
         }
@@ -61,6 +61,11 @@ public class ArrayList<E> implements AbstractList<E> {
             capacity += (capacity >> 1);
             resize(capacity);
         }
+    }
+
+    @Override
+    public void addIfAbsent(E element) {
+        if (indexOf(element) == -1) add(element);
     }
 
     /**

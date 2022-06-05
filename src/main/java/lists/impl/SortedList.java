@@ -107,6 +107,11 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
         }
     }
 
+    @Override
+    public void addIfAbsent(E element) {
+        if (indexOf(element) == -1) add(element);
+    }
+
     /**
      * Creates Left border of the list
      */

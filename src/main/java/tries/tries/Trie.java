@@ -1,4 +1,4 @@
-package tries;
+package tries.tries;
 
 import additional.dynamicstring.AbstractDynamicString;
 import additional.dynamicstring.DynamicLinkedString;
@@ -8,16 +8,17 @@ import sets.RBTSet;
 import hashtables.HashTable;
 import stack.AbstractStack;
 import stack.LinkedStack;
+import tries.AbstractTrie;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Trie implements Iterable<String> {
+public class Trie implements Iterable<String>, AbstractTrie {
 
-    TNode root;
-    int size;
-    int entriesCount;
+    protected TNode root;
+    protected int size;
+    protected int entriesCount;
 
     static class TNode {
         Character element;
@@ -221,8 +222,8 @@ public class Trie implements Iterable<String> {
     }
 
     /**
-     * Removes only associated with specified sequence branch
-     * if the branch contains only the specified sequence
+     * Tries to remove only associated with specified sequence branch
+     * Removes the branch and returns true if branch hasn't successors otherwise false
      *
      * @param sequence sequence to remove
      * @return true if removed otherwise false
@@ -336,6 +337,7 @@ public class Trie implements Iterable<String> {
     /**
      * Returns count all characters in the trie
      */
+    @Override
     public int getSize() {
         return size;
     }
@@ -343,6 +345,7 @@ public class Trie implements Iterable<String> {
     /**
      * Returns count of inserted sequences
      */
+    @Override
     public int getEntriesCount() {
         return entriesCount;
     }

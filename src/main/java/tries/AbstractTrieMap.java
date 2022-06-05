@@ -1,22 +1,17 @@
 package tries;
 
 
-import additional.nodes.Pair;
-import sets.AbstractSet;
-
-public interface AbstractTrieMap<K, V> extends Iterable<Pair<K, AbstractSet<V>>> {
+public interface AbstractTrieMap<K, V> {
 
     enum Verbose {
         MAX,
         MIN
     }
 
-    void add(K key, V value);
+    boolean contains(K key);
 
-    boolean containsKey(K key);
+    int getSize();
 
-    boolean containsValue(V value);
-
-    Pair<K, AbstractSet<V>> deleteKey(K key);
+    int getPairsCount();
 
 }

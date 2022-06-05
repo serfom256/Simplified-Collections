@@ -4,6 +4,8 @@ public interface SimpleList<E> extends Iterable<E> {
 
     void add(E element);
 
+    void addIfAbsent(E element);
+
     <T extends Iterable<E>> void addFrom(T data);
 
     void clear();

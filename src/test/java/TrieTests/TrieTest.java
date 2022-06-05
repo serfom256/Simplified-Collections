@@ -2,7 +2,7 @@ package TrieTests;
 
 import sets.*;
 import lists.impl.ArrayList;
-import tries.Trie;
+import tries.tries.Trie;
 import org.junit.Before;
 import org.junit.Test;
 
