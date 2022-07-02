@@ -60,9 +60,8 @@ public class ArrayStack<E> implements AbstractStack<E> {
 
         data[size] = null;
         if (size < (capacity >> 1)) {
-            int j = (capacity >> 1) + (capacity >> 2);
-            capacity = j;
-            resize(j);
+            capacity = Math.max(capacity >> 1, 1);
+            resize(capacity);
         }
         return toRemove;
     }
@@ -77,7 +76,7 @@ public class ArrayStack<E> implements AbstractStack<E> {
         if (data == null) init(capacity);
         data[size] = element;
         if (++size >= capacity) {
-            capacity += (capacity >> 1);
+            capacity = (capacity << 1) - (capacity >> 1);
             resize(capacity);
         }
     }

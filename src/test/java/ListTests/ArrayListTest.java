@@ -218,6 +218,15 @@ public class ArrayListTest {
         }
     }
 
+
+    @Test
+    public void capacityTest() {
+        ArrayList<Integer>  list = new ArrayList<>(1);
+        list.add(1);
+        list.add(2);
+        assertEquals(2,list.getSize());
+    }
+
     @Test
     public void toObjectArray() {
         list.clear();

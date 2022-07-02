@@ -58,7 +58,7 @@ public class ArrayList<E> implements AbstractList<E> {
         if (data == null) init(capacity);
         data[size] = element;
         if (++size >= capacity) {
-            capacity += (capacity >> 1);
+            capacity = (capacity << 1) - (capacity >> 1);
             resize(capacity);
         }
     }
@@ -81,7 +81,7 @@ public class ArrayList<E> implements AbstractList<E> {
             throw new IndexOutOfCollectionBoundsException();
         }
         if (++size >= capacity) {
-            capacity += (capacity >> 1);
+            capacity = (capacity << 1) - (capacity >> 1);
             resize(capacity);
         }
         System.arraycopy(data, pos, data, pos + 1, size - pos);
@@ -130,7 +130,7 @@ public class ArrayList<E> implements AbstractList<E> {
         System.arraycopy(data, pos + 1, data, pos, size - pos - 1);
         data[--size] = null;
         if (size < (capacity >> 1)) {
-            capacity = (capacity >> 1) + (capacity >> 2);
+            capacity = Math.max(capacity >> 1, 1);
             resize(capacity);
         }
         return toRemove;
@@ -156,7 +156,7 @@ public class ArrayList<E> implements AbstractList<E> {
         }
         size -= gap;
         if (size < (capacity >> 1)) {
-            capacity = (capacity >> 1);
+            capacity = Math.max(capacity >> 1, 1);
             resize(capacity);
         }
     }
