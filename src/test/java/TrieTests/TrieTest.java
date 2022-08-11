@@ -2,18 +2,18 @@ package TrieTests;
 
 import sets.*;
 import lists.impl.ArrayList;
-import tries.tries.Trie;
+import tries.tries.SimpleTrie;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class TrieTest {
-    Trie trie;
+    SimpleTrie trie;
     ArrayList<String> lst;
 
     public TrieTest() {
-        trie = new Trie();
+        trie = new SimpleTrie();
         lst = new ArrayList<>();
         lst.addAll("a", "ab", "abc", "abcd", "abcde", "new data", "user",
                 "qwerty", "q", "qwebcd", "test", "temp", "data", "1234", "12",
@@ -263,7 +263,7 @@ public class TrieTest {
 
     @Test
     public void forEach() {
-        AbstractSet<String> prev = new Set<>();
+        Set<String> prev = new HashedSet<>();
         for (String s : trie) {
             assertFalse(prev.contains(s));
             prev.add(s);

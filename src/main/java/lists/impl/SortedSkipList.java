@@ -1,11 +1,11 @@
 package lists.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.IndexOutOfCollectionBoundsException;
 import additional.exceptions.NullableArgumentException;
-import lists.AbstractList;
-import lists.AbstractSortedList;
+import lists.List;
+import lists.SortedList;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;
@@ -15,7 +15,7 @@ import java.util.Random;
 /**
  * SortedList based on Skip List
  */
-public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E> {
+public class SortedSkipList<E extends Comparable<E>> implements SortedList<E> {
 
     private int size;
     private int height;
@@ -42,15 +42,15 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
         }
     }
 
-    public SortedList() {
+    public SortedSkipList() {
         this(DEFAULT_HEIGHT);
     }
 
-    public SortedList(int height) {
+    public SortedSkipList(int height) {
         this(height, SEED);
     }
 
-    public SortedList(int height, long seed) {
+    public SortedSkipList(int height, long seed) {
         this.height = height;
         this.random = new Random(seed);
         this.borderValue = null;
@@ -117,7 +117,7 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      */
     private void initHeadNodes() {
         if (height > MAX_HEIGHT || height < MIN_HEIGHT) {
-            throw new IllegalArgumentException("Height of the Skip List must be more then 2 and less then 33");
+            throw new IllegalArgumentException("Height of the Skip List must be more than 2 and less than 33");
         }
         for (byte i = 0; i < height; i++) {
             Node<E> newNode = new Node<>(borderValue, null, top, i);
@@ -404,10 +404,10 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
      * @param start start of range
      * @param end   end of range
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
-    public AbstractList<E> slice(int start, int end) {
+    public List<E> slice(int start, int end) {
         if (start < 0 || end > size || start >= end) {
             throw new IndexOutOfCollectionBoundsException();
         }
@@ -494,7 +494,7 @@ public class SortedList<E extends Comparable<E>> implements AbstractSortedList<E
     public String toString() {
         if (size == 0) return "[]";
         Node<E> node = head;
-        AbstractDynamicString result = new DynamicLinkedString("[");
+        DynamicString result = new DynamicLinkedString("[");
         node = node.next;
         while (node.next != null) {
             result.add(node.value).add(", ");

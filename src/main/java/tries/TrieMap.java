@@ -1,7 +1,7 @@
 package tries;
 
 
-public interface AbstractTrieMap<K, V> {
+public interface TrieMap<K, V> {
 
     enum Verbose {
         MAX,

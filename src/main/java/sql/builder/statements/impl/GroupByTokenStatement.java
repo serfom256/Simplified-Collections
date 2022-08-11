@@ -1,12 +1,12 @@
 package sql.builder.statements.impl;
 
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.impl.HavingToken;
 import sql.builder.tokens.impl.LogicalOperationToken;
 
 public class GroupByTokenStatement extends HavingTokenStatement {
 
-    public GroupByTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public GroupByTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 

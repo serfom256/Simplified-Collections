@@ -1,10 +1,10 @@
 package lists.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.IndexOutOfCollectionBoundsException;
 import additional.exceptions.NullableArgumentException;
-import lists.AbstractLinkedList;
+import lists.LinkedList;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
-public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
+public class DoubleLinkedList<E> implements LinkedList<E> {
 
     private static class Node<T> {
         T val;
@@ -264,7 +264,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param end   end of range
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void delete(int start, int end) {
@@ -292,7 +292,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param end   end of range
      * @param data  value for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, int end, E data) {
@@ -306,7 +306,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param data  value for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, E data) {
@@ -321,7 +321,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param end   end of range
      * @param data  values for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, int end, Iterable<E> data) {
@@ -339,7 +339,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param data  values for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, Iterable<E> data) {
@@ -423,7 +423,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of range
      * @param end   end of range
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public DoubleLinkedList<E> slice(int start, int end) {
@@ -582,7 +582,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
      * @param start start of bounds
      * @param end   end of bounds
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     public void setLength(int start, int end) {
         if (start < 0 || end > length || start >= end) {
@@ -630,7 +630,7 @@ public class DoubleLinkedList<E> implements AbstractLinkedList<E> {
     public String toString() {
         if (head == null) return "[]";
         Node<E> first = head;
-        AbstractDynamicString lst = new DynamicLinkedString("[");
+        DynamicString lst = new DynamicLinkedString("[");
         while (first.next != null) {
             lst.add(first.val).add(", ");
             first = first.next;

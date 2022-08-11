@@ -1,12 +1,12 @@
 package sql.builder.statements.impl;
 
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.impl.JoinToken;
 import sql.builder.tokens.impl.WhereToken;
 
 public class FromTokenStatement extends WhereTokenStatement {
 
-    public FromTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public FromTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 

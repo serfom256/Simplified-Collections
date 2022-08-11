@@ -1,18 +1,18 @@
 package sets;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
 import additional.nodes.TreeNode;
-import lists.AbstractList;
+import lists.List;
 import lists.impl.ArrayList;
-import stack.AbstractStack;
+import stack.Stack;
 import stack.LinkedStack;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
+public class RBTSet<E extends Comparable<E>> implements SortedSet<E> {
 
     private enum Color {RED, BLACK}
 
@@ -468,7 +468,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
         return true;
     }
 
-    private void collectAllNodes(AbstractList<E> lst, TNode<E> node) {
+    private void collectAllNodes(List<E> lst, TNode<E> node) {
         if (node != null) {
             collectAllNodes(lst, node.left);
             lst.add(node.element);
@@ -478,7 +478,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
 
     @Override
     public Object[] toObjectArray() {
-        AbstractList<E> result = new ArrayList<>(size + 1);
+        List<E> result = new ArrayList<>(size + 1);
         collectAllNodes(result, root);
         return result.toObjectArray();
     }
@@ -490,7 +490,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * @throws NullableArgumentException if specified set is null
      */
     @Override
-    public RBTSet<E> left(AbstractSet<E> set) {
+    public RBTSet<E> left(Set<E> set) {
         if (set == null) throw new NullableArgumentException();
         RBTSet<E> left = new RBTSet<>();
         for (E element : set) {
@@ -506,7 +506,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * @throws NullableArgumentException if specified set is null
      */
     @Override
-    public RBTSet<E> right(AbstractSet<E> set) {
+    public RBTSet<E> right(Set<E> set) {
         if (set == null) throw new NullableArgumentException();
         RBTSet<E> right = new RBTSet<>();
         for (E element : this) {
@@ -522,7 +522,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * @throws NullableArgumentException if specified set is null
      */
     @Override
-    public RBTSet<E> between(AbstractSet<E> set) {
+    public RBTSet<E> between(Set<E> set) {
         if (set == null) throw new NullableArgumentException();
         RBTSet<E> mid = new RBTSet<>();
         for (E element : set) {
@@ -538,7 +538,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      * @throws NullableArgumentException if specified set is null
      */
     @Override
-    public RBTSet<E> union(AbstractSet<E> set) {
+    public RBTSet<E> union(Set<E> set) {
         if (set == null) throw new NullableArgumentException();
         RBTSet<E> union = new RBTSet<>();
         Iterator<E> foreignIterator = set.iterator();
@@ -574,7 +574,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
 
     private class SelfIterator implements Iterator<E> {
 
-        private final AbstractStack<TNode<E>> stack;
+        private final Stack<TNode<E>> stack;
 
         private TNode<E> next;
 
@@ -607,7 +607,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
      *
      * @param root root of the set
      */
-    private void traversePrint(TNode<E> root, AbstractDynamicString result) {
+    private void traversePrint(TNode<E> root, DynamicString result) {
         if (root != null) {
             traversePrint(root.left, result);
             result.add(root.element).add(", ");
@@ -618,7 +618,7 @@ public class RBTSet<E extends Comparable<E>> implements AbstractSortedSet<E> {
     @Override
     public String toString() {
         if (size == 0) return "{}";
-        AbstractDynamicString res = new DynamicLinkedString();
+        DynamicString res = new DynamicLinkedString();
         traversePrint(root, res);
         return res.subSequence(0, res.getSize() - 2).addFirst('{').add('}').toString();
     }

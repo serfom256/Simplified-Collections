@@ -1,6 +1,6 @@
 package SetTests;
 
-import sets.Set;
+import sets.HashedSet;
 import sets.RBTSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,8 +112,8 @@ public class RBTSetTest {
 
     @Test
     public void left() {
-        Set<Integer> testSet = new Set<>();
-        Set<Integer> fSet = new Set<>();
+        HashedSet<Integer> testSet = new HashedSet<>();
+        HashedSet<Integer> fSet = new HashedSet<>();
         for (int i = 0; i < 10; i++) {
             fSet.add(i);
         }
@@ -121,7 +121,7 @@ public class RBTSetTest {
         testSet.add(2);
         testSet.add(11);
         testSet.add(12);
-        Set<Integer> newSet = fSet.left(testSet);
+        HashedSet<Integer> newSet = fSet.left(testSet);
         assertEquals(2, newSet.getSize());
         assertTrue(newSet.contains(11));
         assertTrue(newSet.contains(11));
@@ -132,8 +132,8 @@ public class RBTSetTest {
 
     @Test
     public void right() {
-        Set<Integer> testSet = new Set<>();
-        Set<Integer> fSet = new Set<>();
+        HashedSet<Integer> testSet = new HashedSet<>();
+        HashedSet<Integer> fSet = new HashedSet<>();
         for (int i = 0; i < 10; i++) {
             fSet.add(i);
         }
@@ -141,7 +141,7 @@ public class RBTSetTest {
         testSet.add(2);
         testSet.add(11);
         testSet.add(12);
-        Set<Integer> newSet = testSet.right(fSet);
+        HashedSet<Integer> newSet = testSet.right(fSet);
         assertEquals(2, newSet.getSize());
         assertTrue(newSet.contains(11));
         assertTrue(newSet.contains(11));
@@ -152,15 +152,15 @@ public class RBTSetTest {
 
     @Test
     public void between() {
-        Set<Integer> testSet = new Set<>();
-        Set<Integer> fSet = new Set<>();
+        HashedSet<Integer> testSet = new HashedSet<>();
+        HashedSet<Integer> fSet = new HashedSet<>();
         for (int i = 0; i <= 5; i++) {
             testSet.add(i);
         }
         for (int i = 3; i < 10; i++) {
             fSet.add(i);
         }
-        Set<Integer> newSet = testSet.between(fSet);
+        HashedSet<Integer> newSet = testSet.between(fSet);
         assertEquals(3, newSet.getSize());
         assertTrue(newSet.contains(3));
         assertTrue(newSet.contains(4));
@@ -175,15 +175,15 @@ public class RBTSetTest {
 
     @Test
     public void union() {
-        Set<Integer> testSet = new Set<>();
-        Set<Integer> fSet = new Set<>();
+        HashedSet<Integer> testSet = new HashedSet<>();
+        HashedSet<Integer> fSet = new HashedSet<>();
         for (int i = 0; i <= 5; i++) {
             testSet.add(i);
         }
         for (int i = 3; i < 100; i++) {
             fSet.add(i);
         }
-        Set<Integer> newSet = testSet.union(fSet);
+        HashedSet<Integer> newSet = testSet.union(fSet);
         assertEquals(100, newSet.getSize());
         for (int i = 0; i < 100; i++) {
             assertTrue(newSet.contains(i));

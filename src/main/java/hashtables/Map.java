@@ -1,6 +1,6 @@
 package hashtables;
 
-public interface AbstractMap<K, V> {
+public interface Map<K, V> {
 
     void add(K key, V value);
 

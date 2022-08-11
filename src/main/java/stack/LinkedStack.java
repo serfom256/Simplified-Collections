@@ -1,13 +1,13 @@
 package stack;
 
-import lists.AbstractLinkedList;
-import lists.impl.LinkedList;
+import lists.LinkedList;
+import lists.impl.SingleLinkedList;
 
-public class LinkedStack<E> implements AbstractStack<E> {
-    private final AbstractLinkedList<E> linkedList;
+public class LinkedStack<E> implements Stack<E> {
+    private final LinkedList<E> linkedList;
 
     public LinkedStack() {
-        linkedList = new LinkedList<>();
+        linkedList = new SingleLinkedList<>();
     }
 
     /**

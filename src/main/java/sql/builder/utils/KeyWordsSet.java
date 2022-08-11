@@ -1,14 +1,14 @@
 package sql.builder.utils;
 
 import sql.builder.tokens.Keyword;
-import tries.tries.Trie;
+import tries.tries.SimpleTrie;
 
 public class KeyWordsSet {
 
-    private final Trie trie;
+    private final SimpleTrie trie;
 
     public KeyWordsSet() {
-        trie = new Trie();
+        trie = new SimpleTrie();
         for (Keyword kw : Keyword.values()) {
             trie.add(kw.getName());
         }

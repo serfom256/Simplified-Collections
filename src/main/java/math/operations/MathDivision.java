@@ -1,6 +1,6 @@
 package math.operations;
 
-public class MathDivision implements AbstractOperation {
+public class MathDivision implements MathOperation {
 
     private final NumberComparator comparator;
     private final MathSubtraction subtraction;

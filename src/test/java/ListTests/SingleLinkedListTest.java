@@ -1,7 +1,7 @@
 package ListTests;
 
-import lists.AbstractList;
-import lists.impl.LinkedList;
+import lists.List;
+import lists.impl.SingleLinkedList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,16 +10,16 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 
-public class LinkedListTest {
-    LinkedList<Integer> list;
+public class SingleLinkedListTest {
+    SingleLinkedList<Integer> list;
 
-    public LinkedListTest() {
-        this.list = new LinkedList<>();
+    public SingleLinkedListTest() {
+        this.list = new SingleLinkedList<>();
     }
 
     @Before
     public void setUp() {
-        list = new LinkedList<>();
+        list = new SingleLinkedList<>();
         Integer[] testArr = new Integer[]{9, 2, 5, 7, 1, 8, 0, 4, 3};
         list.addAll(testArr);
     }
@@ -177,7 +177,7 @@ public class LinkedListTest {
         list.clear();
         list.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         Integer[] testArr = {6, 7, 8, 9, 10};
-        AbstractList<Integer> sublist = list.slice(5, 10);
+        List<Integer> sublist = list.slice(5, 10);
         for (int i = 0; i < testArr.length; i++) {
             assertEquals(testArr[i], sublist.get(i));
         }

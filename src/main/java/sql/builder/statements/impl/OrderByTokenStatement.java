@@ -1,13 +1,13 @@
 package sql.builder.statements.impl;
 
 import sql.builder.statements.TerminationStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.impl.PagingToken;
 import sql.builder.tokens.impl.LogicalOperationToken;
 
 public class OrderByTokenStatement extends TerminationStatement {
 
-    public OrderByTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public OrderByTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 

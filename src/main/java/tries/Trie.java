@@ -1,6 +1,6 @@
 package tries;
 
-public interface AbstractTrie {
+public interface Trie {
 
     int getSize();
 

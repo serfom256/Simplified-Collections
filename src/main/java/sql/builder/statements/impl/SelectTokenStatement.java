@@ -1,13 +1,13 @@
 package sql.builder.statements.impl;
 
-import sql.builder.statements.AbstractStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.statements.Statement;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.impl.DistinctToken;
 import sql.builder.tokens.impl.FromToken;
 
-public class SelectTokenStatement extends AbstractStatement {
+public class SelectTokenStatement extends Statement {
 
-    public SelectTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public SelectTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 
@@ -23,7 +23,7 @@ public class SelectTokenStatement extends AbstractStatement {
         return nextToken.from(schema, table);
     }
 
-    public FromTokenStatement from(final AbstractToken nestedQuery) {
+    public FromTokenStatement from(final SqlToken nestedQuery) {
         FromToken nextToken = new FromToken(getFirstToken());
         getPrevToken().setNextToken(nextToken);
         return nextToken.from(nestedQuery);

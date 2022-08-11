@@ -1,15 +1,15 @@
 package sql.builder.tokens;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 
-public abstract class TerminationToken extends AbstractToken {
+public abstract class TerminationToken extends SqlToken {
 
-    protected TerminationToken(AbstractToken firstToken) {
+    protected TerminationToken(SqlToken firstToken) {
         super(firstToken);
     }
 
-    public AbstractDynamicString buildNextOrStop() {
+    public DynamicString buildNextOrStop() {
         return getNextToken() == null ? new DynamicLinkedString() : getNextToken().build();
     }
 

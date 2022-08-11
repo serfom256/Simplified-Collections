@@ -1,19 +1,19 @@
 package sql.builder.tokens.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import sql.builder.statements.impl.SelectTokenStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.Keyword;
 import sql.builder.utils.SqlUtil;
 
-public class SelectToken extends AbstractToken {
+public class SelectToken extends SqlToken {
 
-    private final AbstractDynamicString args;
+    private final DynamicString args;
 
     private final SelectTokenStatement selectTokenStatement;
 
-    public SelectToken(AbstractToken firstToken) {
+    public SelectToken(SqlToken firstToken) {
         super(firstToken);
         this.args = new DynamicLinkedString();
         this.selectTokenStatement = new SelectTokenStatement(this, firstToken);
@@ -38,8 +38,8 @@ public class SelectToken extends AbstractToken {
     }
 
     @Override
-    public AbstractDynamicString build() {
-        AbstractDynamicString query = new DynamicLinkedString(getKeyWord().getName());
+    public DynamicString build() {
+        DynamicString query = new DynamicLinkedString(getKeyWord().getName());
         if (getNextToken().getKeyWord() == Keyword.DISTINCT) {
             query.add(' ').add(getNextToken().getKeyWord());
         }

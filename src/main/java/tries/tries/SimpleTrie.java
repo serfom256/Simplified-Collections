@@ -1,20 +1,20 @@
 package tries.tries;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
-import sets.AbstractSet;
+import sets.Set;
 import sets.RBTSet;
 import hashtables.HashTable;
-import stack.AbstractStack;
+import stack.Stack;
 import stack.LinkedStack;
-import tries.AbstractTrie;
+import tries.Trie;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Trie implements Iterable<String>, AbstractTrie {
+public class SimpleTrie implements Iterable<String>, Trie {
 
     protected TNode root;
     protected int size;
@@ -40,7 +40,7 @@ public class Trie implements Iterable<String>, AbstractTrie {
         }
     }
 
-    public Trie() {
+    public SimpleTrie() {
         this.root = new TNode();
         this.size = 0;
     }
@@ -153,11 +153,11 @@ public class Trie implements Iterable<String>, AbstractTrie {
      */
     public String[] getByPrefix(String prefix, int count) {
         if (prefix == null) throw new NullableArgumentException();
-        if (count <= 0) throw new IllegalArgumentException("Count must be more then 0");
+        if (count <= 0) throw new IllegalArgumentException("Count must be more than 0");
         if (prefix.length() == 0) return new String[0];
-        AbstractSet<String> list = new RBTSet<>();
+        Set<String> list = new RBTSet<>();
         TNode curr = root;
-        AbstractDynamicString result = new DynamicLinkedString();
+        DynamicString result = new DynamicLinkedString();
         for (int i = 0; i < prefix.length(); i++) {
             char c = prefix.charAt(i);
             if (!curr.nodes.containsKey(c)) return new String[0];
@@ -182,7 +182,7 @@ public class Trie implements Iterable<String>, AbstractTrie {
      * @param count  number of sequences to collect
      *               Not taken into account if specified count of sequences not found in the specified branch
      */
-    int collect(AbstractSet<String> result, AbstractDynamicString prefix, HashTable<Character, TNode> start, int count) {
+    int collect(Set<String> result, DynamicString prefix, HashTable<Character, TNode> start, int count) {
         if (start == null || count == 0) return count;
         for (Character c : start) {
             TNode node = start.get(c);
@@ -353,7 +353,7 @@ public class Trie implements Iterable<String>, AbstractTrie {
     /**
      * Helps to collect all entries from the trie
      */
-    private AbstractDynamicString getAll(AbstractDynamicString result, AbstractDynamicString current, HashTable<Character, TNode> nodes) {
+    private DynamicString getAll(DynamicString result, DynamicString current, HashTable<Character, TNode> nodes) {
         for (Character c : nodes) {
             TNode node = nodes.get(c);
             current.add(node.element);
@@ -367,7 +367,7 @@ public class Trie implements Iterable<String>, AbstractTrie {
     @Override
     public String toString() {
         if (entriesCount == 0) return "[]";
-        AbstractDynamicString res = getAll(new DynamicLinkedString("["), new DynamicLinkedString(), root.nodes);
+        DynamicString res = getAll(new DynamicLinkedString("["), new DynamicLinkedString(), root.nodes);
         return res.replace(res.getSize() - 2, ']').toString();
     }
 
@@ -380,7 +380,7 @@ public class Trie implements Iterable<String>, AbstractTrie {
     private class SelfIterator implements Iterator<String> {
         private int position = 0;
         DynamicLinkedString tempString = new DynamicLinkedString();
-        AbstractStack<Pair> prevNodes = new LinkedStack<>();
+        Stack<Pair> prevNodes = new LinkedStack<>();
 
 
         public SelfIterator() {

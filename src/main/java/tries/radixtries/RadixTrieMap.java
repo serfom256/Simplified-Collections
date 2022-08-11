@@ -4,12 +4,12 @@ import additional.exceptions.NullableArgumentException;
 import additional.nodes.HashNode;
 import additional.nodes.Pair;
 import hashtables.HashTable;
-import lists.AbstractList;
+import lists.List;
 import lists.impl.ArrayList;
-import sets.Set;
-import tries.AbstractTrieMap;
+import sets.HashedSet;
+import tries.TrieMap;
 
-public class RadixTrieMap implements AbstractTrieMap<String, String> {
+public class RadixTrieMap implements TrieMap<String, String> {
 
     private int size;
     public final HashTable<Character, TNode> rootNodes;
@@ -17,9 +17,9 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
     private static class SearchEntity {
         private final int count;
         private final String toSearch;
-        private final Set<Pair<String, AbstractList<String>>> founded;
+        private final HashedSet<Pair<String, List<String>>> founded;
 
-        public SearchEntity(int count, String toSearch, Set<Pair<String, AbstractList<String>>> founded) {
+        public SearchEntity(int count, String toSearch, HashedSet<Pair<String, List<String>>> founded) {
             this.count = count;
             this.toSearch = toSearch;
             this.founded = founded;
@@ -33,7 +33,7 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
             return count <= founded.getSize();
         }
 
-        public Set<Pair<String, AbstractList<String>>> getResult() {
+        public HashedSet<Pair<String, List<String>>> getResult() {
             return founded;
         }
     }
@@ -46,8 +46,8 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
     private static class TNode {
 
         private String prefix;
-        private AbstractList<TNode> successors;
-        private AbstractList<TNode> pairs;
+        private List<TNode> successors;
+        private List<TNode> pairs;
         private TNode prev;
         private boolean isEnd = false;
 
@@ -227,7 +227,7 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
 //        return lst;
 //    }
     //fixme fuzzy search works incorrectly
-    public Set<Pair<String, AbstractList<String>>> lookup(String toSearch, int distance, int count) {
+    public HashedSet<Pair<String, List<String>>> lookup(String toSearch, int distance, int count) {
         TNode curr = rootNodes.get(toSearch.charAt(0));
         if (curr == null) {
             return search(0, 0, null, toSearch, distance, count).getResult();
@@ -254,7 +254,7 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
     }
 
     private SearchEntity search(int p1, int p2, TNode curr, String toSearch, int distance, int count) {
-        SearchEntity result = new SearchEntity(count, toSearch, new Set<>());
+        SearchEntity result = new SearchEntity(count, toSearch, new HashedSet<>());
         int temp = p2;
         if (temp == 0) ++temp;
         while (curr != null && !result.isFounded()) {
@@ -370,18 +370,18 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
         }
     }
 
-    private void collectAll(Set<Pair<String, AbstractList<String>>> founded, TNode node) {
+    private void collectAll(HashedSet<Pair<String, List<String>>> founded, TNode node) {
         if (node == null) return;
         collectForNode(founded, node);
     }
 
-    private void collectForNode(Set<Pair<String, AbstractList<String>>> founded, TNode node) {
+    private void collectForNode(HashedSet<Pair<String, List<String>>> founded, TNode node) {
         if (node.pairs == null) {
             founded.add(new Pair<>(getReversed(node), null));
             return;
         }
-        AbstractList<String> values = new ArrayList<>(2);
-        Pair<String, AbstractList<String>> pair = new Pair<>();
+        List<String> values = new ArrayList<>(2);
+        Pair<String, List<String>> pair = new Pair<>();
         String v = getReversed(node);
         pair.setKey(v);
         for (TNode val : node.pairs) {
@@ -400,8 +400,7 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
         return prefix.toString();
     }
 
-    private int levenstainDistance(String s1, String s2, int start1, int start2) {
-        if (s1.length() == 1 && s2.length() == 1) return s1.charAt(0) == s2.charAt(0) ? 0 : 1;
+    private static int levenstainDistance(String s1, String s2, int start1, int start2) {
         if (start2 >= s2.length()) return s1.length() - start1;
         if (start1 >= s1.length()) return s2.length() - start2;
         int p1 = start1, p2 = start2;
@@ -410,8 +409,8 @@ public class RadixTrieMap implements AbstractTrieMap<String, String> {
             p1++;
             p2++;
         }
-        if (p1 == d1) return d2 + 1 - p2;
-        if (p2 == d2) return d1 + 1 - p1;
+        if (p1 == d1) return d2 - (p1 - 1);
+        if (p2 == d2) return d1 - (p2 - 1);
         p1--;
         p2--;
         while (d1 > p1 && d2 > p2 && s1.charAt(d1) == s2.charAt(d2)) {

@@ -1,20 +1,20 @@
 package sql.builder.tokens.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import sql.builder.tokens.Keyword;
 import sql.builder.utils.SqlUtil;
 import sql.builder.statements.impl.OrderByTokenStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.TerminationToken;
 
 
 public class OrderByToken extends TerminationToken {
 
-    private final AbstractDynamicString columns;
+    private final DynamicString columns;
     private final OrderByTokenStatement orderByTokenStatement;
 
-    public OrderByToken(AbstractToken firstToken) {
+    public OrderByToken(SqlToken firstToken) {
         super(firstToken);
         this.orderByTokenStatement = new OrderByTokenStatement(this, firstToken);
         this.columns = new DynamicLinkedString();
@@ -34,8 +34,8 @@ public class OrderByToken extends TerminationToken {
     }
 
     @Override
-    public AbstractDynamicString build() {
-        AbstractDynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
+    public DynamicString build() {
+        DynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
         return query.add(columns).add(buildNextOrStop());
     }
 

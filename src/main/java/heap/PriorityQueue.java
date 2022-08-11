@@ -1,6 +1,6 @@
 package heap;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
 
@@ -48,7 +48,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     @SuppressWarnings("unchecked")
     private void initQueue(int capacity) {
         if (capacity < 10) {
-            throw new IllegalArgumentException("Capacity if priorityQueue must be more then 10");
+            throw new IllegalArgumentException("Capacity if priorityQueue must be more than 10");
         }
         queue = new Data[capacity];
     }
@@ -335,7 +335,7 @@ public class PriorityQueue<T extends Comparable<? super T>> {
     public String toString() {
         if (size == 0) return "[]";
 
-        AbstractDynamicString res = new DynamicLinkedString("[");
+        DynamicString res = new DynamicLinkedString("[");
         for (int i = 0; i < size - 1; i++) {
             res.add("{").add(queue[i].value).add(":").add(queue[i].priority).add("}, ");
         }

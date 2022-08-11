@@ -1,7 +1,7 @@
 package hashtables;
 
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
 import additional.nodes.HashNode;
@@ -9,7 +9,7 @@ import additional.nodes.HashNode;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
+public class HashTable<K, V> implements Iterable<K>, Map<K, V> {
 
     private Node<K, V>[] table;
 
@@ -67,7 +67,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     }
 
     /**
-     * Resize Table if current Table full more then LOAD_FACTOR %
+     * Resize Table if current Table full more than LOAD_FACTOR %
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void resizeTable() {
@@ -110,7 +110,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
 
     /**
      * Appends and associate specified key with specified value in the HashTable
-     * If the current table size equals or higher then threshold param(table capacity * table load factor) table will be resized
+     * If the current table size equals or higher than threshold param(table capacity * table load factor) table will be resized
      *
      * @param key   key to associate with specified value
      * @param value value to associate with specified key
@@ -168,7 +168,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
             return true;
         }
         for (Node<K, V> current = table[pos]; current.next != null; current = current.next) {
-            if (current.next.value.equals(value) && current.next.hash == keyHash) {// if node with specified value found
+            if (current.next.hash == keyHash && current.next.value.equals(value)) {// if node with specified value found
                 if (current.next.next == null) { // if removed item is last in the bucket
                     current.next = null;
                 } else {
@@ -184,13 +184,14 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
     /**
      * Remove bucket with specified hash in the HashTable
      *
-     * @param pos  position of bucket from which remove item by hash
-     * @param hash of removed bucket
+     * @param pos position of bucket from which remove item by hash
+     * @param key key to remove
      * @return removed bucket with specified hash
      */
-    private V removeByHash(int pos, int hash) {
+    private V removeKey(int pos, K key) {
+        final int hash = generateHash(key);
         V value = table[pos].value;
-        if (table[pos].hash == hash) {
+        if (table[pos].hash == hash && table[pos].key.equals(key)) {
             table[pos] = table[pos].next;
             size--;
             return value;
@@ -223,7 +224,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
         if (table == null || table[pos] == null) {
             return null;
         }
-        return removeByHash(pos, generateHash(key));
+        return removeKey(pos, key);
     }
 
     /**
@@ -240,7 +241,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
         int keyHash = generateHash(key);
         V oldVal = null;
         for (Node<K, V> current = table[getPosByKey(key, capacity)]; current != null; current = current.next) {
-            if (current.hash == keyHash) {
+            if (current.hash == keyHash && key.equals(current.key)) {
                 oldVal = current.value;
                 current.value = value;
                 break;
@@ -265,7 +266,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
         }
         addToBucket(
                 getPosByKey(newKey, capacity),
-                new Node<>(newKey, removeByHash(pos, generateHash(oldKey)), generateHash(newKey)),
+                new Node<>(newKey, removeKey(pos, oldKey), generateHash(newKey)),
                 table);
         size++;
         return true;
@@ -284,7 +285,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
         int keyHash = generateHash(key);
         if (table != null && table[pos] != null) {
             for (Node<K, V> current = table[pos]; current != null; current = current.next) {
-                if (current.hash == keyHash) {
+                if (current.hash == keyHash && key.equals(current.key)) {
                     return current.value;
                 }
             }
@@ -360,7 +361,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
         if (table == null || key == null) return false;
         int keyHash = generateHash(key);
         for (Node<K, V> current = table[getPosByKey(key, capacity)]; current != null; current = current.next) {
-            if (current.hash == keyHash) {
+            if (current.hash == keyHash && key.equals(current.key)) {
                 return true;
             }
         }
@@ -509,7 +510,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
      * @return string of all node keys and node values
      */
     private String bucketToString(Node<K, V> node) {
-        AbstractDynamicString res = new DynamicLinkedString("[").add(node.key).add(":").add(node.value);
+        DynamicString res = new DynamicLinkedString("[").add(node.key).add(":").add(node.value);
         Node<K, V> prev = node;
         for (Node<K, V> current = node.next; current != null; current = current.next) {
             if (prev.hash != current.hash) {
@@ -525,7 +526,7 @@ public class HashTable<K, V> implements Iterable<K>, AbstractMap<K, V> {
         if (size == 0) {
             return "{}";
         }
-        AbstractDynamicString res = new DynamicLinkedString("{");
+        DynamicString res = new DynamicLinkedString("{");
         for (int i = 0; i < capacity; i++) {
             if (table[i] != null) {
                 res.add(bucketToString(table[i]));

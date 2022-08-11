@@ -1,8 +1,8 @@
 package tries.radixtries;
 
-import tries.AbstractTrie;
+import tries.Trie;
 
-public class RadixTrie implements AbstractTrie {
+public class RadixTrie implements Trie {
     @Override
     public int getSize() {
         return 0;

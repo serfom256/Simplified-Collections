@@ -1,20 +1,20 @@
 package sql.builder.statements;
 
-import additional.dynamicstring.AbstractDynamicString;
-import sql.builder.tokens.AbstractToken;
+import additional.dynamicstring.DynamicString;
+import sql.builder.tokens.SqlToken;
 
-public abstract class TerminationStatement extends AbstractStatement {
+public abstract class TerminationStatement extends Statement {
 
-    protected TerminationStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    protected TerminationStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 
-    public AbstractDynamicString build() {
+    public DynamicString build() {
         return getFirstToken().build();
     }
 
     public String prettify() {
-        AbstractDynamicString sqlQuery = getFirstToken().build();
+        DynamicString sqlQuery = getFirstToken().build();
         return getFirstToken().getPrettifyAbleQueryProvider().prettify(sqlQuery);
     }
 

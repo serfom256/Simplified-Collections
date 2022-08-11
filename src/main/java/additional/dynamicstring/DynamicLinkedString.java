@@ -1,13 +1,13 @@
 package additional.dynamicstring;
 
 import additional.exceptions.IndexOutOfCollectionBoundsException;
-import lists.AbstractList;
+import lists.List;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class DynamicLinkedString implements AbstractDynamicString {
+public class DynamicLinkedString implements DynamicString {
 
     private static class Node {
         char val;
@@ -53,7 +53,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
         addFirst(c);
     }
 
-    public DynamicLinkedString(AbstractDynamicString str) {
+    public DynamicLinkedString(DynamicString str) {
         this();
         for (char c : str) {
             add(c);
@@ -66,7 +66,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @param s String to add to the last
      */
     @Override
-    public DynamicLinkedString add(AbstractDynamicString s) {
+    public DynamicLinkedString add(DynamicString s) {
         insertSequenceAfter(last, s.toString(), 0);
         return this;
     }
@@ -115,7 +115,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Appends all characters from the specified position of the string to end of dynamicLinkedString
      */
     @Override
-    public DynamicLinkedString add(AbstractDynamicString s, int pos) {
+    public DynamicLinkedString add(DynamicString s, int pos) {
         insertSequenceAfter(last, s.toString(), pos);
         return this;
     }
@@ -170,7 +170,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Inserts specified String s after specified node from specified position in String
      */
     @Override
-    public DynamicLinkedString addFirst(AbstractDynamicString s) {
+    public DynamicLinkedString addFirst(DynamicString s) {
         for (char c : s) {
             addFirst(c);
         }
@@ -278,7 +278,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @param s   String to insert
      */
     @Override
-    public DynamicLinkedString insert(int pos, AbstractDynamicString s) {
+    public DynamicLinkedString insert(int pos, DynamicString s) {
         return insert(pos, s.toString());
     }
 
@@ -433,7 +433,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Removes first character of String if string size more then 0
+     * Removes first character of String if string size more than 0
      */
     @Override
     public DynamicLinkedString deleteFirst() {
@@ -446,7 +446,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
     }
 
     /**
-     * Removes last character of String if string size more then 0
+     * Removes last character of String if string size more than 0
      */
     @Override
     public DynamicLinkedString deleteLast() {
@@ -578,7 +578,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Splits current dynamicLinkedString by the specified delimiter
      */
     @Override
-    public AbstractList<AbstractDynamicString> split(String delimiter) {
+    public List<DynamicString> split(String delimiter) {
         //todo implement it!!!
         throw new IllegalStateException("Method not implemented yet!!!");
     }
@@ -587,7 +587,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Splits current dynamicLinkedString by the specified delimiter
      */
     @Override
-    public AbstractList<AbstractDynamicString> split(AbstractDynamicString delimiter) {
+    public List<DynamicString> split(DynamicString delimiter) {
         //todo implement it!!!
         throw new IllegalStateException("Method not implemented yet!!!");
     }
@@ -757,7 +757,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Returns true if this dynamicLinkedString starts with specified string otherwise false
      */
     @Override
-    public boolean startsWith(AbstractDynamicString s) {
+    public boolean startsWith(DynamicString s) {
         if (s.getSize() > size) return false;
         Node first = head;
         for (Character c : s) {
@@ -793,7 +793,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * Returns true if this dynamicLinkedString ends with specified string otherwise false
      */
     @Override
-    public boolean endsWith(AbstractDynamicString s) {
+    public boolean endsWith(DynamicString s) {
         if (s.getSize() > size) return false;
         Node first = getNodeByPos(size - s.getSize());
         for (Character c : s) {
@@ -899,7 +899,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @return first String position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
-    public int indexOf(AbstractDynamicString s) {
+    public int indexOf(DynamicString s) {
         return indexOf(s, 0);
     }
 
@@ -909,7 +909,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @return first String position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
-    public int indexOf(AbstractDynamicString s, int pos) {
+    public int indexOf(DynamicString s, int pos) {
         int strSize = s.getSize();
         if (strSize > size || strSize == 0) return -1;
         Iterator<Character> foreignIterator = s.iterator();
@@ -994,7 +994,7 @@ public class DynamicLinkedString implements AbstractDynamicString {
      * @return last String position in this dynamicLinkedString if founded otherwise -1
      */
     @Override
-    public int lastIndexOf(AbstractDynamicString s) {
+    public int lastIndexOf(DynamicString s) {
         return lastIndexOf(s.toCharArray());
     }
 

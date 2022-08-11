@@ -1,9 +1,9 @@
 package math.operations;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 
-public class MathSubtraction implements AbstractOperation {
+public class MathSubtraction implements MathOperation {
 
     private final MathMin mathMin;
     private final MathMax mathMax;
@@ -22,7 +22,7 @@ public class MathSubtraction implements AbstractOperation {
         boolean isMin = min.equals(s1);
         min = new DynamicLinkedString(min).reverse().toString();
         int maxLen = max.length(), minLen = min.length();
-        AbstractDynamicString result = new DynamicLinkedString();
+        DynamicString result = new DynamicLinkedString();
         for (int i = 0; i < minLen; i++) {
             carry += (max.charAt(i) - '0') - (min.charAt(i) - '0');
             if (carry < 0) {

@@ -28,5 +28,5 @@ public interface SimpleList<E> extends Iterable<E> {
 
     <T> E[] toArray(Class<T> type);
 
-    AbstractList<E> slice(int start, int end);
+    List<E> slice(int start, int end);
 }

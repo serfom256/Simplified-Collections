@@ -1,6 +1,6 @@
 package lists;
 
-public interface AbstractLinkedList<E> extends AbstractList<E> {
+public interface LinkedList<E> extends List<E> {
 
     void addFirst(E element);
 

@@ -1,23 +1,23 @@
 package tries.tries;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
 import additional.nodes.HashNode;
 import additional.nodes.Pair;
 import hashtables.HashTable;
-import lists.AbstractList;
+import lists.List;
 import lists.impl.ArrayList;
-import sets.AbstractSet;
 import sets.Set;
-import stack.AbstractStack;
+import sets.HashedSet;
+import stack.Stack;
 import stack.LinkedStack;
-import tries.AbstractTrieMap;
+import tries.TrieMap;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<String, AbstractSet<String>>> {
+public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<String, Set<String>>> {
 
     private final TNode root;
     private int size;
@@ -30,7 +30,7 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
         private boolean isVal;
         private TNode prev;
         private final HashTable<Character, TNode> nodes;
-        private final AbstractList<TNode> pairs;
+        private final List<TNode> pairs;
 
         public TNode(Character element, TNode prev) {
             this.element = element;
@@ -48,7 +48,7 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
         }
     }
 
-    public TrieMap() {
+    public SimpleTrieMap() {
         this.root = new TNode();
         this.root.nodes.setCapacity(32);
         this.size = 0;
@@ -115,11 +115,11 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
      * @return true if removed otherwise false
      * @throws NullableArgumentException if the specified key is null
      */
-    public Pair<String, AbstractSet<String>> deleteKey(String key) {
+    public Pair<String, Set<String>> deleteKey(String key) {
         if (key == null) throw new NullableArgumentException();
         TNode keyNode = getNode(key);
         if (keyNode == null || !keyNode.isKey) return new Pair<>();
-        Pair<String, AbstractSet<String>> result = getPair(keyNode);
+        Pair<String, Set<String>> result = getPair(keyNode);
         deleteValuesFor(keyNode);
         pairsCount--;
         keyNode.isKey = false;
@@ -199,7 +199,7 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
      * @return key-values pair if founded otherwise empty pair
      * @throws NullableArgumentException if the specified key is null
      */
-    public Pair<String, AbstractSet<String>> get(String key) {
+    public Pair<String, Set<String>> get(String key) {
         if (key == null) throw new NullableArgumentException();
         TNode curr = getNode(key);
         if (curr == null || !curr.isKey) return new Pair<>();
@@ -245,14 +245,14 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
      * @param verbose  range of founded results
      * @return list of founded pairs
      * @throws NullableArgumentException if the specified key is null
-     * @throws IllegalArgumentException  if the specified input length less then specified distance
+     * @throws IllegalArgumentException  if the specified input length less than specified distance
      */
-    public AbstractList<Pair<String, AbstractSet<String>>> lookup(String input, int distance, Verbose verbose) {
+    public List<Pair<String, Set<String>>> lookup(String input, int distance, Verbose verbose) {
         if (input == null) throw new NullableArgumentException();
         if (input.length() <= 1 || input.length() <= distance) {
-            throw new IllegalArgumentException("Input length must be more then specified distance");
+            throw new IllegalArgumentException("Input length must be more than specified distance");
         }
-        AbstractList<Pair<String, AbstractSet<String>>> founded = new ArrayList<>();
+        List<Pair<String, Set<String>>> founded = new ArrayList<>();
         TNode curr = root;
         int len = input.length();
         for (int i = 0; i < len; i++) {
@@ -262,16 +262,9 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
                 search(i, curr, input, distance, founded, verbose);
                 return founded;
             }
-            if (i == len - 1 && next.isEnd && i + distance >= len) {
-                collectAll(founded, curr);
-            }
             curr = next;
         }
-        if (!curr.isEnd) {
-            search(len, curr, input, distance, founded, verbose);
-        } else {
-            collectAll(founded, curr);
-        }
+        search(len, curr, input, distance, founded, verbose);
         return founded;
     }
 
@@ -283,9 +276,10 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
      * @param founded  list for collecting founded results
      * @param verbose  node traverse range  MIN - only for current node MAX - for all nodes from current down to root node
      */
-    private void search(int pos, TNode curr, String toSearch, int distance, AbstractList<Pair<String, AbstractSet<String>>> founded, Verbose verbose) {
+    private void search(int pos, TNode curr, String toSearch, int distance, List<Pair<String, Set<String>>> founded, Verbose verbose) {
+        Set<TNode> memo = new HashedSet<>();
         for (int j = pos; j >= 0; j--) {
-            fuzzyCompound(curr, toSearch, j, distance, founded);
+            fuzzyCompound(curr, toSearch, j, distance, founded, memo);
             if (verbose != Verbose.MAX && founded.getSize() != 0) break;
             curr = curr.prev;
         }
@@ -299,19 +293,19 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
      * @param typos   maximum count of typos in searched word
      * @param founded list of founded pairs
      */
-    private void fuzzyCompound(TNode start, String word, int pos, int typos, AbstractList<Pair<String, AbstractSet<String>>> founded) {
+    private void fuzzyCompound(TNode start, String word, int pos, int typos, List<Pair<String, Set<String>>> founded, Set<TNode> memo) {
         if (typos < 0) return;
         if (pos + typos >= word.length() && start.prev != null) {
-            collectForNode(founded, start);
+            collectForNode(founded, start, memo);
         }
         for (Character k : start.nodes) {
             TNode v = start.nodes.get(k);
             if (pos < word.length() && k.equals(word.charAt(pos))) {
-                fuzzyCompound(v, word, pos + 1, typos, founded);
+                fuzzyCompound(v, word, pos + 1, typos, founded, memo);
             } else {
-                fuzzyCompound(v, word, pos + 1, typos - 1, founded);
-                fuzzyCompound(v, word, pos, typos - 1, founded);
-                fuzzyCompound(start, word, pos + 1, typos - 1, founded);
+                fuzzyCompound(v, word, pos + 1, typos - 1, founded, memo);
+                fuzzyCompound(v, word, pos, typos - 1, founded, memo);
+                fuzzyCompound(start, word, pos + 1, typos - 1, founded, memo);
             }
         }
     }
@@ -321,10 +315,11 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
      *
      * @param set result
      */
-    private void collectForNode(AbstractList<Pair<String, AbstractSet<String>>> set, TNode node) {
-        if (!node.isEnd) return;
-        Set<String> values = new Set<>(2);
-        Pair<String, AbstractSet<String>> pair = new Pair<>();
+    private void collectForNode(List<Pair<String, Set<String>>> set, TNode node, Set<TNode> memo) {
+        if (!node.isEnd || memo.contains(node)) return;
+        memo.add(node);
+        HashedSet<String> values = new HashedSet<>(2);
+        Pair<String, Set<String>> pair = new Pair<>();
         String v = getReversed(node);
         if (node.isKey) pair.setKey(v);
         else values.add(v);
@@ -336,24 +331,24 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
         set.add(pair);
     }
 
-    /**
-     * Collect all key-values pairs from the specified node
-     *
-     * @param set result
-     */
-    private void collectAll(AbstractList<Pair<String, AbstractSet<String>>> set, TNode node) {
-        for (HashNode<Character, TNode> n : node.nodes.items) {
-            if (n.getValue().isEnd) {
-                collectForNode(set, n.getValue());
-            }
-        }
-    }
+//    /**
+//     * Collect all key-values pairs from the specified node
+//     *
+//     * @param set result
+//     */
+//    private void collectAll(List<Pair<String, Set<String>>> set, TNode node) {
+//        for (HashNode<Character, TNode> n : node.nodes.items) {
+//            if (n.getValue().isEnd) {
+//                collectForNode(set, n.getValue());
+//            }
+//        }
+//    }
 
     /**
      * Returns String which contains characters from the specified node to the TrieMap root
      */
     private String getReversed(TNode node) {
-        AbstractDynamicString prefix = new DynamicLinkedString();
+        DynamicString prefix = new DynamicLinkedString();
         while (node != root) {
             prefix.addFirst(node.element);
             node = node.prev;
@@ -378,9 +373,9 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
     /**
      * Returns pair of the key and values which linked to the specified node
      */
-    private Pair<String, AbstractSet<String>> getPair(TNode node) {
-        AbstractSet<String> values = new Set<>();
-        Pair<String, AbstractSet<String>> pair = new Pair<>(getReversed(node), values);
+    private Pair<String, Set<String>> getPair(TNode node) {
+        Set<String> values = new HashedSet<>();
+        Pair<String, Set<String>> pair = new Pair<>(getReversed(node), values);
         for (TNode n : node.pairs) {
             if (n.isVal) values.add(getReversed(n));
         }
@@ -388,13 +383,13 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
     }
 
     @Override
-    public Iterator<Pair<String, AbstractSet<String>>> iterator() {
+    public Iterator<Pair<String, Set<String>>> iterator() {
         return new SelfIterator();
     }
 
-    private class SelfIterator implements Iterator<Pair<String, AbstractSet<String>>> {
+    private class SelfIterator implements Iterator<Pair<String, Set<String>>> {
         private int position = 0;
-        AbstractStack<IteratorPair> prevNodes = new LinkedStack<>();
+        Stack<IteratorPair> prevNodes = new LinkedStack<>();
 
 
         public SelfIterator() {
@@ -405,7 +400,7 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
         class IteratorPair {
             private final TNode node;
             private final Iterator<Character> iterator;
-            private Pair<String, AbstractSet<String>> pair;
+            private Pair<String, Set<String>> pair;
 
             public IteratorPair(TNode node, Iterator<Character> iterator) {
                 this.node = node;
@@ -413,11 +408,11 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
                 this.pair = null;
             }
 
-            public Pair<String, AbstractSet<String>> getPair() {
+            public Pair<String, Set<String>> getPair() {
                 return pair;
             }
 
-            void setPair(Pair<String, AbstractSet<String>> pair) {
+            void setPair(Pair<String, Set<String>> pair) {
                 this.pair = pair;
             }
         }
@@ -451,7 +446,7 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
         }
 
         @Override
-        public Pair<String, AbstractSet<String>> next() {
+        public Pair<String, Set<String>> next() {
             if (++position > pairsCount) throw new NoSuchElementException();
             prepareNextNode(prevNodes.poll());
             return prevNodes.peek().getPair();
@@ -461,7 +456,7 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
     /**
      * Helps to print all entries from the TrieMap
      */
-    private void toStringHelper(AbstractDynamicString res, TNode node) {
+    private void toStringHelper(DynamicString res, TNode node) {
         for (HashNode<Character, TNode> c : node.nodes.items) {
             TNode curr = c.getValue();
             if (curr.isKey) {
@@ -474,7 +469,7 @@ public class TrieMap implements AbstractTrieMap<String, String>, Iterable<Pair<S
     @Override
     public String toString() {
         if (pairsCount == 0) return "[]";
-        AbstractDynamicString s = new DynamicLinkedString('[');
+        DynamicString s = new DynamicLinkedString('[');
         toStringHelper(s, root);
         return s.replace(s.getSize() - 2, ']').toString();
     }

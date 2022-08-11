@@ -1,12 +1,12 @@
 package sql.builder.statements.impl;
 
 import sql.builder.statements.TerminationStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.impl.JoinExtendedToken;
 
 public class JoinTokenStatement extends TerminationStatement {
 
-    public JoinTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public JoinTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 

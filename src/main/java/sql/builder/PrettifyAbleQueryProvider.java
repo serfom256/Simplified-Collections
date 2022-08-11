@@ -1,9 +1,9 @@
 package sql.builder;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 
 public interface PrettifyAbleQueryProvider {
 
-    String prettify(final AbstractDynamicString sqlQuery);
+    String prettify(final DynamicString sqlQuery);
 
 }

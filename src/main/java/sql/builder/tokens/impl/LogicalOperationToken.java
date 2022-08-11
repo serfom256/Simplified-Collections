@@ -1,20 +1,20 @@
 package sql.builder.tokens.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import sql.builder.tokens.Keyword;
 import sql.builder.utils.SqlUtil;
-import sql.builder.statements.AbstractStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.statements.Statement;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.TerminationToken;
 
 
-public class LogicalOperationToken<T extends AbstractStatement> extends TerminationToken {
+public class LogicalOperationToken<T extends Statement> extends TerminationToken {
 
-    private final AbstractDynamicString predicates;
+    private final DynamicString predicates;
     private T tokenStatement;
 
-    public LogicalOperationToken(AbstractToken firstToken) {
+    public LogicalOperationToken(SqlToken firstToken) {
         super(firstToken);
         this.predicates = new DynamicLinkedString();
     }
@@ -36,9 +36,9 @@ public class LogicalOperationToken<T extends AbstractStatement> extends Terminat
     }
 
     @Override
-    public AbstractDynamicString build() {
+    public DynamicString build() {
         if (tokenStatement == null) throw new IllegalStateException("TokenStatement didn't specified");
-        AbstractDynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
+        DynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
         return query.add(predicates).add(' ').add(buildNextOrStop());
     }
 

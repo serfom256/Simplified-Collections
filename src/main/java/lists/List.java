@@ -1,6 +1,6 @@
 package lists;
 
-public interface AbstractList<E> extends SimpleList<E> {
+public interface List<E> extends SimpleList<E> {
 
     void insert(int position, E element);
 

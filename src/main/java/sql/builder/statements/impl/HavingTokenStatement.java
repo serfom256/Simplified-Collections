@@ -1,13 +1,13 @@
 package sql.builder.statements.impl;
 
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 
 import sql.builder.tokens.impl.LogicalOperationToken;
 import sql.builder.tokens.impl.OrderByToken;
 
 public class HavingTokenStatement extends OrderByTokenStatement {
 
-    public HavingTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public HavingTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 

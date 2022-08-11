@@ -60,7 +60,7 @@ public class DynamicLinkedStringTest {
     }
 
     @Test
-    public void insertAbstractDynamicStringAtPos() {
+    public void insertDynamicStringAtPos() {
         assertEquals("abc", string.insert(0, new DynamicLinkedString("abc")).toString());
         assertEquals("abc123", string.insert(999, new DynamicLinkedString("123")).toString());
         assertEquals("abc000123", string.insert(3, new DynamicLinkedString("000")).toString());

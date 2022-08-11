@@ -1,6 +1,6 @@
 package math.operations;
 
-public class MathMin implements AbstractOperation {
+public class MathMin implements MathOperation {
 
     @Override
     public String calculate(String s1, String s2) {

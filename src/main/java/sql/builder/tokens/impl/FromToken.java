@@ -1,12 +1,12 @@
 package sql.builder.tokens.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import sql.builder.tokens.Keyword;
 import sql.builder.statements.impl.FromTokenStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 
-public class FromToken extends AbstractToken {
+public class FromToken extends SqlToken {
 
     private String table;
     private String schema;
@@ -14,7 +14,7 @@ public class FromToken extends AbstractToken {
 
     private final FromTokenStatement fromTokenStatement;
 
-    public FromToken(AbstractToken firstToken) {
+    public FromToken(SqlToken firstToken) {
         super(firstToken);
         this.fromTokenStatement = new FromTokenStatement(this, firstToken);
         setKeyWord(Keyword.FROM);
@@ -31,7 +31,7 @@ public class FromToken extends AbstractToken {
         return fromTokenStatement;
     }
 
-    public FromTokenStatement from(final AbstractToken nestedQuery) {
+    public FromTokenStatement from(final SqlToken nestedQuery) {
         FromToken nextToken = new FromToken(this);
         this.nestedQuery = nestedQuery.build().toString();
         setNextToken(nextToken);
@@ -39,8 +39,8 @@ public class FromToken extends AbstractToken {
     }
 
     @Override
-    public AbstractDynamicString build() {
-        AbstractDynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
+    public DynamicString build() {
+        DynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
         if (nestedQuery != null) {
             return query.add('(').add(nestedQuery).deleteLast().add(')').add(' ').add(getNextToken().build());
         }

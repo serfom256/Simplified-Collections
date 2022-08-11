@@ -1,12 +1,12 @@
 package sql.builder.statements.impl;
 
 import sql.builder.statements.TerminationStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.impl.PagingToken;
 
 public class PagingTokenStatement extends TerminationStatement {
 
-    public PagingTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public PagingTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 

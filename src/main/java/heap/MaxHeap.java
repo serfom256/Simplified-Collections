@@ -1,6 +1,6 @@
 package heap;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
 
@@ -296,7 +296,7 @@ public class MaxHeap<T extends Comparable<? super T>> {
     @Override
     public String toString() {
         if (size == 0) return "[]";
-        AbstractDynamicString res = new DynamicLinkedString("[");
+        DynamicString res = new DynamicLinkedString("[");
         for (int i = 0; i < size - 1; i++) {
             res.add(heap[i].value).add(", ");
         }

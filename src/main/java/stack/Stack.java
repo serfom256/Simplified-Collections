@@ -1,6 +1,6 @@
 package stack;
 
-public interface AbstractStack<E> {
+public interface Stack<E> {
     E peek();
 
     E poll();

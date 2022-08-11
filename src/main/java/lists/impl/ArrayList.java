@@ -1,17 +1,21 @@
 package lists.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.IndexOutOfCollectionBoundsException;
 import additional.exceptions.NullableArgumentException;
-import lists.AbstractList;
+import lists.List;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-public class ArrayList<E> implements AbstractList<E> {
+public class ArrayList<E> implements List<E> {
 
     private static final int DEFAULT_CAPACITY = 20;
     private int capacity;
@@ -142,7 +146,7 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param start start of range
      * @param end   end of range
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void delete(int start, int end) {
@@ -168,7 +172,7 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param end   end of range
      * @param data  value for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, int end, E data) {
@@ -182,7 +186,7 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param start start of range
      * @param data  value for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, E data) {
@@ -197,7 +201,7 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param end   end of range
      * @param data  values for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, int end, Iterable<E> data) {
@@ -213,7 +217,7 @@ public class ArrayList<E> implements AbstractList<E> {
      * @param start start of range
      * @param data  values for replacement
      * @throws IndexOutOfCollectionBoundsException if start < 0 or start > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
     public void replace(int start, Iterable<E> data) {
@@ -270,19 +274,19 @@ public class ArrayList<E> implements AbstractList<E> {
     }
 
     /**
-     * Returns slice from the list all of the elements in specified range between start and end
+     * Returns slice from the list all elements in specified range between start and end
      *
      * @param start start of range
      * @param end   end of range
      * @throws IndexOutOfCollectionBoundsException if start < 0 or end > list size
-     *                                             or if start index larger then end index
+     *                                             or if start index larger than end index
      */
     @Override
-    public AbstractList<E> slice(int start, int end) {
+    public List<E> slice(int start, int end) {
         if (start < 0 || end > size || start >= end) {
             throw new IndexOutOfCollectionBoundsException();
         }
-        AbstractList<E> sublist = new ArrayList<>();
+        List<E> sublist = new ArrayList<>();
         for (int i = start; i < end; i++) {
             sublist.add(data[i]);
         }
@@ -416,6 +420,53 @@ public class ArrayList<E> implements AbstractList<E> {
         data = newData;
     }
 
+    public Stream<E> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
+    @Override
+    public Spliterator<E> spliterator() {
+        // todo implement spliterator
+        return new SelfSpliterator(0, size);
+    }
+
+    private class SelfSpliterator implements Spliterator<E> {
+
+        private final int start;
+        private int pos;
+        private final int end;
+
+        public SelfSpliterator(int start, int end) {
+            this.start = start;
+            this.end = end;
+            this.pos = start;
+        }
+
+        @Override
+        public boolean tryAdvance(Consumer<? super E> action) {
+            if (action != null) {
+                action.accept(data[pos++]);
+                return pos < size;
+            }
+            return false;
+        }
+
+        @Override
+        public Spliterator<E> trySplit() {
+            throw new IllegalStateException("TrySplit not implemented yet!");
+        }
+
+        @Override
+        public long estimateSize() {
+            return (long) end - pos;
+        }
+
+        @Override
+        public int characteristics() {
+            return Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED;
+        }
+    }
+
     @Override
     public Iterator<E> iterator() {
         return new SelfIterator();
@@ -451,7 +502,7 @@ public class ArrayList<E> implements AbstractList<E> {
     @Override
     public String toString() {
         if (size == 0) return "[]";
-        AbstractDynamicString res = new DynamicLinkedString("[");
+        DynamicString res = new DynamicLinkedString("[");
         for (int i = 0; i < size - 1; i++) {
             res.add(data[i]).add(", ");
         }

@@ -1,14 +1,14 @@
 package sql.builder.tokens;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import sql.builder.PrettifyAbleQueryProvider;
 import sql.builder.SqlDialect;
 
-public abstract class AbstractToken {
+public abstract class SqlToken {
 
-    private final AbstractToken firstToken;
+    private final SqlToken firstToken;
 
-    private AbstractToken nextToken;
+    private SqlToken nextToken;
 
     private PrettifyAbleQueryProvider prettifyAbleQueryProvider;
 
@@ -16,13 +16,13 @@ public abstract class AbstractToken {
 
     private Keyword keyWord;
 
-    protected AbstractToken(AbstractToken firstToken) {
+    protected SqlToken(SqlToken firstToken) {
         this.firstToken = firstToken;
     }
 
-    public abstract AbstractDynamicString build();
+    public abstract DynamicString build();
 
-    public AbstractToken getFirstToken() {
+    public SqlToken getFirstToken() {
         if (firstToken == null) throw new IllegalStateException("First query argument didn't specified");
         return firstToken;
     }
@@ -43,7 +43,7 @@ public abstract class AbstractToken {
         this.sqlDialect = sqlDialect;
     }
 
-    protected AbstractToken getNextToken() {
+    protected SqlToken getNextToken() {
         return nextToken;
     }
 
@@ -55,7 +55,7 @@ public abstract class AbstractToken {
         this.keyWord = keyWord;
     }
 
-    public void setNextToken(AbstractToken nextToken) {
+    public void setNextToken(SqlToken nextToken) {
         this.nextToken = nextToken;
     }
 

@@ -1,12 +1,12 @@
 package sql;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import sql.builder.statements.impl.SelectTokenStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.impl.SelectToken;
 
 
-public class InitialQuery extends AbstractToken {
+public class InitialQuery extends SqlToken {
 
     protected InitialQuery() {
         super(null);
@@ -25,7 +25,7 @@ public class InitialQuery extends AbstractToken {
     }
 
     @Override
-    public AbstractDynamicString build() {
+    public DynamicString build() {
         return getNextToken().build();
     }
 

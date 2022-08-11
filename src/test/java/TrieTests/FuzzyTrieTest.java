@@ -1,8 +1,8 @@
 package TrieTests;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
-import lists.AbstractList;
+import lists.List;
 import lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 public class FuzzyTrieTest {
     private final FuzzyTrie trie;
-    private final AbstractList<String> lst;
+    private final List<String> lst;
 
     public FuzzyTrieTest() {
         trie = new FuzzyTrie();
@@ -39,7 +39,7 @@ public class FuzzyTrieTest {
         for (int i = 0; i < 1000; i++) {
             String s = lst.get((int) ((Math.random() * (10000))));
             int randAction = (int) ((Math.random() * (3 - 1)) + 1);
-            AbstractDynamicString mutableString = new DynamicLinkedString(s);
+            DynamicString mutableString = new DynamicLinkedString(s);
             int randomPosition = (int) (Math.random() * (s.length() - 1));
             char randomChar = (char) (new Random().nextInt(26) + 'a');
             switch (randAction) {
@@ -69,7 +69,7 @@ public class FuzzyTrieTest {
         for (int i = 0; i < 1000; i++) {
             String s = lst.get((int) ((Math.random() * (10000))));
             int randAction = (int) ((Math.random() * (3 - 1)) + 1);
-            AbstractDynamicString mutableString = new DynamicLinkedString(s);
+            DynamicString mutableString = new DynamicLinkedString(s);
             int randomPosition = (int) (Math.random() * (s.length() - 1));
             char randomChar = (char) (new Random().nextInt(26) + 'a');
             switch (randAction) {
@@ -96,7 +96,7 @@ public class FuzzyTrieTest {
         for (int i = 0; i < 1000; i++) {
             String s = lst.get((int) ((Math.random() * (10000))));
             int randAction = (int) ((Math.random() * (3 - 1)) + 1);
-            AbstractDynamicString mutableString = new DynamicLinkedString(s);
+            DynamicString mutableString = new DynamicLinkedString(s);
             int randomPosition = (int) (Math.random() * 3);
             char randomChar = (char) (new Random().nextInt(26) + 'a');
             switch (randAction) {
@@ -123,7 +123,7 @@ public class FuzzyTrieTest {
         int leftLimit = 48;
         int rightLimit = 122;
         int len = (int) ((Math.random() * (maxLen - minLen)) + minLen);
-        AbstractDynamicString s = new DynamicLinkedString();
+        DynamicString s = new DynamicLinkedString();
         new Random().ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(len)

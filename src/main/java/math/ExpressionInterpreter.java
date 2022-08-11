@@ -1,22 +1,22 @@
 package math;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import hashtables.HashTable;
-import lists.AbstractLinkedList;
-import lists.AbstractList;
+import lists.LinkedList;
+import lists.List;
 import lists.impl.ArrayList;
 import lists.impl.DoubleLinkedList;
 import math.operations.*;
-import sets.AbstractSet;
 import sets.Set;
+import sets.HashedSet;
 import stack.ArrayStack;
 
 public class ExpressionInterpreter {
 
-    private final HashTable<Character, AbstractOperation> charSet = new HashTable<>(8);
-    private final AbstractSet<Character> primaryOperations = new Set<>();
-    private final AbstractSet<Character> planeOperations = new Set<>();
+    private final HashTable<Character, MathOperation> charSet = new HashTable<>(8);
+    private final Set<Character> primaryOperations = new HashedSet<>();
+    private final Set<Character> planeOperations = new HashedSet<>();
 
     public ExpressionInterpreter() {
         charSet.add('+', new MathAddition());
@@ -35,10 +35,10 @@ public class ExpressionInterpreter {
         return parse(new DynamicLinkedString(s.replace(" ", ""))).toString();
     }
 
-    private AbstractDynamicString parse(DynamicLinkedString exp) {
+    private DynamicString parse(DynamicLinkedString exp) {
         ArrayStack<Integer> lastPos = new ArrayStack<>(), lastLstPos = new ArrayStack<>();
         ArrayList<String> lst = new ArrayList<>();
-        AbstractLinkedList<Integer> primaryOperationsPos = new DoubleLinkedList<>();
+        LinkedList<Integer> primaryOperationsPos = new DoubleLinkedList<>();
         DynamicLinkedString currentNum = new DynamicLinkedString();
         for (int i = 0; i < exp.getSize(); i++) {
             char ch = exp.get(i);
@@ -47,7 +47,7 @@ public class ExpressionInterpreter {
                 lastPos.push(i);
             } else if (ch == ')') {
                 int prevPos = lastPos.poll(), pPos = lastLstPos.poll();
-                AbstractDynamicString subSeq = parse(exp.subSequence(prevPos + 1, i));
+                DynamicString subSeq = parse(exp.subSequence(prevPos + 1, i));
                 exp.replace(prevPos, i + 1, subSeq.toString());
                 lst.delete(pPos == 0 ? pPos : pPos - 1, lst.getSize());
                 i = prevPos - 2;
@@ -70,7 +70,7 @@ public class ExpressionInterpreter {
         return evaluateExp(lst, primaryOperationsPos);
     }
 
-    private AbstractDynamicString evaluateExp(AbstractList<String> exp, AbstractList<Integer> pPos) {
+    private DynamicString evaluateExp(List<String> exp, List<Integer> pPos) {
         if (exp.getSize() <= 2) {
             DynamicLinkedString s = new DynamicLinkedString();
             for (String i : exp) s.add(i);

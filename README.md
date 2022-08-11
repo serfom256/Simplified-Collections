@@ -24,16 +24,51 @@
 
 ### Will be implemented later
 - [ ] Binary tree printer
-- [ ] MaxBinaryHeap (Based on Binary Tree)
 - [ ] Phonetic Algorithms
-- [ ] BK Tree
+- [ ] Splay Tree
 
+## Tries usage examples
+[FuzzyTrie](src/main/java/tries/tries/FuzzyTrie.java), [SimpleTrieMap](src/main/java/tries/tries/SimpleTrieMap.java), [SearchTrieMap](src/main/java/tries/tries/SearchTrieMap.java) could be suitable for fuzzy search
+
+FuzzyTrie offers efficient autocomplete with a certain indistinct distance
+Example Usage:
+<br>
+SimpleTrieMap can store Key Value pairs and support fuzzy search by keys or values
+<br>
+Fuzzy search method call example
+
+### TrieMap.lookup([word to search], [fuzzy search distance], [SimpleTrieMap.Verbose.(MIN/MAX)])
+
+SimpleTrieMap.Verbose.MAX used for lookup all nodes in the trie from the root
+<br>
+SimpleTrieMap.Verbose.MIN used for lookup to search values only in the one branch
+```java
+        final SimpleTrieMap trieMap = new SimpleTrieMap();
+        trieMap.add("1234", "value");
+        trieMap.add("4567", "value");
+        trieMap.add("qwe", "00000");
+        trieMap.add("qwe", "11111111111");
+        trieMap.add("test", "00000");
+        trieMap.add("test", "00000");
+        trieMap.add("abc909", "qwe");
+        trieMap.add("12345", "val");
+        trieMap.add("12345", "temp");
+        trieMap.add("java", "qwerty");
+        trieMap.add("java", "random value");
+        trieMap.add("c++", "some value");
+        assertEquals(8, trieMap.getPairsCount());
+        assertEquals(76, trieMap.getSize());
+        System.out.println(trieMap.lookup("jva", 1, SimpleTrieMap.Verbose.MAX)); // [(java : {qwerty, random value})]
+        System.out.println(trieMap.lookup("0000-", 1, SimpleTrieMap.Verbose.MAX)); // [(test : {qwe, 00000})]
+        System.out.println(trieMap.lookup("_alue", 1, SimpleTrieMap.Verbose.MAX)); // [(4567 : {value})]
+        System.out.println(trieMap.lookup("144", 2, SimpleTrieMap.Verbose.MAX)); // [(1234 : {value})]
+```
 
 
 ## Sql Builder usage examples
 
 SqlBuilder from package sql generates dynamic sql that can be executed by jdbc or jdbcTemplate
- 
+
 ```java
 SqlBuilder builder = new SqlBuilder();
 
@@ -45,7 +80,7 @@ String query = builder.create()
        .build().toString();
 ```
 
-SqlBuilder returns [AbstractDynamicString](src/main/java/additional/dynamicstring/AbstractDynamicString.java)
+SqlBuilder returns [DynamicString](src/main/java/additional/dynamicstring/DynamicString.java)
 
 Provided above code generates the following sql
 

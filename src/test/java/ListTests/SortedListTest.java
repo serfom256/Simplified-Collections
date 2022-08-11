@@ -1,16 +1,16 @@
 package ListTests;
 
-import lists.impl.SortedList;
+import lists.impl.SortedSkipList;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class SortedListTest {
-    SortedList<Integer> list;
+    SortedSkipList<Integer> list;
 
     public SortedListTest() {
-        this.list = new SortedList<>();
+        this.list = new SortedSkipList<>();
     }
 
     @Before

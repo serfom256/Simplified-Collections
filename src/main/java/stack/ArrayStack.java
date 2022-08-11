@@ -1,9 +1,9 @@
 package stack;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 
-public class ArrayStack<E> implements AbstractStack<E> {
+public class ArrayStack<E> implements Stack<E> {
     private static final int DEFAULT_CAPACITY = 20;
     private int capacity;
     private int size;
@@ -136,7 +136,7 @@ public class ArrayStack<E> implements AbstractStack<E> {
     @Override
     public String toString() {
         if (size == 0) return "[]";
-        AbstractDynamicString res = new DynamicLinkedString("[");
+        DynamicString res = new DynamicLinkedString("[");
         for (int i = size - 1; i > 0; i--) {
             res.add(data[i]).add(", ");
         }

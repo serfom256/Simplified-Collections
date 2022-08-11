@@ -1,19 +1,19 @@
 package sql.builder.tokens.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import sql.builder.tokens.Keyword;
 import sql.builder.utils.SqlUtil;
 import sql.builder.statements.impl.HavingTokenStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.TerminationToken;
 
 public class HavingToken extends TerminationToken {
 
-    private final AbstractDynamicString predicate;
+    private final DynamicString predicate;
     private final HavingTokenStatement havingTokenStatement;
 
-    public HavingToken(AbstractToken firstToken) {
+    public HavingToken(SqlToken firstToken) {
         super(firstToken);
         this.havingTokenStatement = new HavingTokenStatement(this, firstToken);
         this.predicate = new DynamicLinkedString();
@@ -26,8 +26,8 @@ public class HavingToken extends TerminationToken {
     }
 
     @Override
-    public AbstractDynamicString build() {
-        AbstractDynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
+    public DynamicString build() {
+        DynamicString query = new DynamicLinkedString(getKeyWord().getName()).add(' ');
         return query.add(predicate).add(' ').add(buildNextOrStop());
     }
 

@@ -1,6 +1,6 @@
 package sql.builder.statements.impl;
 
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 
 import sql.builder.tokens.impl.GroupByToken;
 import sql.builder.tokens.impl.LogicalOperationToken;
@@ -8,7 +8,7 @@ import sql.builder.tokens.impl.LogicalOperationToken;
 
 public class WhereTokenStatement extends GroupByTokenStatement {
 
-    public WhereTokenStatement(AbstractToken prevToken, AbstractToken firstToken) {
+    public WhereTokenStatement(SqlToken prevToken, SqlToken firstToken) {
         super(prevToken, firstToken);
     }
 

@@ -1,6 +1,6 @@
 package lists;
 
-public interface AbstractSortedList<E> extends SimpleList<E> {
+public interface SortedList<E> extends SimpleList<E> {
 
     E getMin();
 

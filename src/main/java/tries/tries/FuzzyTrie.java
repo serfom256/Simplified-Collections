@@ -1,14 +1,14 @@
 package tries.tries;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
-import sets.AbstractSet;
+import sets.Set;
 import sets.RBTSet;
 
 import java.util.Arrays;
 
-public class FuzzyTrie extends Trie {
+public class FuzzyTrie extends SimpleTrie {
 
     public FuzzyTrie() {
         super();
@@ -22,14 +22,14 @@ public class FuzzyTrie extends Trie {
      * @param distance maximum indistinct distance
      * @return sequences as a String array if sequences with specified word founded
      * otherwise empty String array
-     * @throws IllegalArgumentException  if the specified word length less then specified distance
+     * @throws IllegalArgumentException  if the specified word length less than specified distance
      * @throws NullableArgumentException if the specified word is null
      */
     public String[] lookupPrefix(String word, int count, int distance) {
         if (word == null) throw new NullableArgumentException();
         distance = distance < word.length() ? distance : word.length() - 1;
-        AbstractSet<String> founded = new RBTSet<>();
-        AbstractDynamicString result = new DynamicLinkedString();
+        Set<String> founded = new RBTSet<>();
+        DynamicString result = new DynamicLinkedString();
         int len = word.length() - 1;
         TNode curr = root;
         for (int i = 0; i <= len; i++) {
@@ -47,7 +47,7 @@ public class FuzzyTrie extends Trie {
         return search(len, curr, word, distance, count, founded);
     }
 
-    private String[] search(int pos, TNode curr, String toSearch, int distance, int count, AbstractSet<String> founded) {
+    private String[] search(int pos, TNode curr, String toSearch, int distance, int count, Set<String> founded) {
         Object[] instance;
         if (distance != 0) {
             for (int j = pos; j >= 0; j--) {
@@ -71,7 +71,7 @@ public class FuzzyTrie extends Trie {
      * @param count   maximum count of founded words
      * @param founded set which contains all founded words
      */
-    private void collectWordsFuzzy(TNode start, String word, int pos, int typos, int count, AbstractSet<String> founded) {
+    private void collectWordsFuzzy(TNode start, String word, int pos, int typos, int count, Set<String> founded) {
         if (typos < 0 || count <= founded.getSize()) return;
         if (pos + typos >= word.length() && start.prev != null) {
             collectForNode(founded, start, getReversed(start), count);
@@ -91,7 +91,7 @@ public class FuzzyTrie extends Trie {
         }
     }
 
-    private void collectForNode(AbstractSet<String> founded, TNode node, AbstractDynamicString prefix, int count) {
+    private void collectForNode(Set<String> founded, TNode node, DynamicString prefix, int count) {
         if (node == null || count <= founded.getSize()) return;
         if (node.isEnd) founded.add(prefix.toString());
         for (Character c : node.nodes) {
@@ -107,8 +107,8 @@ public class FuzzyTrie extends Trie {
     /**
      * Returns String which contains characters from the specified node to the TrieMap root
      */
-    private AbstractDynamicString getReversed(TNode node) {
-        AbstractDynamicString prefix = new DynamicLinkedString();
+    private DynamicString getReversed(TNode node) {
+        DynamicString prefix = new DynamicLinkedString();
         while (node != root) {
             prefix.addFirst(node.element);
             node = node.prev;
@@ -119,13 +119,13 @@ public class FuzzyTrie extends Trie {
     /**
      * @param distance maximum indistinct distance
      * @return true if specified sequence present in trie as a prefix
-     * @throws IllegalArgumentException  if the specified distance more then length of the specified prefix
+     * @throws IllegalArgumentException  if the specified distance more than length of the specified prefix
      * @throws NullableArgumentException if the specified prefix is null
      */
     public boolean presents(String prefix, int distance) {
         if (prefix == null) throw new NullableArgumentException();
         if (prefix.length() <= distance) {
-            throw new IllegalArgumentException("Sequence length must be more then distance");
+            throw new IllegalArgumentException("Sequence length must be more than distance");
         }
         TNode curr = root;
         for (int i = 0; i < prefix.length(); i++) {
@@ -161,13 +161,13 @@ public class FuzzyTrie extends Trie {
     /**
      * @param distance maximum indistinct distance
      * @return Returns true considering the specified distance if specified sequence was added to trie otherwise false
-     * @throws IllegalArgumentException  if the specified distance more then length of the specified sequence
+     * @throws IllegalArgumentException  if the specified distance more than length of the specified sequence
      * @throws NullableArgumentException if the specified sequence is null
      */
     public boolean contains(String sequence, int distance) {
         if (sequence == null) throw new NullableArgumentException();
         if (sequence.length() <= distance) {
-            throw new IllegalArgumentException("Sequence length must be more then distance");
+            throw new IllegalArgumentException("Sequence length must be more than distance");
         }
         TNode curr = root;
         for (int i = 0; i < sequence.length(); i++) {

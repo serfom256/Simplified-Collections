@@ -1,10 +1,10 @@
 package sql.builder.tokens.impl;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import sql.builder.utils.SqlUtil;
 import sql.builder.statements.impl.JoinTokenStatement;
-import sql.builder.tokens.AbstractToken;
+import sql.builder.tokens.SqlToken;
 import sql.builder.tokens.TerminationToken;
 
 import static sql.builder.tokens.Keyword.INNER;
@@ -17,7 +17,7 @@ public class JoinToken extends TerminationToken {
     private String schema;
     private String expression;
 
-    public JoinToken(AbstractToken firstToken) {
+    public JoinToken(SqlToken firstToken) {
         super(firstToken);
         this.joinTokenStatement = new JoinTokenStatement(this, firstToken);
         setKeyWord(INNER);
@@ -45,8 +45,8 @@ public class JoinToken extends TerminationToken {
 //    }
 
     @Override
-    public AbstractDynamicString build() {
-        AbstractDynamicString query = new DynamicLinkedString();
+    public DynamicString build() {
+        DynamicString query = new DynamicLinkedString();
         String exp = SqlUtil.normalizeExpression(expression, table);
         if (getNextToken() == null) {
             query.add(SqlUtil.formatJoin(getKeyWord(), schema, table, exp));

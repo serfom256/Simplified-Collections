@@ -2,7 +2,7 @@ package ListTests;
 
 import lists.impl.ArrayList;
 import lists.impl.DoubleLinkedList;
-import lists.impl.LinkedList;
+import lists.impl.SingleLinkedList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -344,7 +344,7 @@ public class DoubleLinkedListTest {
 
     @Test
     public void init_from_iterable() {
-        LinkedList<Integer> linkedList = new LinkedList<>();
+        SingleLinkedList<Integer> linkedList = new SingleLinkedList<>();
         linkedList.addAll(1, 2, 3, 4, 5, 6);
 
         DoubleLinkedList<Integer> doubleLinkedList = new DoubleLinkedList<>();

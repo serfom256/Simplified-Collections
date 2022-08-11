@@ -1,18 +1,18 @@
 package tries.tries;
 
-import additional.dynamicstring.AbstractDynamicString;
+import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
 import additional.nodes.Pair;
 import hashtables.HashTable;
-import stack.AbstractStack;
+import stack.Stack;
 import stack.LinkedStack;
-import tries.AbstractTrieMap;
+import tries.TrieMap;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class VTrieMap<V> implements AbstractTrieMap<String, V>, Iterable<Pair<String, V>> {
+public class VTrieMap<V> implements TrieMap<String, V>, Iterable<Pair<String, V>> {
 
     private final TNode<V> root;
     private int size;
@@ -45,14 +45,14 @@ public class VTrieMap<V> implements AbstractTrieMap<String, V>, Iterable<Pair<St
         this.size = 0;
     }
 
-    public void add(String key, V value, boolean otherWrite) {
+    public void add(String key, V value, boolean overwrite) {
         if (key == null) throw new NullableArgumentException();
         if (key.length() == 0) throw new IllegalArgumentException();
         TNode<V> keyNode = putSequence(key);
         if (!keyNode.isEnd) {
             pairsCount++;
             keyNode.value = value;
-        } else if (otherWrite) {
+        } else if (overwrite) {
             keyNode.value = value;
         }
         keyNode.isEnd = true;
@@ -125,7 +125,7 @@ public class VTrieMap<V> implements AbstractTrieMap<String, V>, Iterable<Pair<St
      * Returns String which contains characters from the specified node to the TrieMap root
      */
     private String getReversed(TNode<V> node) {
-        AbstractDynamicString prefix = new DynamicLinkedString();
+        DynamicString prefix = new DynamicLinkedString();
         while (node != root) {
             prefix.addFirst(node.element);
             node = node.prev;
@@ -172,7 +172,7 @@ public class VTrieMap<V> implements AbstractTrieMap<String, V>, Iterable<Pair<St
 
     private class SelfIterator implements Iterator<Pair<String, V>> {
         private int position = 0;
-        AbstractStack<SelfIterator.IteratorPair> prevNodes = new LinkedStack<>();
+        Stack<IteratorPair> prevNodes = new LinkedStack<>();
 
 
         public SelfIterator() {

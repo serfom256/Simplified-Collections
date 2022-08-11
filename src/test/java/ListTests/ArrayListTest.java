@@ -1,7 +1,7 @@
 package ListTests;
 
 import additional.exceptions.IndexOutOfCollectionBoundsException;
-import lists.AbstractList;
+import lists.List;
 import lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
@@ -171,7 +171,7 @@ public class ArrayListTest {
     @Test
     public void slice() {
         Integer[] testArr = {6, 7, 8, 9, 10};
-        AbstractList<Integer> sublist = list.slice(5, 10);
+        List<Integer> sublist = list.slice(5, 10);
         for (int i = 0; i < testArr.length; i++) {
             assertEquals(testArr[i], sublist.get(i));
         }
