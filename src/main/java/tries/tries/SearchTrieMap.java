@@ -8,6 +8,8 @@ import hashtables.HashTable;
 import lists.List;
 import lists.impl.ArrayList;
 import sets.HashedSet;
+import sets.Set;
+import tries.TrieMap;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -125,43 +127,62 @@ public class SearchTrieMap {
         this.pairs = new AtomicInteger();
     }
 
-    public void addConcurrent(String sequence) {
-        char f = sequence.charAt(0);
+    public void addConcurrent(String key, String value) {
+        if (key == null || value == null) throw new NullableArgumentException();
+        if (key.length() == 0) throw new IllegalArgumentException();
+        TNode keyNode = putConcurrent(key, true, false);
+        if (value.length() != 0) {
+            TNode valueNode = putConcurrent(value, false, true);
+            keyNode.addPair(valueNode);
+            valueNode.addPair(keyNode);
+        }
+        if (!keyNode.isKey) pairs.incrementAndGet();
+    }
+
+    private TNode putConcurrent(String key, boolean isKey, boolean isVal) {
+        char f = key.charAt(0);
         RootNode rn = rootNodes.get(f);
         if (rn == null) {
             rootLock.lock();
             if (rootNodes.get(f) == null) {
-                insertToRoot(sequence).isKey = true;
+                TNode node = insertToRoot(key);
+                node.isKey |= isKey;
+                node.isVal |= isVal;
                 pairs.incrementAndGet();
                 rootLock.unlock();
-                return;
+                return node;
             }
             rn = rootNodes.get(f);
             rootLock.unlock();
         }
         rn.lock.lock();
         TNode curr = rn.node;
-        for (int i = 1; i < sequence.length(); i++) {
-            char c = sequence.charAt(i);
+        for (int i = 1; i < key.length(); i++) {
+            char c = key.charAt(i);
             TNode next = curr.getNode(c);
             if (next == null) {
-                String sq = sequence.substring(i);
+                String sq = key.substring(i);
                 if (Objects.equals(curr.seq, sq)) {
+                    curr.isKey |= isKey;
+                    curr.isVal |= isVal;
                     rn.lock.unlock();
-                    return;
+                    return curr;
                 }
                 TNode res = buildTree(curr, sq);
                 if (!res.isKey) pairs.incrementAndGet();
-                res.isKey = true;
+                res.isKey |= isKey;
+                res.isVal |= isVal;
                 rn.lock.unlock();
-                return;
+                return res;
             }
             curr = next;
         }
-        TNode res = splitTreeSync(curr);
+        TNode res = splitTree(curr);
         if (!res.isKey) pairs.incrementAndGet();
-        res.isKey = true;
+        res.isKey |= isKey;
+        res.isVal |= isVal;
         rn.lock.unlock();
+        return res;
     }
 
     private TNode splitTreeSync(TNode node) {
@@ -185,6 +206,7 @@ public class SearchTrieMap {
         }
         return node;
     }
+
 
     /**
      * Appends the new key-values pair to the TrieMap of the specified key and the specified value
@@ -238,6 +260,7 @@ public class SearchTrieMap {
             TNode toNext = new TNode(node.seq.charAt(0), curr, node.seq.substring(1));
             toNext.isKey = node.isKey;
             toNext.isVal = node.isVal;
+            replacePair(curr, toNext);
             curr.addSuccessor(toNext);
             if (prev == root) {
                 rootNodes.get(node.element).node = curr;
@@ -266,6 +289,7 @@ public class SearchTrieMap {
         node.seq = null;
         boolean isKey = node.isKey, isVal = node.isVal;
         node.isKey = node.isVal = false;
+        TNode temp = node;
         int pos = 0, len = Math.min(seq.length(), nodeSeq.length());
         while (pos < len && seq.charAt(pos) == nodeSeq.charAt(pos)) {
             TNode newNode = new TNode(seq.charAt(pos), node);
@@ -278,24 +302,38 @@ public class SearchTrieMap {
             TNode inserted = new TNode(seq.charAt(pos), node, seq.substring(pos + 1));
             newNode.isKey = isKey;
             newNode.isVal = isVal;
+            replacePair(temp, newNode);
             node.addSuccessor(newNode);
             node.addSuccessor(inserted);
             return inserted;
-        }
-        if (pos < nodeSeq.length()) {
+        } else if (pos < nodeSeq.length()) {
             TNode newNode = new TNode(nodeSeq.charAt(pos), node, nodeSeq.substring(pos + 1));
             newNode.isKey = isKey;
             newNode.isVal = isVal;
+            replacePair(temp, node);
             node.addSuccessor(newNode);
             return node;
         } else if (pos < seq.length()) {
             TNode newNode = new TNode(seq.charAt(pos), node, seq.substring(pos + 1));
             node.isKey = isKey;
             node.isVal = isVal;
+            replacePair(temp, node);
             node.addSuccessor(newNode);
             return newNode;
         }
         return node;
+    }
+
+    private void replacePair(TNode node, TNode replaced) {
+        if (node.pairs == null || node == replaced) return;
+        for (TNode n : node.pairs) {
+            replaced.addPair(n);
+        }
+        node.pairs = null;
+        for (TNode n : replaced.pairs) {
+            n.pairs.delete(node);
+            n.pairs.add(replaced);
+        }
     }
 
     public List<Pair<String, List<String>>> lookup(String input, int distance, int count) {
@@ -310,20 +348,44 @@ public class SearchTrieMap {
             char c = input.charAt(i);
             TNode next = curr.getNode(c);
             if (next == null) {
-                search(i, curr, distance, result);
+                search(i, curr, result, distance, null);
                 return result.getResult();
             }
             curr = next;
         }
-        search(len, curr, distance, result);
+        search(len, curr, result, distance, null);
         return result.getResult();
     }
 
-    private void search(int pos, TNode curr, int distance, SearchEntity toSearch) {
-        for (int j = pos; j >= 0 && curr != null; j--) {
-            fuzzyCompound(curr, j, distance, toSearch);
-            if (toSearch.founded.getSize() != 0) break;
+
+    public List<Pair<String, List<String>>> lookup(String input, int distance, TrieMap.Verbose verbose) {
+        if (input == null) throw new NullableArgumentException();
+        if (input.length() <= 1 || input.length() <= distance) {
+            throw new IllegalArgumentException("Input length must be more than specified distance");
+        }
+        SearchEntity result = new SearchEntity(Integer.MAX_VALUE, input, new ArrayList<>());
+        TNode curr = root;
+        int len = input.length();
+        for (int i = 0; i < len; i++) {
+            char c = input.charAt(i);
+            TNode next = curr.getNode(c);
+            if (next == null) {
+                search(i, curr, result, distance, verbose);
+                return result.getResult();
+            }
+            curr = next;
+        }
+        search(len, curr, result, distance, verbose);
+        return result.getResult();
+    }
+
+    private void search(int pos, TNode curr, SearchEntity toSearch, int distance, TrieMap.Verbose verbose) {
+        while (pos >= 0 && curr != null) {
+            fuzzyCompound(curr, pos, distance, toSearch);
+            if (verbose == null && toSearch.isFounded()) return;
+            if (verbose == TrieMap.Verbose.MIN && toSearch.founded.getSize() != 0) return;
             curr = curr.prev;
+            pos--;
         }
     }
 
@@ -424,6 +486,38 @@ public class SearchTrieMap {
             root.isKey = root.isVal = false;
             pairs.set(0);
         }
+    }
+
+    /**
+     * Returns pair of the key and values which linked to the specified node
+     */
+    private Pair<String, Set<String>> getPair(TNode node) {
+        Set<String> values = new HashedSet<>();
+        Pair<String, Set<String>> pair = new Pair<>(getReversed(node), values);
+        for (TNode n : node.pairs) {
+            if (n.isVal) values.add(getReversed(n));
+        }
+        return pair;
+    }
+
+    /**
+     * Helps to print all entries from the TrieMap
+     */
+    private void toStringHelper(DynamicString res, TNode node) {
+        for (TNode c : node.pairs) {
+            if (c.isKey) {
+                res.add(getPair(c).toString()).add(", ");
+            }
+            toStringHelper(res, c);
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (pairs.get() == 0) return "[]";
+        DynamicString s = new DynamicLinkedString('[');
+        toStringHelper(s, root);
+        return s.replace(s.getSize() - 2, ']').toString();
     }
 
 }

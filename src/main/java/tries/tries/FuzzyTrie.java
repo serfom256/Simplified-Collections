@@ -132,7 +132,7 @@ public class FuzzyTrie extends SimpleTrie {
             char c = prefix.charAt(i);
             if (!curr.nodes.containsKey(c)) {
                 for (int j = i; j >= 0; j--) {
-                    if (presentsWordFuzzy(curr, prefix, 0, distance)) return true;
+                    if (presentsWordFuzzy(curr, prefix, j, distance)) return true;
                     curr = curr.prev;
                 }
                 return false;
@@ -174,7 +174,7 @@ public class FuzzyTrie extends SimpleTrie {
             char c = sequence.charAt(i);
             if (!curr.nodes.containsKey(c)) {
                 for (int j = i; j >= 0; j--) {
-                    if (containsWordFuzzy(curr, sequence, 0, distance)) return true;
+                    if (containsWordFuzzy(curr, sequence, j, distance)) return true;
                     curr = curr.prev;
                 }
                 return false;

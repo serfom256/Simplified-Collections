@@ -1,14 +1,14 @@
 package TrieTests;
 
-import additional.dynamicstring.DynamicString;
 import additional.dynamicstring.DynamicLinkedString;
+import additional.dynamicstring.DynamicString;
 import additional.nodes.Pair;
 import lists.List;
 import lists.impl.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
-import sets.Set;
 import sets.HashedSet;
+import sets.Set;
 import tries.tries.SimpleTrieMap;
 
 import java.util.Random;
@@ -68,19 +68,19 @@ public class TrieMapTest {
         assertEquals(8, trieMap.getPairsCount());
         assertEquals(76, trieMap.getSize());
 
-        HashedSet<String> value = new HashedSet<>();
+        ArrayList<String> value = new ArrayList<>();
         value.addAll("value");
         assertEquals(new Pair<>("1234", value).toString(), trieMap.deleteKey("1234").toString());
         assertEquals(7, trieMap.getPairsCount());
         assertEquals(76, trieMap.getSize());
         value.clear();
 
-        value.addAll("11111111111", "00000");
+        value.addAll("00000", "11111111111");
         assertEquals(new Pair<>("qwe", value).toString(), trieMap.deleteKey("qwe").toString());
         assertEquals(6, trieMap.getPairsCount());
         assertEquals(66, trieMap.getSize());
         value.clear();
-        value.addAll("random value", "qwerty");
+        value.addAll("qwerty", "random value");
         assertEquals(new Pair<>("java", value).toString(), trieMap.deleteKey("java").toString());
         assertEquals(5, trieMap.getPairsCount());
         assertEquals(47, trieMap.getSize());
@@ -130,7 +130,7 @@ public class TrieMapTest {
         assertEquals(8, trieMap.getPairsCount());
         assertEquals(74, trieMap.getSize());
 
-        assertEquals(new Pair<>("1234", new HashedSet<>()).toString(), trieMap.deleteKey("1234").toString());
+        assertEquals(new Pair<>("1234", new ArrayList<>()).toString(), trieMap.deleteKey("1234").toString());
         assertEquals(7, trieMap.getPairsCount());
         assertEquals(74, trieMap.getSize());
 
@@ -195,33 +195,33 @@ public class TrieMapTest {
         assertEquals(8, trieMap.getPairsCount());
         assertEquals(29, trieMap.getSize());
 
-        assertEquals(new Pair<>("12345", new HashedSet<>()).toString(), trieMap.deleteKey("12345").toString());
+        assertEquals(new Pair<>("12345", new ArrayList<>()).toString(), trieMap.deleteKey("12345").toString());
         assertEquals(7, trieMap.getPairsCount());
         assertEquals(28, trieMap.getSize());
 
-        assertEquals(new Pair<>("1234", new HashedSet<>()).toString(), trieMap.deleteKey("1234").toString());
+        assertEquals(new Pair<>("1234", new ArrayList<>()).toString(), trieMap.deleteKey("1234").toString());
         assertEquals(6, trieMap.getPairsCount());
         assertEquals(24, trieMap.getSize());
 
-        assertEquals(new Pair<>("qwe", new HashedSet<>()).toString(), trieMap.deleteKey("qwe").toString());
+        assertEquals(new Pair<>("qwe", new ArrayList<>()).toString(), trieMap.deleteKey("qwe").toString());
         assertEquals(5, trieMap.getPairsCount());
         assertEquals(21, trieMap.getSize());
 
-        assertEquals(new Pair<>("c++", new HashedSet<>()).toString(), trieMap.deleteKey("c++").toString());
+        assertEquals(new Pair<>("c++", new ArrayList<>()).toString(), trieMap.deleteKey("c++").toString());
         assertEquals(4, trieMap.getPairsCount());
         assertEquals(18, trieMap.getSize());
 
-        assertEquals(new Pair<>("abc909", new HashedSet<>()).toString(), trieMap.deleteKey("abc909").toString());
+        assertEquals(new Pair<>("abc909", new ArrayList<>()).toString(), trieMap.deleteKey("abc909").toString());
         assertEquals(3, trieMap.getPairsCount());
         assertEquals(12, trieMap.getSize());
 
 
-        assertEquals(new Pair<>("java", new HashedSet<>()).toString(), trieMap.deleteKey("java").toString());
+        assertEquals(new Pair<>("java", new ArrayList<>()).toString(), trieMap.deleteKey("java").toString());
         assertEquals(2, trieMap.getPairsCount());
         assertEquals(8, trieMap.getSize());
 
 
-        assertEquals(new Pair<>("test", new HashedSet<>()).toString(), trieMap.deleteKey("test").toString());
+        assertEquals(new Pair<>("test", new ArrayList<>()).toString(), trieMap.deleteKey("test").toString());
         assertEquals(1, trieMap.getPairsCount());
         assertEquals(4, trieMap.getSize());
 
@@ -229,7 +229,7 @@ public class TrieMapTest {
         assertEquals(1, trieMap.getPairsCount());
         assertEquals(4, trieMap.getSize());
 
-        assertEquals(new Pair<>("4567", new HashedSet<>()).toString(), trieMap.deleteKey("4567").toString());
+        assertEquals(new Pair<>("4567", new ArrayList<>()).toString(), trieMap.deleteKey("4567").toString());
         assertEquals(0, trieMap.getPairsCount());
         assertEquals(0, trieMap.getSize());
     }
@@ -285,16 +285,16 @@ public class TrieMapTest {
     @Test
     public void getTest() {
 
-        HashedSet<String> values = new HashedSet<>();
+        ArrayList<String> values = new ArrayList<>();
         values.addAll("value");
         assertEquals(new Pair<>("1234", values).toString(), trieMap.get("1234").toString());
         values.clear();
 
-        values.addAll("11111111111", "00000");
+        values.addAll("00000", "11111111111");
         assertEquals(new Pair<>("qwe", values).toString(), trieMap.get("qwe").toString());
         values.clear();
 
-        values.addAll("random value", "qwerty");
+        values.addAll("qwerty", "random value");
         assertEquals(new Pair<>("java", values).toString(), trieMap.get("java").toString());
         values.clear();
 
@@ -326,7 +326,7 @@ public class TrieMapTest {
 
     @Test
     public void lookupTest() {
-        HashedSet<String> values = new HashedSet<>();
+        ArrayList<String> values = new ArrayList<>();
         values.addAll("value");
         assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("124", 1, SimpleTrieMap.Verbose.MIN).get(0).toString());
         assertEquals(new Pair<>("1234", values).toString(), trieMap.lookup("134", 1, SimpleTrieMap.Verbose.MIN).get(0).toString());
@@ -382,10 +382,10 @@ public class TrieMapTest {
                     mutableString.replace(randomPosition, randomPosition, String.valueOf(randomChar));
                     break;
             }
-            List<Pair<String, Set<String>>> founded = trieMap.lookup(mutableString.toString(), 1, SimpleTrieMap.Verbose.MIN);
+            List<Pair<String, List<String>>> founded = trieMap.lookup(mutableString.toString(), 1, SimpleTrieMap.Verbose.MIN);
 
             ArrayList<String> list = new ArrayList<>();
-            for (Pair<String, Set<String>> f : founded) {
+            for (Pair<String, List<String>> f : founded) {
                 list.add(f.getKey());
             }
             assertNotEquals(list.indexOf(s), -1);
@@ -406,10 +406,10 @@ public class TrieMapTest {
 
     @Test
     public void forEach() {
-        Set<String> prev = new HashedSet<>();
-        for (Pair<String, Set<String>> s : trieMap) {
+        List<String> prev = new ArrayList<>();
+        for (Pair<String, List<String>> s : trieMap) {
             String stringPair = s.toString();
-            assertFalse(prev.contains(stringPair));
+            assertEquals(-1, prev.indexOf(stringPair));
             prev.add(stringPair);
         }
         assertEquals(trieMap.getPairsCount(), prev.getSize());

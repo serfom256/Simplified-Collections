@@ -35,6 +35,10 @@ public class Pair<K, V> {
         this.value = value;
     }
 
+    public boolean isEmpty() {
+        return this.key == null && this.value == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

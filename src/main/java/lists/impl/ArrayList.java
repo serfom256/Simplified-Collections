@@ -250,6 +250,10 @@ public class ArrayList<E> implements List<E> {
         return size != 0 ? data[0] : null;
     }
 
+    public int getCap() {
+        return capacity;
+    }
+
     /**
      * Returns last element of list if list isn't empty otherwise null
      */
@@ -426,18 +430,15 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public Spliterator<E> spliterator() {
-        // todo implement spliterator
         return new SelfSpliterator(0, size);
     }
 
     private class SelfSpliterator implements Spliterator<E> {
 
-        private final int start;
         private int pos;
         private final int end;
 
         public SelfSpliterator(int start, int end) {
-            this.start = start;
             this.end = end;
             this.pos = start;
         }
@@ -453,7 +454,11 @@ public class ArrayList<E> implements List<E> {
 
         @Override
         public Spliterator<E> trySplit() {
-            throw new IllegalStateException("TrySplit not implemented yet!");
+            if (pos >= (end - 2)) {
+                return null;
+            }
+            int mid = end / 2;
+            return new SelfSpliterator(mid, size);
         }
 
         @Override
@@ -464,6 +469,13 @@ public class ArrayList<E> implements List<E> {
         @Override
         public int characteristics() {
             return Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super E> action) {
+            for (int i = pos; i < end; i++) {
+                action.accept(data[i]);
+            }
         }
     }
 
@@ -496,7 +508,6 @@ public class ArrayList<E> implements List<E> {
             if (pos == size) throw new NoSuchElementException();
             return data[pos++];
         }
-
     }
 
     @Override

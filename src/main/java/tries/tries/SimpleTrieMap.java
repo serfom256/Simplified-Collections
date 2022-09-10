@@ -17,7 +17,7 @@ import tries.TrieMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<String, Set<String>>> {
+public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<String, List<String>>> {
 
     private final TNode root;
     private int size;
@@ -115,11 +115,11 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
      * @return true if removed otherwise false
      * @throws NullableArgumentException if the specified key is null
      */
-    public Pair<String, Set<String>> deleteKey(String key) {
+    public Pair<String, List<String>> deleteKey(String key) {
         if (key == null) throw new NullableArgumentException();
         TNode keyNode = getNode(key);
         if (keyNode == null || !keyNode.isKey) return new Pair<>();
-        Pair<String, Set<String>> result = getPair(keyNode);
+        Pair<String, List<String>> result = getPair(keyNode);
         deleteValuesFor(keyNode);
         pairsCount--;
         keyNode.isKey = false;
@@ -199,7 +199,7 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
      * @return key-values pair if founded otherwise empty pair
      * @throws NullableArgumentException if the specified key is null
      */
-    public Pair<String, Set<String>> get(String key) {
+    public Pair<String, List<String>> get(String key) {
         if (key == null) throw new NullableArgumentException();
         TNode curr = getNode(key);
         if (curr == null || !curr.isKey) return new Pair<>();
@@ -247,12 +247,12 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
      * @throws NullableArgumentException if the specified key is null
      * @throws IllegalArgumentException  if the specified input length less than specified distance
      */
-    public List<Pair<String, Set<String>>> lookup(String input, int distance, Verbose verbose) {
+    public List<Pair<String, List<String>>> lookup(String input, int distance, Verbose verbose) {
         if (input == null) throw new NullableArgumentException();
         if (input.length() <= 1 || input.length() <= distance) {
             throw new IllegalArgumentException("Input length must be more than specified distance");
         }
-        List<Pair<String, Set<String>>> founded = new ArrayList<>();
+        List<Pair<String, List<String>>> founded = new ArrayList<>();
         TNode curr = root;
         int len = input.length();
         for (int i = 0; i < len; i++) {
@@ -276,7 +276,7 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
      * @param founded  list for collecting founded results
      * @param verbose  node traverse range  MIN - only for current node MAX - for all nodes from current down to root node
      */
-    private void search(int pos, TNode curr, String toSearch, int distance, List<Pair<String, Set<String>>> founded, Verbose verbose) {
+    private void search(int pos, TNode curr, String toSearch, int distance, List<Pair<String, List<String>>> founded, Verbose verbose) {
         Set<TNode> memo = new HashedSet<>();
         for (int j = pos; j >= 0; j--) {
             fuzzyCompound(curr, toSearch, j, distance, founded, memo);
@@ -293,14 +293,14 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
      * @param typos   maximum count of typos in searched word
      * @param founded list of founded pairs
      */
-    private void fuzzyCompound(TNode start, String word, int pos, int typos, List<Pair<String, Set<String>>> founded, Set<TNode> memo) {
+    private void fuzzyCompound(TNode start, String word, int pos, int typos, List<Pair<String, List<String>>> founded, Set<TNode> memo) {
         if (typos < 0) return;
         if (pos + typos >= word.length() && start.prev != null) {
             collectForNode(founded, start, memo);
         }
-        for (Character k : start.nodes) {
-            TNode v = start.nodes.get(k);
-            if (pos < word.length() && k.equals(word.charAt(pos))) {
+        for (HashNode<Character, TNode> pair : start.nodes.items) {
+            TNode v = pair.getValue();
+            if (pos < word.length() && pair.getKey().equals(word.charAt(pos))) {
                 fuzzyCompound(v, word, pos + 1, typos, founded, memo);
             } else {
                 fuzzyCompound(v, word, pos + 1, typos - 1, founded, memo);
@@ -315,11 +315,11 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
      *
      * @param set result
      */
-    private void collectForNode(List<Pair<String, Set<String>>> set, TNode node, Set<TNode> memo) {
+    private void collectForNode(List<Pair<String, List<String>>> set, TNode node, Set<TNode> memo) {
         if (!node.isEnd || memo.contains(node)) return;
         memo.add(node);
-        HashedSet<String> values = new HashedSet<>(2);
-        Pair<String, Set<String>> pair = new Pair<>();
+        List<String> values = new ArrayList<>(2);
+        Pair<String, List<String>> pair = new Pair<>();
         String v = getReversed(node);
         if (node.isKey) pair.setKey(v);
         else values.add(v);
@@ -330,19 +330,6 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
         pair.setValue(values);
         set.add(pair);
     }
-
-//    /**
-//     * Collect all key-values pairs from the specified node
-//     *
-//     * @param set result
-//     */
-//    private void collectAll(List<Pair<String, Set<String>>> set, TNode node) {
-//        for (HashNode<Character, TNode> n : node.nodes.items) {
-//            if (n.getValue().isEnd) {
-//                collectForNode(set, n.getValue());
-//            }
-//        }
-//    }
 
     /**
      * Returns String which contains characters from the specified node to the TrieMap root
@@ -373,9 +360,9 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
     /**
      * Returns pair of the key and values which linked to the specified node
      */
-    private Pair<String, Set<String>> getPair(TNode node) {
-        Set<String> values = new HashedSet<>();
-        Pair<String, Set<String>> pair = new Pair<>(getReversed(node), values);
+    private Pair<String, List<String>> getPair(TNode node) {
+        List<String> values = new ArrayList<>();
+        Pair<String, List<String>> pair = new Pair<>(getReversed(node), values);
         for (TNode n : node.pairs) {
             if (n.isVal) values.add(getReversed(n));
         }
@@ -383,11 +370,11 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
     }
 
     @Override
-    public Iterator<Pair<String, Set<String>>> iterator() {
+    public Iterator<Pair<String, List<String>>> iterator() {
         return new SelfIterator();
     }
 
-    private class SelfIterator implements Iterator<Pair<String, Set<String>>> {
+    private class SelfIterator implements Iterator<Pair<String, List<String>>> {
         private int position = 0;
         Stack<IteratorPair> prevNodes = new LinkedStack<>();
 
@@ -400,7 +387,7 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
         class IteratorPair {
             private final TNode node;
             private final Iterator<Character> iterator;
-            private Pair<String, Set<String>> pair;
+            private Pair<String, List<String>> pair;
 
             public IteratorPair(TNode node, Iterator<Character> iterator) {
                 this.node = node;
@@ -408,11 +395,11 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
                 this.pair = null;
             }
 
-            public Pair<String, Set<String>> getPair() {
+            public Pair<String, List<String>> getPair() {
                 return pair;
             }
 
-            void setPair(Pair<String, Set<String>> pair) {
+            void setPair(Pair<String, List<String>> pair) {
                 this.pair = pair;
             }
         }
@@ -446,7 +433,7 @@ public class SimpleTrieMap implements TrieMap<String, String>, Iterable<Pair<Str
         }
 
         @Override
-        public Pair<String, Set<String>> next() {
+        public Pair<String, List<String>> next() {
             if (++position > pairsCount) throw new NoSuchElementException();
             prepareNextNode(prevNodes.poll());
             return prevNodes.peek().getPair();
