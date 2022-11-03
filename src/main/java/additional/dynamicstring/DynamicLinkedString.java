@@ -136,6 +136,11 @@ public class DynamicLinkedString implements DynamicString {
         return this;
     }
 
+    @Override
+    public DynamicString add(char[] c) {
+        return null;
+    }
+
     /**
      * Inserts specified String s before specified node from specified position in String
      */

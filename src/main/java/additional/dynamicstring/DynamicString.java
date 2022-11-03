@@ -16,6 +16,8 @@ public interface DynamicString extends Iterable<Character> {
 
     DynamicString add(char c);
 
+    DynamicString add(char[] c);
+
     DynamicString add(int num);
 
     DynamicString addFirst(DynamicString s);
