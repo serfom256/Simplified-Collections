@@ -6,8 +6,10 @@ import additional.dynamicstring.DynamicLinkedString;
 import additional.exceptions.NullableArgumentException;
 import additional.nodes.HashNode;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class HashTable<K, V> implements Iterable<K>, Map<K, V> {
 
@@ -281,9 +283,10 @@ public class HashTable<K, V> implements Iterable<K>, Map<K, V> {
      */
     @Override
     public V get(K key) {
+        if (table == null) return null;
         int pos = getPosByKey(key, capacity);
         int keyHash = generateHash(key);
-        if (table != null && table[pos] != null) {
+        if (table[pos] != null) {
             for (Node<K, V> current = table[pos]; current != null; current = current.next) {
                 if (current.hash == keyHash && key.equals(current.key)) {
                     return current.value;
@@ -301,8 +304,9 @@ public class HashTable<K, V> implements Iterable<K>, Map<K, V> {
      */
     public boolean containsValue(V value) {
         if (value == null) return getNVKey() != null;
+        if (table == null) return false;
         for (int i = 0; i < capacity; i++) {
-            if (table != null && table[i] != null) {
+            if (table[i] != null) {
                 for (Node<K, V> current = table[i]; current != null; current = current.next) {
                     if (current.value.equals(value)) {
                         return true;
@@ -317,8 +321,9 @@ public class HashTable<K, V> implements Iterable<K>, Map<K, V> {
      * Returns first key with nullable value
      */
     private K getNVKey() {
+        if (table == null) return null;
         for (int i = 0; i < capacity; i++) {
-            if (table != null && table[i] != null) {
+            if (table[i] != null) {
                 for (Node<K, V> current = table[i]; current != null; current = current.next) {
                     if (current.value == null) {
                         return current.key;
@@ -336,9 +341,10 @@ public class HashTable<K, V> implements Iterable<K>, Map<K, V> {
      * @return key which associated specified value in the HashTable if not found returns null
      */
     public K getKeyByValue(V value) {
+        if (table == null) return null;
         if (value == null) return getNVKey();
         for (int i = 0; i < capacity; i++) {
-            if (table != null && table[i] != null) {
+            if (table[i] != null) {
                 for (Node<K, V> current = table[i]; current != null; current = current.next) {
                     if (current.value.equals(value)) {
                         return current.key;
@@ -347,6 +353,32 @@ public class HashTable<K, V> implements Iterable<K>, Map<K, V> {
             }
         }
         return null;
+    }
+
+    public Set<K> keySet() {
+        Set<K> keySet = new HashSet<>(capacity);
+        if (table == null) return keySet();
+        for (int i = 0; i < capacity; i++) {
+            if (table[i] != null) {
+                for (Node<K, V> current = table[i]; current != null; current = current.next) {
+                    keySet.add(current.getKey());
+                }
+            }
+        }
+        return keySet;
+    }
+
+    public Set<V> valueSet() {
+        Set<V> valueSet = new HashSet<>(capacity);
+        if (table == null) return valueSet();
+        for (int i = 0; i < capacity; i++) {
+            if (table[i] != null) {
+                for (Node<K, V> current = table[i]; current != null; current = current.next) {
+                    valueSet.add(current.getValue());
+                }
+            }
+        }
+        return valueSet;
     }
 
     /**

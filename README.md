@@ -31,17 +31,17 @@
 [FuzzyTrie](src/main/java/tries/tries/FuzzyTrie.java), [SimpleTrieMap](src/main/java/tries/tries/SimpleTrieMap.java), [SearchTrieMap](src/main/java/tries/tries/SearchTrieMap.java) could be suitable for fuzzy search
 
 FuzzyTrie offers efficient autocomplete with a certain indistinct distance
-Example Usage:
 <br>
 SimpleTrieMap can store Key Value pairs and support fuzzy search by keys or values
 <br>
 Fuzzy search method call example
 
-### TrieMap.lookup([word to search], [fuzzy search distance], [SimpleTrieMap.Verbose.(MIN/MAX)])
+#### TrieMap.lookup([word to search], [fuzzy search distance], [SimpleTrieMap.Verbose.(MIN/MAX)])
 
 SimpleTrieMap.Verbose.MAX used for lookup all nodes in the trie from the root
 <br>
 SimpleTrieMap.Verbose.MIN used for lookup to search values only in the one branch
+Usage example:
 ```java
         final SimpleTrieMap trieMap = new SimpleTrieMap();
         trieMap.add("1234", "value");

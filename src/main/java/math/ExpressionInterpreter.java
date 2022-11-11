@@ -12,6 +12,7 @@ import sets.Set;
 import sets.HashedSet;
 import stack.ArrayStack;
 
+@Deprecated
 public class ExpressionInterpreter {
 
     private final HashTable<Character, MathOperation> charSet = new HashTable<>(8);

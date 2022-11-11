@@ -12,6 +12,7 @@ import tries.TrieMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+@Deprecated
 public class VTrieMap<V> implements TrieMap<String, V>, Iterable<Pair<String, V>> {
 
     private final TNode<V> root;

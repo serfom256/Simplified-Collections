@@ -17,7 +17,7 @@ import java.util.stream.StreamSupport;
 
 public class ArrayList<E> implements List<E> {
 
-    private static final int DEFAULT_CAPACITY = 20;
+    private static final int DEFAULT_CAPACITY = 8;
     private int capacity;
     private int size;
     private E[] data;
@@ -62,7 +62,7 @@ public class ArrayList<E> implements List<E> {
         if (data == null) init(capacity);
         data[size] = element;
         if (++size >= capacity) {
-            capacity = (capacity << 1) - (capacity >> 1);
+            capacity = (capacity << 1) - (capacity >> 1) + 1;
             resize(capacity);
         }
     }

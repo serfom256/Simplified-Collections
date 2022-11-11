@@ -9,6 +9,7 @@ import lists.impl.ArrayList;
 import sets.HashedSet;
 import tries.TrieMap;
 
+@Deprecated
 public class RadixTrieMap implements TrieMap<String, String> {
 
     private int size;

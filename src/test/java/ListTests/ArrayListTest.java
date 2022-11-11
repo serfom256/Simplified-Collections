@@ -52,7 +52,7 @@ public class ArrayListTest {
     public void addIfAbsent() {
         list.clear();
         Integer[] testArr = {99, 999, 9999, 9999, 99, 9999};
-        for (Integer i: testArr) {
+        for (Integer i : testArr) {
             list.addIfAbsent(i);
         }
         assertEquals(3, list.getSize());
@@ -221,10 +221,10 @@ public class ArrayListTest {
 
     @Test
     public void capacityTest() {
-        ArrayList<Integer>  list = new ArrayList<>(1);
+        ArrayList<Integer> list = new ArrayList<>(1);
         list.add(1);
         list.add(2);
-        assertEquals(2,list.getSize());
+        assertEquals(2, list.getSize());
     }
 
     @Test
@@ -306,6 +306,5 @@ public class ArrayListTest {
         Integer[] testArr = {1, 2, 3, 4};
         assertArrayEquals(testArr, list.toArray(Integer.class));
     }
-
-
+    
 }

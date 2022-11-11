@@ -694,7 +694,7 @@ public class DynamicLinkedString implements DynamicString {
     }
 
     /**
-     * Returns coped substring in range from start to end
+     * Returns copied substring in range from start to end
      *
      * @param start start position of substring
      * @param end   end position of substring
@@ -706,7 +706,7 @@ public class DynamicLinkedString implements DynamicString {
 
 
     /**
-     * Returns coped substring in range from start to end of this dynamicLinkedString
+     * Returns copied substring in range from start to end of this dynamicLinkedString
      *
      * @param start start position of substring
      */
