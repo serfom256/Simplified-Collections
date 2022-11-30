@@ -12,8 +12,6 @@ import sets.Set;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 public class SearchTrieMap {
@@ -21,16 +19,13 @@ public class SearchTrieMap {
     private final TNode root;
     private final AtomicInteger pairs;
     private final HashTable<Character, RootNode> rootNodes;
-    private final Lock rootLock = new ReentrantLock();
 
     private static class RootNode {
 
-        private final Lock lock;
         private TNode node;
 
         private RootNode(TNode node) {
             this.node = node;
-            this.lock = new ReentrantLock();
         }
     }
 
@@ -126,30 +121,6 @@ public class SearchTrieMap {
         this.root = new TNode();
         this.rootNodes = new HashTable<>(128);
         this.pairs = new AtomicInteger();
-    }
-
-    private void put(String key) {
-        char f1 = key.charAt(0);
-        RootNode rn1 = rootNodes.get(f1);
-        if (rn1 == null) {
-            rootLock.lock();
-            rn1 = rootNodes.get(f1);
-            TNode keyNode;
-            if (rn1 == null) {
-                keyNode = insertToRoot(key);
-            } else {
-                keyNode = putSequence(key);
-            }
-            if (!keyNode.isKey) pairs.incrementAndGet();
-            keyNode.isKey = true;
-            rootLock.unlock();
-            return;
-        }
-        rn1.lock.lock();
-        TNode keyNode = putSequence(key);
-        if (!keyNode.isKey) pairs.incrementAndGet();
-        keyNode.isKey = true;
-        rn1.lock.unlock();
     }
 
     /**

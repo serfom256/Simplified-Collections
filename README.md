@@ -16,13 +16,13 @@
 - [x] Expression interpreter
 - [x] TrieMap
 - [x] FuzzySearchTrie
+- [x] RadixTrie
 
 ### In developing
 - Sql Builder
-- RadixTrie
 
 
-### Will be implemented later
+### Will be implemented soon
 - [ ] Binary tree printer
 - [ ] Phonetic Algorithms
 - [ ] Splay Tree
