@@ -3,6 +3,7 @@ package sql;
 
 import sql.builder.PrettifyAbleQueryProvider;
 import sql.builder.SqlDialect;
+import sql.builder.etc.AliasKeyword;
 
 public class SqlBuilder {
 
