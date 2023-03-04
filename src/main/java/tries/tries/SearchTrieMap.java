@@ -330,7 +330,7 @@ public class SearchTrieMap {
         return fuzziness;
     }
 
-    public List<LookupResult> lookup(String input, int distance, int count, boolean fuzziness) {
+    public List<LookupResult> search(String input, int distance, int count, boolean fuzziness) {
         String[] indexes = input.split(" ");
         SearchEntity result = new SearchEntity(count, distance, indexes, new ArrayList<>());
         int attempts = indexes.length;
@@ -341,7 +341,7 @@ public class SearchTrieMap {
                 estimatedDistance = Math.min(getFuzziness(result.getCurrent()), distance);
             }
             result.setTypos(estimatedDistance);
-            fuzzyLookup(root, 0, estimatedDistance, result);
+            fuzzySearch(root, 0, estimatedDistance, result);
             if (pPos == result.getWordPos() && result.hasNextSequence()) {
                 result.setCurrent(result.getNext());
             }
@@ -350,7 +350,57 @@ public class SearchTrieMap {
         return result.getResult();
     }
 
-    private void fuzzyLookup(TNode start, int pos, int typos, SearchEntity entity) {
+    public List<LookupResult> matchPrefix(String input, int distance, int count) {
+        int fuzziness = getFuzziness(input);
+        int estimatedDistance = Math.min(distance, fuzziness);
+        return searchForPrefix(input, estimatedDistance, count, root);
+    }
+
+    private List<LookupResult> searchForPrefix(String input, int distance, int count, TNode curr) {
+        int len = input.length() - 1;
+        SearchEntity searchEntity = new SearchEntity(count, distance, new String[]{input}, new ArrayList<>());
+        for (int i = 0; i <= len; i++) {
+            char c = input.charAt(i);
+            TNode next = curr.getNode(c);
+            if (next == null) {
+                len = i;
+                break;
+            }
+            if (i == len && next.isEnd) collectForNode(searchEntity, curr);
+            curr = next;
+        }
+        return searchForPrefix(len, curr, searchEntity);
+    }
+
+    private List<LookupResult> searchForPrefix(int pos, TNode curr, SearchEntity entity) {
+        for (int j = pos; j >= 0 && !entity.isFounded() && curr != null; j--, curr = curr.prev) {
+            fuzzyPrefixSearch(curr, j, entity.getTypos(), entity);
+        }
+        return entity.getResult();
+    }
+
+    private void fuzzyPrefixSearch(TNode start, int pos, int typos, SearchEntity entity) {
+        if (typos < 0 || entity.isFounded()) return;
+        int endSize = start.getEndSize();
+        if (pos + typos + endSize >= entity.getCurrent().length()) {
+            collectForNode(entity, start, new StringBuilder(getReversed(start)));
+            if (entity.isFounded()) return;
+        }
+        if (start.successors == null) return;
+        for (TNode v : start.successors) {
+            char k = v.element;
+            if (pos < entity.getSearchedLength() && k == entity.getCurrent().charAt(pos)) {
+                fuzzyPrefixSearch(v, pos + 1, typos, entity);
+            } else {
+                fuzzyPrefixSearch(v, pos + 1, typos - 1, entity);
+            }
+            fuzzyPrefixSearch(v, pos, typos - 1, entity);
+            fuzzyPrefixSearch(start, pos + 1, typos - 1, entity);
+            if (entity.isFounded()) return;
+        }
+    }
+
+    private void fuzzySearch(TNode start, int pos, int typos, SearchEntity entity) {
         if (typos < 0 || start == null || entity.isFounded()) return;
         if (start.isEnd && distance(getReversed(start), entity.getCurrent()) <= entity.getTypos()) {
             collectForNode(entity, start);
@@ -360,13 +410,14 @@ public class SearchTrieMap {
         }
         if (start.successors == null) return;
         for (TNode v : start.successors) {
-            if (pos < entity.getSearchedLength() && v.element == entity.getCurrent().charAt(pos)) {
-                fuzzyLookup(v, pos + 1, typos, entity);
+            char k = v.element;
+            if (pos < entity.getSearchedLength() && k == entity.getCurrent().charAt(pos)) {
+                fuzzySearch(v, pos + 1, typos, entity);
             } else {
-                fuzzyLookup(v, pos + 1, typos - 1, entity);
+                fuzzySearch(v, pos + 1, typos - 1, entity);
             }
-            fuzzyLookup(v, pos, typos - 1, entity);
-            fuzzyLookup(start, pos + 1, typos - 1, entity);
+            fuzzySearch(v, pos, typos - 1, entity);
+            fuzzySearch(start, pos + 1, typos - 1, entity);
             if (entity.isFounded()) return;
         }
     }
@@ -376,20 +427,37 @@ public class SearchTrieMap {
         String curr = entity.getCurrent();
         int founded = entity.getResult().getSize();
         entity.setCurrent(entity.getCurrent() + " " + next);
-        fuzzyLookup(start, pos, typos, entity);
+        fuzzySearch(start, pos, typos, entity);
         entity.setCurrent(curr);
         if (founded == entity.getResult().getSize()) {
             entity.setWordPos(entity.getWordPos() - 1);
         }
     }
 
-    public void collectForNode(SearchEntity entity, TNode node) {
+    private void collectForNode(SearchEntity entity, TNode node) {
         if (!node.isEnd || entity.hasNode(node)) return;
         ArrayList<String> values = new ArrayList<>(node.values.size() + 1);
         values.addFrom(node.values);
         LookupResult lookupResult = new LookupResult(getReversed(node), values);
         entity.addEntry(lookupResult);
         entity.memorize(node);
+    }
+
+    private void collectForNode(SearchEntity entity, TNode node, StringBuilder prefix) {
+        if (node == null || entity.isFounded() || entity.hasNode(node)) return;
+        entity.memorize(node);
+        if (node.isEnd) {
+            ArrayList<String> values = new ArrayList<>(node.values.size() + 1);
+            values.addFrom(node.values);
+            entity.addEntry(new LookupResult(prefix.toString(), values));
+        }
+        if (node.successors == null) return;
+        for (TNode curr : node.successors) {
+            if (entity.isFounded()) return;
+            prefix.append(curr.element);
+            collectForNode(entity, node, prefix);
+            prefix.delete(prefix.length() - 1, prefix.length());
+        }
     }
 
 
