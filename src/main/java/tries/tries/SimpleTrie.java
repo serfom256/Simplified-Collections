@@ -21,7 +21,7 @@ public class SimpleTrie implements Iterable<String>, Trie {
     protected int entriesCount;
 
     static class TNode {
-        Character element;
+        char element;
         boolean isEnd;
         TNode prev;
         HashTable<Character, TNode> nodes;

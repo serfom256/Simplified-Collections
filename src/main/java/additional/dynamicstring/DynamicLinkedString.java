@@ -3,7 +3,6 @@ package additional.dynamicstring;
 import additional.exceptions.IndexOutOfCollectionBoundsException;
 import lists.List;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -104,6 +103,24 @@ public class DynamicLinkedString implements DynamicString {
     }
 
     /**
+     * Appends all characters from the specified position of the string to end of dynamicLinkedString
+     */
+    @Override
+    public DynamicLinkedString add(String s, int pos) {
+        insertSequenceAfter(last, s, pos);
+        return this;
+    }
+
+    /**
+     * Appends all characters from the specified position of the string to end of dynamicLinkedString
+     */
+    @Override
+    public DynamicLinkedString add(DynamicString s, int pos) {
+        insertSequenceAfter(last, s.toString(), pos);
+        return this;
+    }
+
+    /**
      * Appends specified Character to the last of this dynamicLinkedString
      *
      * @param c Char to add to the last
@@ -118,17 +135,10 @@ public class DynamicLinkedString implements DynamicString {
         size++;
         return this;
     }
-    /**
-     * Appends specified Array Chars to the last of this dynamicLinkedString
-     *
-     * @param c Array Chars to add to the last
-     */
+
     @Override
-    public DynamicLinkedString add(char[] c) {
-        for (char curChar : c){
-            this.add(curChar);
-        }
-        return this;
+    public DynamicString add(char[] c) {
+        return null;
     }
 
     /**
@@ -684,7 +694,7 @@ public class DynamicLinkedString implements DynamicString {
     }
 
     /**
-     * Returns coped substring in range from start to end
+     * Returns copied substring in range from start to end
      *
      * @param start start position of substring
      * @param end   end position of substring
@@ -696,7 +706,7 @@ public class DynamicLinkedString implements DynamicString {
 
 
     /**
-     * Returns coped substring in range from start to end of this dynamicLinkedString
+     * Returns copied substring in range from start to end of this dynamicLinkedString
      *
      * @param start start position of substring
      */

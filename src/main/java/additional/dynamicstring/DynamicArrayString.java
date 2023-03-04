@@ -1,11 +1,9 @@
 package additional.dynamicstring;
 
-import additional.exceptions.IndexOutOfCollectionBoundsException;
 import lists.List;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
 
 public class DynamicArrayString implements DynamicString {
     private static final int DEFAULT_CAPACITY = 20;
@@ -29,82 +27,59 @@ public class DynamicArrayString implements DynamicString {
 
     public DynamicArrayString(String str) {
         this();
-        add(str);
+        for (int i = 0; i < str.length(); i++) {
+            add(str.charAt(i));
+        }
     }
 
     public DynamicArrayString(Character c) {
         this();
-        add(c);
+        addFirst(c);
     }
 
     public DynamicArrayString(char c) {
         this();
-        add(c);
+        addFirst(c);
     }
 
     public DynamicArrayString(DynamicString str) {
         this();
         add(str);
     }
-
-    private void calculateCapacity() {
-        capacity = (size << 1) - (size >> 1);
-        if (capacity < DEFAULT_CAPACITY) {
-            capacity = DEFAULT_CAPACITY;
+    private void calculateCapacity(){
+        while (size >= capacity) {
+            capacity = (capacity << 1) - (capacity >> 1);
         }
         resize(capacity);
     }
-
     @Override
     public String toString() {
-        if (size == 0) return "";
         return String.valueOf(toCharArray());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DynamicArrayString that = (DynamicArrayString) o;
-        return capacity == that.capacity && size == that.size && Arrays.equals(data, that.data);
+    public static void main(String[] args) {
+        DynamicString test = new DynamicArrayString().add("example");
+        DynamicString temp = new DynamicArrayString().add("hello").add('$').add(new char[]{'a', 'b', 'c', 's'}).add(test, 3);
+        System.out.println(temp.getSize());
+        System.out.println(temp);
     }
 
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(capacity, size);
-        result = 31 * result + Arrays.hashCode(data);
-        return result;
-    }
-
+    @SuppressWarnings("unchecked")
     private void resize(int capacity) {
         char[] newData = new char[capacity];
         System.arraycopy(data, 0, newData, 0, size);
         data = newData;
     }
 
-    private void init() {
-        data = new char[DEFAULT_CAPACITY];
-        size = 0;
+    @SuppressWarnings("unchecked")
+    private void init(int capacity) {
+        data = new char[capacity];
     }
 
-    private char[] insertArrayAtPosition(char[] arr1, char[] arr2, int insertPos) {
-        char[] result = new char[arr1.length + arr2.length];
-        System.arraycopy(arr2, 0, result, 0, insertPos);
-        System.arraycopy(arr1, 0, result, insertPos, arr1.length);
-        System.arraycopy(arr2, insertPos, result, insertPos + arr1.length, arr2.length - insertPos);
-        return result;
-    }
-
-    private int dataPosChecker(int pos) {
-        if (data == null) init();
-        if (pos >= size) pos = size;
-        if (pos <= 0) pos = 0;
-        return pos;
-    }
 
     @Override
     public DynamicString add(char element) {
-        if (data == null) init();
+        if (data == null) init(capacity);
         data[size++] = element;
         calculateCapacity();
         return this;
@@ -112,7 +87,7 @@ public class DynamicArrayString implements DynamicString {
 
     @Override
     public DynamicString add(DynamicString s) {
-        if (data == null) init();
+        if (data == null) init(capacity);
         data = insertArrayAtPosition(s.toCharArray(), data, size);
         size += s.getSize();
         calculateCapacity();
@@ -121,261 +96,195 @@ public class DynamicArrayString implements DynamicString {
 
     @Override
     public DynamicString add(Object o) {
-        return add(o.toString());
+        add(o.toString());
+        return this;
     }
 
     @Override
     public DynamicString add(char[] c) {
-        if (data == null) init();
+        if (data == null) init(capacity);
         data = insertArrayAtPosition(c, data, size);
         size += c.length;
-        calculateCapacity();
+        while (size >= capacity) {
+            capacity = (capacity << 1) - (capacity >> 1);
+        }
+        resize(capacity);
         return this;
     }
 
     @Override
     public DynamicString add(String s) {
-        if (data == null) init();
+        if (data == null) init(capacity);
         data = insertArrayAtPosition(s.toCharArray(), data, size);
         size += s.length();
         calculateCapacity();
         return this;
     }
 
+
+    private static char[] insertArrayAtPosition(char[] arr1, char[] arr2, int insertPos) {
+        char[] result = new char[arr1.length + arr2.length];
+        System.arraycopy(arr2, 0, result, 0, insertPos);
+        System.arraycopy(arr1, 0, result, insertPos, arr1.length);
+        System.arraycopy(arr2, insertPos, result, insertPos + arr1.length, arr2.length - insertPos);
+        return result;
+    }
+    // я не знаю как добавить один массв к другому...
+    static char[] concatWithArrayCopy(char[] array1, char[] array2) {
+        char[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+
+    @Override
+    public DynamicString add(DynamicString s, int pos) {
+        char[] savesChar = Arrays.copyOfRange(data, pos, size);
+        System.arraycopy(s.toCharArray(), 0, data, pos, s.getSize());
+        data = insertArrayAtPosition( savesChar, data, pos + s.getSize());
+        size += s.getSize();
+        calculateCapacity();
+        return this;
+    }
+
+
+    @Override
+    public DynamicString add(String s, int pos) {
+        return null;
+    }
+
     @Override
     public DynamicString add(int num) {
-        if (data == null) init();
-        data[++size] = (char) num;
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString addFirst(DynamicString s) {
-        if (data == null) init();
-        char[] dataBackUp = data.clone();
-        data = s.toCharArray();
-        data = insertArrayAtPosition(dataBackUp, data, s.getSize());
-        size += s.getSize();
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString addFirst(Object o) {
-        return addFirst(o.toString());
+        return null;
     }
 
     @Override
     public DynamicString addFirst(String s) {
-        if (data == null) init();
-        char[] dataBackUp = data.clone();
-        data = s.toCharArray();
-        data = insertArrayAtPosition(dataBackUp, data, s.length());
-        size += s.length();
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString addFirst(char c) {
-        if (data == null) init();
-        char[] dataBackUp = data.clone();
-        data[0] = c;
-        data = insertArrayAtPosition(dataBackUp, data, 1);
-        size++;
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString addFirst(int num) {
-        char[] dataBackUp = data;
-        data[0] = (char) num;
-        data = insertArrayAtPosition(dataBackUp, data, 1);
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString addUnicodeChar(int code) {
-        data[++size] = (char) code;
-        calculateCapacity();
-        return this;
+        return null;
     }
-
 
     @Override
     public DynamicString insert(int pos, char c) {
-        pos = dataPosChecker(pos);
-        char[] rightPart = Arrays.copyOfRange(data, pos, size++);
-        data[pos] = c;
-        data = insertArrayAtPosition(rightPart, data, ++pos);
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString insert(int pos, String s) {
-        pos = dataPosChecker(pos);
-        char[] rightPart = Arrays.copyOfRange(data, pos, size);
-        data = insertArrayAtPosition(s.toCharArray(), data, pos);
-        data = insertArrayAtPosition(rightPart, data, pos + s.length());
-        size += s.length();
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString insert(int pos, DynamicString s) {
-        pos = dataPosChecker(pos);
-        char[] rightPart = Arrays.copyOfRange(data, pos, size);
-        data = insertArrayAtPosition(s.toCharArray(), data, pos);
-        data = insertArrayAtPosition(rightPart, data, pos + s.getSize());
-        size += s.getSize();
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString subSequence(int start, int end) {
-        if (start >= 0 && end < this.size + 1) {
-            return new DynamicArrayString(Arrays.copyOfRange(data, start, end));
-        }
-        throw new IndexOutOfCollectionBoundsException();
+        return null;
     }
 
     @Override
     public DynamicString subSequence(int start) {
-        return new DynamicArrayString(Arrays.copyOfRange(data, start, size));
+        return null;
     }
 
     @Override
     public DynamicString reverse() {
-        int start = 0;
-        int end = size - 1;
-        while (end > start) {
-            char dataSave = data[start];
-            data[start++] = data[end];
-            data[end--] = dataSave;
-        }
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString insert(int pos, char[] s) {
-        pos = dataPosChecker(pos);
-        char[] savesChar = Arrays.copyOfRange(data, pos, size);
-        System.arraycopy(s, 0, data, pos, s.length);
-        data = insertArrayAtPosition(savesChar, data, pos + s.length);
-        size += s.length;
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString delete(int start, int end) {
-        char[] rightPart = Arrays.copyOfRange(data, end, size);
-        data = Arrays.copyOfRange(data, 0, start);
-        data = insertArrayAtPosition(rightPart, data, data.length);
-        size = size - (end - start);
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString delete(int start) {
-        return delete(start, size);
+        return null;
     }
 
     @Override
     public DynamicString deleteAtPosition(int pos) {
-        if (size == 0) return this;
-        char[] rightPart = Arrays.copyOfRange(data, pos + 1, size--);
-        data = Arrays.copyOfRange(data, 0, pos);
-        data = insertArrayAtPosition(rightPart, data, pos);
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString deleteFirst() {
-        if (size == 0) return this;
-        data = Arrays.copyOfRange(data, 1, size--);
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString deleteLast() {
-        if (size == 0) return this;
-        data = Arrays.copyOfRange(data, 0, --size);
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString replace(int start, int end, String s) {
-        if (start < 0 || start >= end || start >= size) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (end > size) end = size;
-        char[] leftPart = Arrays.copyOfRange(data, 0, start);
-        char[] rightPart = Arrays.copyOfRange(data, end, size);
-        data = s.toCharArray();
-        data = insertArrayAtPosition(leftPart, data, 0);
-        data = insertArrayAtPosition(rightPart, data, data.length);
-        size = data.length;
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString replace(int start, String s) {
-        if (start < 0 || start >= size) {
-            throw new IndexOutOfBoundsException();
-        }
-        char[] leftPart = Arrays.copyOfRange(data, 0, start);
-        data = s.toCharArray();
-        data = insertArrayAtPosition(leftPart, data, 0);
-        size = data.length;
-        calculateCapacity();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString replace(int start, int end, DynamicLinkedString s) {
         return null;
-        // TODO: 1/20/2023 implement method
     }
 
     @Override
     public DynamicString replace(int start, DynamicLinkedString s) {
         return null;
-        // TODO: 1/20/2023 implement method
     }
 
     @Override
     public DynamicString replace(int start, int end, char[] c) {
         return null;
-        // TODO: 1/20/2023 implement method
     }
 
     @Override
     public DynamicString replace(int start, char[] c) {
         return null;
-        // TODO: 1/20/2023 implement method
     }
 
     @Override
     public DynamicString replace(int start, int end, char c) {
         return null;
-        // TODO: 1/20/2023 implement method
     }
 
     @Override
     public DynamicString replace(int start, char c) {
         return null;
-        // TODO: 1/20/2023 implement method
     }
 
     @Override
@@ -390,290 +299,137 @@ public class DynamicArrayString implements DynamicString {
 
     @Override
     public DynamicString update(int pos, char c) {
-        data[pos] = c;
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString clear() {
-        init();
-        return this;
+        return null;
     }
 
     @Override
     public DynamicString copy() {
-        return this;
+        return null;
     }
 
     @Override
     public String subString(int start, int end) {
-        return String.valueOf(Arrays.copyOfRange(data, start, end));
+        return null;
     }
 
     @Override
     public String subString(int start) {
-        if (start >= size) return "";
-        return String.valueOf(Arrays.copyOfRange(data, start, size));
+        return null;
     }
 
     @Override
     public boolean startsWith(DynamicString s) {
-        int strSize = s.getSize() - 1;
-        if (strSize > size) return false;
-        for (int i = 0; i < size && i <= strSize; i++) {
-            if (data[i] == s.get(i) && i == strSize) {
-                return true;
-            }
-        }
         return false;
     }
 
     @Override
     public boolean startsWith(String s) {
-        int strSize = s.length() - 1;
-        if (strSize > size || size == 0) return false;
-        for (int i = 0; i < size && i <= strSize; i++) {
-            if (data[i] == s.charAt(i) && i == strSize) {
-                return true;
-            }
-        }
         return false;
     }
 
     @Override
     public boolean startsWith(char c) {
-        if (size == 0) return false;
-        return c == data[0];
+        return false;
     }
 
     @Override
     public boolean endsWith(DynamicString s) {
-        int strSize = s.getSize();
-        if (strSize > size || strSize == 0) return false;
-        int startPos = strSize - 1;
-        for (int i = size - 1; i >= (size - strSize - 1); i--) {
-            if (data[i] == s.get(startPos)) {
-                if (--startPos == -1) {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }
         return false;
     }
 
     @Override
     public boolean endsWith(String s) {
-        if (size == 0 || s.length() == 0) return false;
-        int startPos = s.length() - 1;
-        for (int i = size - 1; i >= (size - s.length()); i--) {
-            if (data[i] == s.charAt(startPos)) {
-                if (--startPos == -1) {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }
         return false;
     }
 
     @Override
     public boolean endsWith(char c) {
-        return data != null && this.getLast() == c;
+        return false;
     }
 
     @Override
     public int indexOf(char c) {
-        if (size == 0) return -1;
-        for (int i = 0; i < size; i++) {
-            if (data[i] == c) return i;
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int indexOf(char[] c) {
-        if (c.length > size || c.length == 0) return -1;
-        int startPos = 0;
-        for (int i = 0; i < size; i++) {
-            if (data[i] == c[startPos]) {
-                if (++startPos == c.length) {
-                    return i + 1 - c.length;
-                }
-            } else {
-                startPos = 0;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int indexOf(String s) {
-        int strSize = s.length();
-        if (strSize > size || strSize == 0) return -1;
-        int startPos = 0;
-        for (int i = 0; i < size; i++) {
-            if (data[i] == s.charAt(startPos)) {
-                if (++startPos == strSize) {
-                    return i + 1 - strSize;
-                }
-            } else {
-                startPos = 0;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int indexOf(DynamicString s) {
-        int strSize = s.getSize();
-        int startPos = 0;
-        if (strSize == 0 || strSize > size) return -1;
-        for (int i = 0; i < size; i++) {
-            if (data[i] == s.get(startPos)) {
-                if (++startPos == strSize) {
-                    return i + 1 - strSize;
-                }
-            } else {
-                startPos = 0;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int lastIndexOf(char c) {
-        if (size == 0) return -1;
-        for (int i = size; i > 0; i--) {
-            if (data[i] == c) return i;
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int lastIndexOf(char[] c) {
-        if (size == 0 || c.length > size || c.length == 0) return -1;
-        int startPos = c.length - 1;
-        for (int i = size; i > -1; i--) {
-            if (data[i] == c[startPos]) {
-                if (--startPos == -1) return i;
-            } else {
-                startPos = c.length - 1;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int lastIndexOf(String s) {
-        if (size == 0 || s.length() > size || s.length() == 0) return -1;
-        int startPos = s.length() - 1;
-        for (int i = size; i > -1; i--) {
-            if (data[i] == s.charAt(startPos)) {
-                if (--startPos == -1) return i;
-            } else {
-                startPos = s.length() - 1;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int lastIndexOf(DynamicString s) {
-        if (size == 0 || s.getSize() > size || s.getSize() == 0) return -1;
-        int startPos = s.getSize() - 1;
-        for (int i = size; i > -1; i--) {
-            if (data[i] == s.get(startPos)) {
-                if (--startPos == -1) return i;
-            } else {
-                startPos = s.getSize() - 1;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int indexOf(char c, int pos) {
-        for (int i = pos; i < size; i++) {
-            if (data[i] == c) return i;
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int indexOf(char[] c, int pos) {
-        if (c.length > size || c.length == 0 || (size - pos) < c.length) return -1;
-        int startPos = 0;
-        for (int i = pos; i < size; i++) {
-            if (data[i] == c[startPos]) {
-                if (++startPos == c.length) {
-                    return i + 1 - c.length;
-                }
-            } else {
-                startPos = 0;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int indexOf(String s, int pos) {
-        int strSize = s.length();
-        if (strSize > size || strSize == 0) return -1;
-        int startPos = 0;
-        for (int i = pos; i < size; i++) {
-            if (data[i] == s.charAt(startPos)) {
-                if (++startPos == strSize) {
-                    return i + 1 - strSize;
-                }
-            } else {
-                startPos = 0;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public int indexOf(DynamicString s, int pos) {
-        int strSize = s.getSize();
-        if (strSize > size || strSize == 0) return -1;
-        int startPos = 0;
-        for (int i = pos; i < size; i++) {
-            if (data[i] == s.get(startPos)) {
-                if (++startPos == strSize) {
-                    return i + 1 - strSize;
-                }
-            } else {
-                startPos = 0;
-            }
-        }
-        return -1;
+        return 0;
     }
 
     @Override
     public char getLast() {
-        return data[size - 1];
+        return 0;
     }
 
     @Override
     public char get(int pos) {
-        return data[pos];
+        return 0;
     }
 
     @Override
     public char getFirst() {
-        return data[0];
+        return 0;
     }
 
     @Override
     public int count(char c) {
-        int charCount = 0;
-        for (int p = 0; p < size; p++) {
-            if (data[p] == c) charCount++;
-        }
-        return charCount;
+        return 0;
     }
 
     @Override
@@ -683,6 +439,7 @@ public class DynamicArrayString implements DynamicString {
 
     @Override
     public char[] toCharArray() {
+
         return Arrays.copyOfRange(data, 0, size);
     }
 
@@ -690,4 +447,6 @@ public class DynamicArrayString implements DynamicString {
     public Iterator<Character> iterator() {
         return null;
     }
+
+
 }

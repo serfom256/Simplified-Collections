@@ -10,6 +10,10 @@ public interface DynamicString extends Iterable<Character> {
 
     DynamicString add(String s);
 
+    DynamicString add(DynamicString s, int pos);
+
+    DynamicString add(String s, int pos);
+
     DynamicString add(char c);
 
     DynamicString add(char[] c);
