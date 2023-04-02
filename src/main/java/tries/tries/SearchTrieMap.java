@@ -199,12 +199,26 @@ public class SearchTrieMap<V> {
         this.items = new AtomicInteger();
     }
 
-    // todo make linearizable
     public synchronized List<V> delete(String key) {
         TNode node = getNode(key);
         if (node == null) return null;
         node.isEnd = false;
-        TNode temp = node;
+        removeBranch(node);
+        ArrayList<V> result = new ArrayList<>();
+        result.addFrom(node.values);
+        return result;
+    }
+
+    public synchronized boolean delete(String key, V value) {
+        TNode node = getNode(key);
+        if (node == null) return false;
+        node.isEnd = false;
+        if (!node.values.remove(value)) return false;
+        removeBranch(node);
+        return true;
+    }
+
+    private void removeBranch(TNode node) {
         if (node.successors == null || node.successors.isEmpty()) {
             while (node.prev != null && node.prev.successors.size() == 1 && !node.prev.isEnd) {
                 node = node.prev;
@@ -217,9 +231,6 @@ public class SearchTrieMap<V> {
                 root.successors.remove(node);
             }
         }
-        ArrayList<V> result = new ArrayList<>();
-        result.addFrom(temp.values);
-        return result;
     }
 
     /**
