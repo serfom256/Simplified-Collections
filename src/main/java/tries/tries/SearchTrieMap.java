@@ -3,26 +3,26 @@ package tries.tries;
 import additional.dynamicstring.DynamicLinkedString;
 import additional.dynamicstring.DynamicString;
 import additional.exceptions.NullableArgumentException;
-import hashtables.HashTable;
-import hashtables.Map;
 import lists.List;
 import lists.impl.ArrayList;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class SearchTrieMap {
+public class SearchTrieMap<V> {
 
     private final TNode root;
     private final AtomicInteger items;
     private final Map<Character, RootNode> rootNodes;
 
-    private static class RootNode {
+    private class RootNode {
 
         private final Lock lock;
         private TNode node;
@@ -33,11 +33,11 @@ public class SearchTrieMap {
         }
     }
 
-    public static class LookupResult {
+    public class LookupResult {
         private final String key;
-        private final List<String> values;
+        private final List<V> values;
 
-        public LookupResult(String key, List<String> values) {
+        public LookupResult(String key, List<V> values) {
             this.key = key;
             this.values = values;
         }
@@ -46,7 +46,7 @@ public class SearchTrieMap {
             return key;
         }
 
-        public List<String> getValues() {
+        public List<V> getValues() {
             return values;
         }
 
@@ -59,7 +59,7 @@ public class SearchTrieMap {
         }
     }
 
-    private static class SearchEntity {
+    private class SearchEntity {
         private final int count;
         private int typos;
         private final String[] toSearch;
@@ -136,13 +136,13 @@ public class SearchTrieMap {
         }
     }
 
-    private static class TNode {
-        public char element;
-        public String seq;
-        public boolean isEnd;
-        public final TNode prev;
-        public java.util.List<TNode> successors;
-        public java.util.List<String> values;
+    private class TNode {
+        char element;
+        String seq;
+        boolean isEnd;
+        TNode prev;
+        java.util.List<TNode> successors;
+        java.util.List<V> values;
 
         public TNode(Character element, TNode prev) {
             this.element = element;
@@ -175,7 +175,7 @@ public class SearchTrieMap {
             successors.add(node);
         }
 
-        public void addValue(String value) {
+        public void addValue(V value) {
             if (values == null) values = new CopyOnWriteArrayList<>();
             if (!values.contains(value)) {
                 values.add(value);
@@ -195,8 +195,31 @@ public class SearchTrieMap {
 
     public SearchTrieMap() {
         this.root = new TNode();
-        this.rootNodes = new HashTable<>(128);
+        this.rootNodes = new ConcurrentHashMap<>(128);
         this.items = new AtomicInteger();
+    }
+
+    // todo make linearizable
+    public synchronized List<V> delete(String key) {
+        TNode node = getNode(key);
+        if (node == null) return null;
+        node.isEnd = false;
+        TNode temp = node;
+        if (node.successors == null || node.successors.isEmpty()) {
+            while (node.prev != null && node.prev.successors.size() == 1 && !node.prev.isEnd) {
+                node = node.prev;
+            }
+            if (node.prev != null) {
+                node.prev.successors.remove(node);
+                node.prev = null;
+            } else {
+                rootNodes.remove(node.element);
+                root.successors.remove(node);
+            }
+        }
+        ArrayList<V> result = new ArrayList<>();
+        result.addFrom(temp.values);
+        return result;
     }
 
     /**
@@ -205,7 +228,7 @@ public class SearchTrieMap {
      * @throws NullableArgumentException if the specified key or value is null
      * @throws IllegalArgumentException  if the length of the specified key is equals 0
      */
-    public void add(String key, String value) {
+    public void add(String key, V value) {
         char f1 = key.charAt(0);
         RootNode rn1 = rootNodes.get(f1);
         if (rn1 == null) {
@@ -229,6 +252,16 @@ public class SearchTrieMap {
         keyNode.addValue(value);
         keyNode.isEnd = true;
         rn1.lock.unlock();
+    }
+
+
+    private TNode getNode(String key) {
+        TNode curr = root;
+        for (int i = 0; i < key.length(); i++) {
+            curr = curr.getNode(key.charAt(i));
+            if (curr == null) return null;
+        }
+        return curr;
     }
 
     private TNode putSequence(String sequence) {
@@ -272,7 +305,7 @@ public class SearchTrieMap {
     private TNode insertToRoot(String seq) {
         char c = seq.charAt(0);
         TNode curr = new TNode(c, null, seq.substring(1));
-        this.rootNodes.add(c, new RootNode(curr));
+        this.rootNodes.put(c, new RootNode(curr));
         this.root.addSuccessor(curr);
         this.items.incrementAndGet();
         return curr;
@@ -289,7 +322,7 @@ public class SearchTrieMap {
         node.seq = null;
         boolean isEnd = node.isEnd;
         node.isEnd = false;
-        java.util.List<String> ids = node.values;
+        java.util.List<V> ids = node.values;
         node.values = null;
         int pos = 0, len = Math.min(seq.length(), nodeSeq.length());
         while (pos < len && seq.charAt(pos) == nodeSeq.charAt(pos)) {
@@ -436,7 +469,7 @@ public class SearchTrieMap {
 
     private void collectForNode(SearchEntity entity, TNode node) {
         if (!node.isEnd || entity.hasNode(node)) return;
-        ArrayList<String> values = new ArrayList<>(node.values.size() + 1);
+        ArrayList<V> values = new ArrayList<>(node.values.size() + 1);
         values.addFrom(node.values);
         LookupResult lookupResult = new LookupResult(getReversed(node), values);
         entity.addEntry(lookupResult);
@@ -447,7 +480,7 @@ public class SearchTrieMap {
         if (node == null || entity.isFounded() || entity.hasNode(node)) return;
         entity.memorize(node);
         if (node.isEnd) {
-            ArrayList<String> values = new ArrayList<>(node.values.size() + 1);
+            ArrayList<V> values = new ArrayList<>(node.values.size() + 1);
             values.addFrom(node.values);
             entity.addEntry(new LookupResult(prefix.toString(), values));
         }

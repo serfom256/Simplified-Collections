@@ -12,10 +12,10 @@ import static org.junit.Assert.assertEquals;
 
 public class SearchTrieTests {
 
-    private final SearchTrieMap trieMap;
+    private final SearchTrieMap<String> trieMap;
 
     public SearchTrieTests() {
-        this.trieMap = new SearchTrieMap();
+        this.trieMap = new SearchTrieMap<>();
     }
 
     @Before
